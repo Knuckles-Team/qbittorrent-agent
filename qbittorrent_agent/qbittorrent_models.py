@@ -1,19 +1,21 @@
-from typing import Dict, List, Optional, Union
-from pydantic import BaseModel, Field
+from typing import List, Optional
+from pydantic import BaseModel
+
 
 class LoginRequest(BaseModel):
     username: str
     password: str
 
+
 class AppPreferences(BaseModel):
-                                                  
+
     save_path: Optional[str] = None
     temp_path: Optional[str] = None
     auto_tmm_enabled: Optional[bool] = None
     torrent_changed_tmm_enabled: Optional[bool] = None
     save_path_changed_tmm_enabled: Optional[bool] = None
     category_changed_tmm_enabled: Optional[bool] = None
-                        
+
 
 class TorrentInfo(BaseModel):
     added_on: int
@@ -62,6 +64,7 @@ class TorrentInfo(BaseModel):
     uploaded_session: int
     upspeed: int
 
+
 class TorrentProperties(BaseModel):
     save_path: str
     creation_date: int
@@ -97,13 +100,16 @@ class TorrentProperties(BaseModel):
     up_speed_avg: int
     up_speed: int
 
+
 class Category(BaseModel):
     name: str
     savePath: str
 
+
 class RSSItem(BaseModel):
-                                                 
+
     pass
+
 
 class RSSRule(BaseModel):
     enabled: bool
@@ -120,13 +126,16 @@ class RSSRule(BaseModel):
     assignedCategory: str
     savePath: str
 
+
 class SearchJob(BaseModel):
     id: int
+
 
 class SearchStatus(BaseModel):
     id: int
     status: str
     total: int
+
 
 class SearchResult(BaseModel):
     descrLink: str
@@ -136,6 +145,7 @@ class SearchResult(BaseModel):
     nbLeechers: int
     nbSeeders: int
     siteUrl: str
+
 
 class TransferInfo(BaseModel):
     dl_info_speed: int

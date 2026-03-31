@@ -1,8 +1,7 @@
 #!/usr/bin/python
-               
+
 
 import os
-import requests
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -21,7 +20,11 @@ def get_client():
         base_url = os.getenv("QBITTORRENT_URL", "http://localhost:8080")
         username = os.getenv("QBITTORRENT_USERNAME", "admin")
         password = os.getenv("QBITTORRENT_PASSWORD", "adminadmin")
-        verify = os.getenv("QBITTORRENT_AGENT_VERIFY", "True").lower() in ("true", "1", "yes")
+        verify = os.getenv("QBITTORRENT_AGENT_VERIFY", "True").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
 
         try:
             _client = QbittorrentApi(
