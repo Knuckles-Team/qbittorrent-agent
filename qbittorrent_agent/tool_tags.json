@@ -1,0 +1,18 @@
+{
+  "qbittorrent": {
+    "get_version": "app",
+    "get_preferences": "app",
+    "get_torrents": "torrents",
+    "pause_torrents": "torrents",
+    "resume_torrents": "torrents",
+    "delete_torrents": "torrents",
+    "add_torrent": "torrents",
+    "get_transfer_info": "transfer",
+    "get_log": "log",
+    "search_start": "search",
+    "search_status": "search",
+    "search_results": "search",
+    "get_rss_items": "rss",
+    "get_rss_rules": "rss"
+  }
+}
