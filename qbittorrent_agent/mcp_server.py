@@ -14,7 +14,7 @@ from agent_utilities.mcp_utilities import create_mcp_server
 from qbittorrent_agent.auth import get_client
 from qbittorrent_agent.qbittorrent_api import QbittorrentApi
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 
 logger = get_logger(name="QBittorrent_MCP")
