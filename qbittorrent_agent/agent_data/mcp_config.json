@@ -2,7 +2,10 @@
   "mcpServers": {
     "qbittorrent": {
       "command": "qbittorrent-mcp",
-      "args": ["--transport", "stdio"],
+      "args": [
+        "--transport",
+        "stdio"
+      ],
       "env": {
         "QBITTORRENT_URL": "${QBITTORRENT_URL:-http://localhost:8080}",
         "QBITTORRENT_TOKEN": "${QBITTORRENT_TOKEN}"
