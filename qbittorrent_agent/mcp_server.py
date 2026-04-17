@@ -5,6 +5,7 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     try:
         from requests.exceptions import RequestsDependencyWarning
+
         warnings.filterwarnings("ignore", category=RequestsDependencyWarning)
     except ImportError:
         pass
@@ -25,7 +26,7 @@ from agent_utilities import get_logger, to_boolean
 from agent_utilities.mcp_utilities import create_mcp_server
 from qbittorrent_agent.auth import get_client
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 logger = get_logger(name="QBittorrent_MCP")
 logger.setLevel(logging.INFO)
@@ -440,7 +441,8 @@ def register_torrents_tools(mcp: FastMCP):
         hash: str = Field(description="Torrent hash"),
         id: str = Field(description="File IDs separated by |"),
         priority: int = Field(
-            description="Priority (0:Don't download, 1:Normal, 6:High, 7:Maximum)"),
+            description="Priority (0:Don't download, 1:Normal, 6:High, 7:Maximum)"
+        ),
     ) -> str:
         """Set priority for one or more files in a torrent."""
         client = get_client()
