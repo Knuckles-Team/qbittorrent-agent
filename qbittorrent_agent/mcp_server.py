@@ -14,16 +14,17 @@ with warnings.catch_warnings():
 warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
+import logging
 import os
 import sys
-import logging
-from typing import Optional, List, Dict, Any
+from typing import Any
 
-from dotenv import load_dotenv, find_dotenv
-from fastmcp import FastMCP
-from pydantic import Field
 from agent_utilities import get_logger, to_boolean
 from agent_utilities.mcp_utilities import create_mcp_server
+from dotenv import find_dotenv, load_dotenv
+from fastmcp import FastMCP
+from pydantic import Field
+
 from qbittorrent_agent.auth import get_client
 
 __version__ = "0.1.7"
@@ -46,7 +47,7 @@ def register_app_tools(mcp: FastMCP):
         return client.get_api_version()
 
     @mcp.tool(tags={"app"})
-    def get_build_info() -> Dict:
+    def get_build_info() -> dict:
         """Get qBittorrent build information (QT, libtorrent, boost, openssl versions, etc.)."""
         client = get_client()
         return client.get_build_info()
@@ -58,14 +59,14 @@ def register_app_tools(mcp: FastMCP):
         return client.shutdown_application()
 
     @mcp.tool(tags={"app"})
-    def get_preferences() -> Dict:
+    def get_preferences() -> dict:
         """Get all application preferences/settings."""
         client = get_client()
         return client.get_preferences()
 
     @mcp.tool(tags={"app"})
     def set_preferences(
-        preferences: Dict = Field(
+        preferences: dict = Field(
             description="JSON object with key-value pairs of settings to change."
         ),
     ) -> str:
@@ -90,7 +91,7 @@ def register_log_tools(mcp: FastMCP):
         last_known_id: int = Field(
             default=-1, description="Exclude messages with ID <= last_known_id"
         ),
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get the main qBittorrent log."""
         client = get_client()
         return client.get_log(normal, info, warning, critical, last_known_id)
@@ -99,8 +100,8 @@ def register_log_tools(mcp: FastMCP):
     def get_peer_log(
         last_known_id: int = Field(
             default=-1, description="Exclude messages with ID <= last_known_id"
-        )
-    ) -> List[Dict]:
+        ),
+    ) -> list[dict]:
         """Get the peer log."""
         client = get_client()
         return client.get_peer_log(last_known_id)
@@ -109,8 +110,8 @@ def register_log_tools(mcp: FastMCP):
 def register_sync_tools(mcp: FastMCP):
     @mcp.tool(tags={"sync"})
     def get_main_data(
-        rid: int = Field(default=0, description="Response ID for incremental updates")
-    ) -> Dict:
+        rid: int = Field(default=0, description="Response ID for incremental updates"),
+    ) -> dict:
         """Get main sync data (torrents, categories, tags, server state)."""
         client = get_client()
         return client.get_main_data(rid)
@@ -119,7 +120,7 @@ def register_sync_tools(mcp: FastMCP):
     def get_torrent_peers_data(
         hash: str = Field(description="Torrent hash"),
         rid: int = Field(default=0, description="Response ID for incremental updates"),
-    ) -> Dict:
+    ) -> dict:
         """Get sync data for torrent peers."""
         client = get_client()
         return client.get_torrent_peers_data(hash, rid)
@@ -127,7 +128,7 @@ def register_sync_tools(mcp: FastMCP):
 
 def register_transfer_tools(mcp: FastMCP):
     @mcp.tool(tags={"transfer"})
-    def get_global_transfer_info() -> Dict:
+    def get_global_transfer_info() -> dict:
         """Get global transfer info (speeds, total data, DHT nodes, connection status)."""
         client = get_client()
         return client.get_transfer_info()
@@ -184,20 +185,20 @@ def register_transfer_tools(mcp: FastMCP):
 def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_list(
-        filter: Optional[str] = Field(
+        filter: str | None = Field(
             default=None,
             description="Filter by state (all, downloading, seeding, completed, etc.)",
         ),
-        category: Optional[str] = Field(default=None, description="Filter by category"),
-        tag: Optional[str] = Field(default=None, description="Filter by tag"),
-        sort: Optional[str] = Field(default=None, description="Sort by field"),
+        category: str | None = Field(default=None, description="Filter by category"),
+        tag: str | None = Field(default=None, description="Filter by tag"),
+        sort: str | None = Field(default=None, description="Sort by field"),
         reverse: bool = Field(default=False, description="Reverse sort order"),
-        limit: Optional[int] = Field(default=None, description="Limit results"),
-        offset: Optional[int] = Field(default=None, description="Result offset"),
-        hashes: Optional[str] = Field(
+        limit: int | None = Field(default=None, description="Limit results"),
+        offset: int | None = Field(default=None, description="Result offset"),
+        hashes: str | None = Field(
             default=None, description="Filter by hashes separated by |"
         ),
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get list of torrents and their information."""
         client = get_client()
         return client.get_torrents(
@@ -212,7 +213,7 @@ def register_torrents_tools(mcp: FastMCP):
         )
 
     @mcp.tool(tags={"torrents"})
-    def get_torrent_properties(hash: str = Field(description="Torrent hash")) -> Dict:
+    def get_torrent_properties(hash: str = Field(description="Torrent hash")) -> dict:
         """Get generic properties of a torrent."""
         client = get_client()
         return client.get_torrent_properties(hash)
@@ -220,7 +221,7 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_trackers(
         hash: str = Field(description="Torrent hash"),
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get trackers for a torrent."""
         client = get_client()
         return client.get_torrent_trackers(hash)
@@ -228,7 +229,7 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_webseeds(
         hash: str = Field(description="Torrent hash"),
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get web seeds for a torrent."""
         client = get_client()
         return client.get_torrent_webseeds(hash)
@@ -236,10 +237,10 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_contents(
         hash: str = Field(description="Torrent hash"),
-        indexes: Optional[str] = Field(
+        indexes: str | None = Field(
             default=None, description="File indexes separated by |"
         ),
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get contents (files) of a torrent."""
         client = get_client()
         return client.get_torrent_contents(hash, indexes)
@@ -247,7 +248,7 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_piece_states(
         hash: str = Field(description="Torrent hash"),
-    ) -> List[int]:
+    ) -> list[int]:
         """Get states of all pieces of a torrent (0:not downloaded, 1:downloading, 2:downloaded)."""
         client = get_client()
         return client.get_torrent_piece_states(hash)
@@ -255,14 +256,14 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_piece_hashes(
         hash: str = Field(description="Torrent hash"),
-    ) -> List[str]:
+    ) -> list[str]:
         """Get hashes of all pieces of a torrent."""
         client = get_client()
         return client.get_torrent_piece_hashes(hash)
 
     @mcp.tool(tags={"torrents"})
     def pause_torrents(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Pause one or more torrents."""
         client = get_client()
@@ -270,7 +271,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def resume_torrents(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Resume one or more torrents."""
         client = get_client()
@@ -289,7 +290,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def recheck_torrents(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Recheck one or more torrents."""
         client = get_client()
@@ -297,7 +298,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def reannounce_torrents(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Reannounce one or more torrents."""
         client = get_client()
@@ -333,44 +334,36 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def add_new_torrent(
-        urls: Optional[str] = Field(
-            default=None, description="URLs separated by newline"
-        ),
-        savepath: Optional[str] = Field(default=None, description="Download folder"),
-        cookie: Optional[str] = Field(
+        urls: str | None = Field(default=None, description="URLs separated by newline"),
+        savepath: str | None = Field(default=None, description="Download folder"),
+        cookie: str | None = Field(
             default=None, description="Cookie for downloading .torrent"
         ),
-        category: Optional[str] = Field(default=None, description="Category"),
-        tags: Optional[str] = Field(default=None, description="Tags separated by ,"),
-        skip_checking: Optional[bool] = Field(
+        category: str | None = Field(default=None, description="Category"),
+        tags: str | None = Field(default=None, description="Tags separated by ,"),
+        skip_checking: bool | None = Field(
             default=False, description="Skip hash check"
         ),
-        paused: Optional[bool] = Field(
-            default=False, description="Add in paused state"
-        ),
-        root_folder: Optional[bool] = Field(
+        paused: bool | None = Field(default=False, description="Add in paused state"),
+        root_folder: bool | None = Field(
             default=None, description="Create root folder"
         ),
-        rename: Optional[str] = Field(default=None, description="Rename torrent"),
-        upLimit: Optional[int] = Field(
-            default=None, description="Upload limit (bytes/s)"
-        ),
-        dlLimit: Optional[int] = Field(
+        rename: str | None = Field(default=None, description="Rename torrent"),
+        upLimit: int | None = Field(default=None, description="Upload limit (bytes/s)"),
+        dlLimit: int | None = Field(
             default=None, description="Download limit (bytes/s)"
         ),
-        ratioLimit: Optional[float] = Field(
-            default=None, description="Share ratio limit"
-        ),
-        seedingTimeLimit: Optional[int] = Field(
+        ratioLimit: float | None = Field(default=None, description="Share ratio limit"),
+        seedingTimeLimit: int | None = Field(
             default=None, description="Seeding time limit (minutes)"
         ),
-        autoTMM: Optional[bool] = Field(
+        autoTMM: bool | None = Field(
             default=None, description="Use automatic torrent management"
         ),
-        sequentialDownload: Optional[bool] = Field(
+        sequentialDownload: bool | None = Field(
             default=False, description="Enable sequential download"
         ),
-        firstLastPiecePrio: Optional[bool] = Field(
+        firstLastPiecePrio: bool | None = Field(
             default=False, description="Prioritize first/last pieces"
         ),
     ) -> str:
@@ -406,7 +399,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def increase_torrent_priority(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Increase priority of one or more torrents."""
         client = get_client()
@@ -414,7 +407,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def decrease_torrent_priority(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Decrease priority of one or more torrents."""
         client = get_client()
@@ -422,7 +415,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def top_torrent_priority(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Set one or more torrents to maximum priority."""
         client = get_client()
@@ -430,7 +423,7 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def bottom_torrent_priority(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
     ) -> str:
         """Set one or more torrents to minimum priority."""
         client = get_client()
@@ -450,8 +443,8 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def get_torrent_download_limit(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
-    ) -> Dict:
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+    ) -> dict:
         """Get download limit for one or more torrents."""
         client = get_client()
         return client.get_torrent_download_limit(hashes)
@@ -487,8 +480,8 @@ def register_torrents_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"torrents"})
     def get_torrent_upload_limit(
-        hashes: str = Field(default="all", description="Torrent hashes separated by |")
-    ) -> Dict:
+        hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+    ) -> dict:
         """Get upload limit for one or more torrents."""
         client = get_client()
         return client.get_torrent_upload_limit(hashes)
@@ -530,7 +523,7 @@ def register_torrents_tools(mcp: FastMCP):
         return client.set_torrent_category(hashes, category)
 
     @mcp.tool(tags={"torrents"})
-    def get_all_categories() -> Dict:
+    def get_all_categories() -> dict:
         """Get all defined categories."""
         client = get_client()
         return client.get_categories()
@@ -582,7 +575,7 @@ def register_torrents_tools(mcp: FastMCP):
         return client.remove_torrent_tags(hashes, tags)
 
     @mcp.tool(tags={"torrents"})
-    def get_all_tags() -> List[str]:
+    def get_all_tags() -> list[str]:
         """Get all defined tags."""
         client = get_client()
         return client.get_tags()
@@ -706,8 +699,8 @@ def register_rss_tools(mcp: FastMCP):
     def get_all_rss_items(
         with_data: bool = Field(
             default=False, description="Include current feed articles"
-        )
-    ) -> Dict:
+        ),
+    ) -> dict:
         """Get all RSS items (folders and feeds)."""
         client = get_client()
         return client.get_rss_items(with_data)
@@ -715,7 +708,7 @@ def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     def mark_rss_as_read(
         item_path: str = Field(description="Full path of feed"),
-        article_id: Optional[str] = Field(
+        article_id: str | None = Field(
             default=None,
             description="Article ID. If omitted, marks whole feed as read.",
         ),
@@ -735,7 +728,7 @@ def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     def set_rss_auto_downloading_rule(
         rule_name: str = Field(description="Rule name"),
-        rule_def: Dict = Field(description="JSON rule definition object"),
+        rule_def: dict = Field(description="JSON rule definition object"),
     ) -> str:
         """Set or update an RSS auto-downloading rule."""
         client = get_client()
@@ -759,7 +752,7 @@ def register_rss_tools(mcp: FastMCP):
         return client.remove_rss_rule(rule_name)
 
     @mcp.tool(tags={"rss"})
-    def get_all_rss_auto_downloading_rules() -> Dict:
+    def get_all_rss_auto_downloading_rules() -> dict:
         """Get all RSS auto-downloading rules."""
         client = get_client()
         return client.get_rss_rules()
@@ -767,7 +760,7 @@ def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     def get_all_rss_articles_matching_rule(
         rule_name: str = Field(description="Rule name"),
-    ) -> Dict:
+    ) -> dict:
         """Get all articles matching an RSS rule."""
         client = get_client()
         return client.get_rss_matching_articles(rule_name)
@@ -781,7 +774,7 @@ def register_search_tools(mcp: FastMCP):
             default="all", description="Plugins to use separated by |"
         ),
         category: str = Field(default="all", description="Category for search"),
-    ) -> Dict:
+    ) -> dict:
         """Start a search job."""
         client = get_client()
         return client.search_start(pattern, plugins, category)
@@ -794,10 +787,10 @@ def register_search_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"search"})
     def get_search_status(
-        search_id: Optional[int] = Field(
+        search_id: int | None = Field(
             default=None, description="Search job ID. If omitted, returns all."
-        )
-    ) -> List[Dict]:
+        ),
+    ) -> list[dict]:
         """Get status of search jobs."""
         client = get_client()
         return client.search_status(search_id)
@@ -807,7 +800,7 @@ def register_search_tools(mcp: FastMCP):
         search_id: int = Field(description="Search job ID"),
         limit: int = Field(default=10, description="Max results to return"),
         offset: int = Field(default=0, description="Result offset"),
-    ) -> Dict:
+    ) -> dict:
         """Get results of a search job."""
         client = get_client()
         return client.search_results(search_id, limit, offset)
@@ -819,7 +812,7 @@ def register_search_tools(mcp: FastMCP):
         return client.search_delete(search_id)
 
     @mcp.tool(tags={"search"})
-    def get_search_plugins() -> List[Dict]:
+    def get_search_plugins() -> list[dict]:
         """Get all search plugins."""
         client = get_client()
         return client.get_search_plugins()

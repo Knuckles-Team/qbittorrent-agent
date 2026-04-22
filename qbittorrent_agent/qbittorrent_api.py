@@ -1,15 +1,15 @@
-import os
+import json
 import logging
+import os
+from typing import Any
+
 import requests
 import urllib3
-import json
-from typing import Optional, List, Dict, Any
-
+from agent_utilities.decorators import require_auth
 from agent_utilities.exceptions import (
     AuthError,
     UnauthorizedError,
 )
-from agent_utilities.decorators import require_auth
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logger = logging.getLogger(__name__)
@@ -21,8 +21,8 @@ class QbittorrentApi:
     def __init__(
         self,
         base_url: str = "http://localhost:8080",
-        username: Optional[str] = None,
-        password: Optional[str] = None,
+        username: str | None = None,
+        password: str | None = None,
         verify: bool = True,
     ):
         self.base_url = base_url.rstrip("/")
@@ -72,7 +72,7 @@ class QbittorrentApi:
         self.session.post(url, timeout=10)
         self._authenticated = False
 
-    def _get(self, endpoint: str, params: Optional[Dict] = None) -> Any:
+    def _get(self, endpoint: str, params: dict | None = None) -> Any:
         url = f"{self.api_url}/{endpoint}"
         response = self.session.get(url, params=params, timeout=30)
         self._handle_errors(response)
@@ -82,7 +82,7 @@ class QbittorrentApi:
             return response.text
 
     def _post(
-        self, endpoint: str, data: Optional[Dict] = None, files: Optional[Dict] = None
+        self, endpoint: str, data: dict | None = None, files: dict | None = None
     ) -> Any:
         url = f"{self.api_url}/{endpoint}"
         response = self.session.post(url, data=data, files=files, timeout=30)
@@ -117,7 +117,7 @@ class QbittorrentApi:
         return self._get("app/webapiVersion")
 
     @require_auth
-    def get_build_info(self) -> Dict:
+    def get_build_info(self) -> dict:
         """Get build info."""
         return self._get("app/buildInfo")
 
@@ -127,12 +127,12 @@ class QbittorrentApi:
         return self._post("app/shutdown")
 
     @require_auth
-    def get_preferences(self) -> Dict:
+    def get_preferences(self) -> dict:
         """Get application preferences."""
         return self._get("app/preferences")
 
     @require_auth
-    def set_preferences(self, preferences: Dict):
+    def set_preferences(self, preferences: dict):
         """Set application preferences."""
         return self._post("app/setPreferences", data={"json": json.dumps(preferences)})
 
@@ -151,7 +151,7 @@ class QbittorrentApi:
         warning: bool = True,
         critical: bool = True,
         last_known_id: int = -1,
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Get main log."""
         params = {
             "normal": str(normal).lower(),
@@ -163,26 +163,26 @@ class QbittorrentApi:
         return self._get("log/main", params=params)
 
     @require_auth
-    def get_peer_log(self, last_known_id: int = -1) -> List[Dict]:
+    def get_peer_log(self, last_known_id: int = -1) -> list[dict]:
         """Get peer log."""
         return self._get("log/peers", params={"last_known_id": last_known_id})
 
     # --- Sync ---
 
     @require_auth
-    def get_main_data(self, rid: int = 0) -> Dict:
+    def get_main_data(self, rid: int = 0) -> dict:
         """Get main data."""
         return self._get("sync/maindata", params={"rid": rid})
 
     @require_auth
-    def get_torrent_peers_data(self, hash: str, rid: int = 0) -> Dict:
+    def get_torrent_peers_data(self, hash: str, rid: int = 0) -> dict:
         """Get torrent peers data."""
         return self._get("sync/torrentPeers", params={"hash": hash, "rid": rid})
 
     # --- Transfer ---
 
     @require_auth
-    def get_transfer_info(self) -> Dict:
+    def get_transfer_info(self) -> dict:
         """Get global transfer info."""
         return self._get("transfer/info")
 
@@ -226,17 +226,17 @@ class QbittorrentApi:
     @require_auth
     def get_torrents(
         self,
-        filter: Optional[str] = None,
-        category: Optional[str] = None,
-        tag: Optional[str] = None,
-        sort: Optional[str] = None,
+        filter: str | None = None,
+        category: str | None = None,
+        tag: str | None = None,
+        sort: str | None = None,
         reverse: bool = False,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-        hashes: Optional[str] = None,
-    ) -> List[Dict]:
+        limit: int | None = None,
+        offset: int | None = None,
+        hashes: str | None = None,
+    ) -> list[dict]:
         """Get torrent list."""
-        params = {}
+        params: dict[str, Any] = {}
         if filter:
             params["filter"] = filter
         if category:
@@ -256,24 +256,22 @@ class QbittorrentApi:
         return self._get("torrents/info", params=params)
 
     @require_auth
-    def get_torrent_properties(self, hash: str) -> Dict:
+    def get_torrent_properties(self, hash: str) -> dict:
         """Get torrent generic properties."""
         return self._get("torrents/properties", params={"hash": hash})
 
     @require_auth
-    def get_torrent_trackers(self, hash: str) -> List[Dict]:
+    def get_torrent_trackers(self, hash: str) -> list[dict]:
         """Get torrent trackers."""
         return self._get("torrents/trackers", params={"hash": hash})
 
     @require_auth
-    def get_torrent_webseeds(self, hash: str) -> List[Dict]:
+    def get_torrent_webseeds(self, hash: str) -> list[dict]:
         """Get torrent web seeds."""
         return self._get("torrents/webseeds", params={"hash": hash})
 
     @require_auth
-    def get_torrent_contents(
-        self, hash: str, indexes: Optional[str] = None
-    ) -> List[Dict]:
+    def get_torrent_contents(self, hash: str, indexes: str | None = None) -> list[dict]:
         """Get torrent contents."""
         params = {"hash": hash}
         if indexes:
@@ -281,12 +279,12 @@ class QbittorrentApi:
         return self._get("torrents/files", params=params)
 
     @require_auth
-    def get_torrent_piece_states(self, hash: str) -> List[int]:
+    def get_torrent_piece_states(self, hash: str) -> list[int]:
         """Get torrent pieces' states."""
         return self._get("torrents/pieceStates", params={"hash": hash})
 
     @require_auth
-    def get_torrent_piece_hashes(self, hash: str) -> List[str]:
+    def get_torrent_piece_hashes(self, hash: str) -> list[str]:
         """Get torrent pieces' hashes."""
         return self._get("torrents/pieceHashes", params={"hash": hash})
 
@@ -339,12 +337,12 @@ class QbittorrentApi:
     @require_auth
     def add_torrent(
         self,
-        urls: Optional[str] = None,
-        torrent_files: Optional[List[str]] = None,
+        urls: str | None = None,
+        torrent_files: list[str] | None = None,
         **kwargs,
     ):
         """Add new torrent."""
-        data = {}
+        data: dict[str, Any] = {}
         if urls:
             data["urls"] = urls
 
@@ -399,7 +397,7 @@ class QbittorrentApi:
         )
 
     @require_auth
-    def get_torrent_download_limit(self, hashes: str = "all") -> Dict:
+    def get_torrent_download_limit(self, hashes: str = "all") -> dict:
         """Get torrent download limit."""
         return self._post("torrents/downloadLimit", data={"hashes": hashes})
 
@@ -428,7 +426,7 @@ class QbittorrentApi:
         return self._post("torrents/setShareLimits", data=data)
 
     @require_auth
-    def get_torrent_upload_limit(self, hashes: str = "all") -> Dict:
+    def get_torrent_upload_limit(self, hashes: str = "all") -> dict:
         """Get torrent upload limit."""
         return self._post("torrents/uploadLimit", data={"hashes": hashes})
 
@@ -459,7 +457,7 @@ class QbittorrentApi:
         )
 
     @require_auth
-    def get_categories(self) -> Dict:
+    def get_categories(self) -> dict:
         """Get all categories."""
         return self._get("torrents/categories")
 
@@ -494,7 +492,7 @@ class QbittorrentApi:
         return self._post("torrents/removeTags", data={"hashes": hashes, "tags": tags})
 
     @require_auth
-    def get_tags(self) -> List[str]:
+    def get_tags(self) -> list[str]:
         """Get all tags."""
         return self._get("torrents/tags")
 
@@ -583,12 +581,12 @@ class QbittorrentApi:
         )
 
     @require_auth
-    def get_rss_items(self, with_data: bool = False) -> Dict:
+    def get_rss_items(self, with_data: bool = False) -> dict:
         """Get all RSS items."""
         return self._get("rss/items", params={"withData": str(with_data).lower()})
 
     @require_auth
-    def mark_rss_as_read(self, item_path: str, article_id: Optional[str] = None):
+    def mark_rss_as_read(self, item_path: str, article_id: str | None = None):
         """Mark RSS as read."""
         params = {"itemPath": item_path}
         if article_id:
@@ -601,7 +599,7 @@ class QbittorrentApi:
         return self._post("rss/refreshItem", data={"itemPath": item_path})
 
     @require_auth
-    def set_rss_rule(self, rule_name: str, rule_def: Dict):
+    def set_rss_rule(self, rule_name: str, rule_def: dict):
         """Set auto-downloading rule."""
         return self._post(
             "rss/setRule", data={"ruleName": rule_name, "ruleDef": json.dumps(rule_def)}
@@ -620,12 +618,12 @@ class QbittorrentApi:
         return self._post("rss/removeRule", data={"ruleName": rule_name})
 
     @require_auth
-    def get_rss_rules(self) -> Dict:
+    def get_rss_rules(self) -> dict:
         """Get all auto-downloading rules."""
         return self._get("rss/rules")
 
     @require_auth
-    def get_rss_matching_articles(self, rule_name: str) -> Dict:
+    def get_rss_matching_articles(self, rule_name: str) -> dict:
         """Get all articles matching a rule."""
         return self._get("rss/matchingArticles", params={"ruleName": rule_name})
 
@@ -634,7 +632,7 @@ class QbittorrentApi:
     @require_auth
     def search_start(
         self, pattern: str, plugins: str = "all", category: str = "all"
-    ) -> Dict:
+    ) -> dict:
         """Start search."""
         return self._post(
             "search/start",
@@ -647,15 +645,15 @@ class QbittorrentApi:
         return self._post("search/stop", data={"id": search_id})
 
     @require_auth
-    def search_status(self, search_id: Optional[int] = None) -> List[Dict]:
+    def search_status(self, search_id: int | None = None) -> list[dict]:
         """Get search status."""
-        params = {}
+        params: dict[str, Any] = {}
         if search_id is not None:
             params["id"] = search_id
         return self._get("search/status", params=params)
 
     @require_auth
-    def search_results(self, search_id: int, limit: int = 10, offset: int = 0) -> Dict:
+    def search_results(self, search_id: int, limit: int = 10, offset: int = 0) -> dict:
         """Get search results."""
         return self._get(
             "search/results", params={"id": search_id, "limit": limit, "offset": offset}
@@ -667,7 +665,7 @@ class QbittorrentApi:
         return self._post("search/delete", data={"id": search_id})
 
     @require_auth
-    def get_search_plugins(self) -> List[Dict]:
+    def get_search_plugins(self) -> list[dict]:
         """Get search plugins."""
         return self._get("search/plugins")
 
