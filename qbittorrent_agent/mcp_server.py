@@ -19,10 +19,14 @@ import os
 import sys
 from typing import Any
 
-from agent_utilities import get_logger, to_boolean
-from agent_utilities.mcp_utilities import create_mcp_server
+from agent_utilities.base_utilities import get_logger, to_boolean
+from agent_utilities.mcp_utilities import (
+    create_mcp_server,
+    ctx_confirm_destructive,
+    ctx_progress,
+)
 from dotenv import find_dotenv, load_dotenv
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
 from pydantic import Field
 
 from qbittorrent_agent.auth import get_client
@@ -35,31 +39,54 @@ logger.setLevel(logging.INFO)
 
 def register_app_tools(mcp: FastMCP):
     @mcp.tool(tags={"app"})
-    def get_application_version() -> str:
+    def get_application_version(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Get qBittorrent application version."""
         client = get_client()
         return client.get_version()
 
     @mcp.tool(tags={"app"})
-    def get_api_version() -> str:
+    def get_api_version(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Get qBittorrent WebAPI version."""
         client = get_client()
         return client.get_api_version()
 
     @mcp.tool(tags={"app"})
-    def get_build_info() -> dict:
+    def get_build_info(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
         """Get qBittorrent build information (QT, libtorrent, boost, openssl versions, etc.)."""
         client = get_client()
         return client.get_build_info()
 
     @mcp.tool(tags={"app"})
-    def shutdown_application() -> str:
+    async def shutdown_application(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Shutdown the qBittorrent application."""
+        if not await ctx_confirm_destructive(ctx, "shutdown application"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.shutdown_application()
 
     @mcp.tool(tags={"app"})
-    def get_preferences() -> dict:
+    def get_preferences(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
         """Get all application preferences/settings."""
         client = get_client()
         return client.get_preferences()
@@ -69,13 +96,20 @@ def register_app_tools(mcp: FastMCP):
         preferences: dict = Field(
             description="JSON object with key-value pairs of settings to change."
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set application preferences/settings."""
         client = get_client()
         return client.set_preferences(preferences)
 
     @mcp.tool(tags={"app"})
-    def get_default_save_path() -> str:
+    def get_default_save_path(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Get the default save path for torrents."""
         client = get_client()
         return client.get_default_save_path()
@@ -91,6 +125,9 @@ def register_log_tools(mcp: FastMCP):
         last_known_id: int = Field(
             default=-1, description="Exclude messages with ID <= last_known_id"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict]:
         """Get the main qBittorrent log."""
         client = get_client()
@@ -100,6 +137,9 @@ def register_log_tools(mcp: FastMCP):
     def get_peer_log(
         last_known_id: int = Field(
             default=-1, description="Exclude messages with ID <= last_known_id"
+        ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
         ),
     ) -> list[dict]:
         """Get the peer log."""
@@ -111,6 +151,9 @@ def register_sync_tools(mcp: FastMCP):
     @mcp.tool(tags={"sync"})
     def get_main_data(
         rid: int = Field(default=0, description="Response ID for incremental updates"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
         """Get main sync data (torrents, categories, tags, server state)."""
         client = get_client()
@@ -120,6 +163,9 @@ def register_sync_tools(mcp: FastMCP):
     def get_torrent_peers_data(
         hash: str = Field(description="Torrent hash"),
         rid: int = Field(default=0, description="Response ID for incremental updates"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
         """Get sync data for torrent peers."""
         client = get_client()
@@ -128,56 +174,96 @@ def register_sync_tools(mcp: FastMCP):
 
 def register_transfer_tools(mcp: FastMCP):
     @mcp.tool(tags={"transfer"})
-    def get_global_transfer_info() -> dict:
+    def get_global_transfer_info(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
         """Get global transfer info (speeds, total data, DHT nodes, connection status)."""
         client = get_client()
         return client.get_transfer_info()
 
     @mcp.tool(tags={"transfer"})
-    def get_speed_limits_mode() -> int:
+    def get_speed_limits_mode(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> int:
         """Get alternative speed limits state (1 if enabled, 0 otherwise)."""
         client = get_client()
         return client.get_speed_limits_mode()
 
     @mcp.tool(tags={"transfer"})
-    def toggle_speed_limits_mode() -> str:
+    def toggle_speed_limits_mode(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Toggle alternative speed limits."""
         client = get_client()
         return client.toggle_speed_limits_mode()
 
     @mcp.tool(tags={"transfer"})
-    def get_global_download_limit() -> int:
+    async def get_global_download_limit(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> int:
+        await ctx_progress(ctx, 0, 100)
         """Get global download limit in bytes/second."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.get_global_download_limit()
 
     @mcp.tool(tags={"transfer"})
-    def set_global_download_limit(
+    async def set_global_download_limit(
         limit: int = Field(description="Limit in bytes/second"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Set global download limit in bytes/second."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.set_global_download_limit(limit)
 
     @mcp.tool(tags={"transfer"})
-    def get_global_upload_limit() -> int:
+    async def get_global_upload_limit(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> int:
+        await ctx_progress(ctx, 0, 100)
         """Get global upload limit in bytes/second."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.get_global_upload_limit()
 
     @mcp.tool(tags={"transfer"})
-    def set_global_upload_limit(
+    async def set_global_upload_limit(
         limit: int = Field(description="Limit in bytes/second"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Set global upload limit in bytes/second."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.set_global_upload_limit(limit)
 
     @mcp.tool(tags={"transfer"})
-    def ban_peers(
+    async def ban_peers(
         peers: str = Field(description="Peers to ban, separated by | (host:port)"),
-    ) -> str:
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Ban specific peers."""
+        if not await ctx_confirm_destructive(ctx, "ban peers"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.ban_peers(peers)
 
@@ -198,6 +284,9 @@ def register_torrents_tools(mcp: FastMCP):
         hashes: str | None = Field(
             default=None, description="Filter by hashes separated by |"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict]:
         """Get list of torrents and their information."""
         client = get_client()
@@ -213,7 +302,12 @@ def register_torrents_tools(mcp: FastMCP):
         )
 
     @mcp.tool(tags={"torrents"})
-    def get_torrent_properties(hash: str = Field(description="Torrent hash")) -> dict:
+    def get_torrent_properties(
+        hash: str = Field(description="Torrent hash"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
         """Get generic properties of a torrent."""
         client = get_client()
         return client.get_torrent_properties(hash)
@@ -221,6 +315,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_trackers(
         hash: str = Field(description="Torrent hash"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict]:
         """Get trackers for a torrent."""
         client = get_client()
@@ -229,6 +326,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_webseeds(
         hash: str = Field(description="Torrent hash"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict]:
         """Get web seeds for a torrent."""
         client = get_client()
@@ -240,6 +340,9 @@ def register_torrents_tools(mcp: FastMCP):
         indexes: str | None = Field(
             default=None, description="File indexes separated by |"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[dict]:
         """Get contents (files) of a torrent."""
         client = get_client()
@@ -248,6 +351,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_piece_states(
         hash: str = Field(description="Torrent hash"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[int]:
         """Get states of all pieces of a torrent (0:not downloaded, 1:downloading, 2:downloaded)."""
         client = get_client()
@@ -256,6 +362,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def get_torrent_piece_hashes(
         hash: str = Field(description="Torrent hash"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> list[str]:
         """Get hashes of all pieces of a torrent."""
         client = get_client()
@@ -264,6 +373,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def pause_torrents(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Pause one or more torrents."""
         client = get_client()
@@ -272,25 +384,37 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def resume_torrents(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Resume one or more torrents."""
         client = get_client()
         return client.resume_torrents(hashes)
 
     @mcp.tool(tags={"torrents"})
-    def delete_torrents(
+    async def delete_torrents(
         hashes: str = Field(description="Torrent hashes separated by |"),
         delete_files: bool = Field(
             default=False, description="Delete downloaded data from disk"
         ),
-    ) -> str:
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Delete one or more torrents."""
+        if not await ctx_confirm_destructive(ctx, "delete torrents"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.delete_torrents(hashes, delete_files)
 
     @mcp.tool(tags={"torrents"})
     def recheck_torrents(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Recheck one or more torrents."""
         client = get_client()
@@ -299,6 +423,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def reannounce_torrents(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Reannounce one or more torrents."""
         client = get_client()
@@ -309,17 +436,26 @@ def register_torrents_tools(mcp: FastMCP):
         hash: str = Field(description="Torrent hash"),
         orig_url: str = Field(description="Original tracker URL"),
         new_url: str = Field(description="New tracker URL"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Edit a tracker URL for a torrent."""
         client = get_client()
         return client.edit_tracker(hash, orig_url, new_url)
 
     @mcp.tool(tags={"torrents"})
-    def remove_trackers(
+    async def remove_trackers(
         hash: str = Field(description="Torrent hash"),
         urls: str = Field(description="Tracker URLs to remove, separated by |"),
-    ) -> str:
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Remove trackers from a torrent."""
+        if not await ctx_confirm_destructive(ctx, "remove trackers"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_trackers(hash, urls)
 
@@ -327,6 +463,9 @@ def register_torrents_tools(mcp: FastMCP):
     def add_peers(
         hashes: str = Field(description="Torrent hashes separated by |"),
         peers: str = Field(description="Peers to add, separated by | (host:port)"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add peers to one or more torrents."""
         client = get_client()
@@ -366,6 +505,9 @@ def register_torrents_tools(mcp: FastMCP):
         firstLastPiecePrio: bool | None = Field(
             default=False, description="Prioritize first/last pieces"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add a new torrent from URLs."""
         client = get_client()
@@ -392,6 +534,9 @@ def register_torrents_tools(mcp: FastMCP):
     def add_trackers_to_torrent(
         hash: str = Field(description="Torrent hash"),
         urls: str = Field(description="Tracker URLs separated by newline"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add trackers to a torrent."""
         client = get_client()
@@ -400,6 +545,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def increase_torrent_priority(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Increase priority of one or more torrents."""
         client = get_client()
@@ -408,6 +556,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def decrease_torrent_priority(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Decrease priority of one or more torrents."""
         client = get_client()
@@ -416,6 +567,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def top_torrent_priority(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set one or more torrents to maximum priority."""
         client = get_client()
@@ -424,6 +578,9 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def bottom_torrent_priority(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set one or more torrents to minimum priority."""
         client = get_client()
@@ -436,26 +593,39 @@ def register_torrents_tools(mcp: FastMCP):
         priority: int = Field(
             description="Priority (0:Don't download, 1:Normal, 6:High, 7:Maximum)"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set priority for one or more files in a torrent."""
         client = get_client()
         return client.set_file_priority(hash, id, priority)
 
     @mcp.tool(tags={"torrents"})
-    def get_torrent_download_limit(
+    async def get_torrent_download_limit(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
+        await ctx_progress(ctx, 0, 100)
         """Get download limit for one or more torrents."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.get_torrent_download_limit(hashes)
 
     @mcp.tool(tags={"torrents"})
-    def set_torrent_download_limit(
+    async def set_torrent_download_limit(
         hashes: str = Field(description="Torrent hashes separated by |"),
         limit: int = Field(description="Limit in bytes/second"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Set download limit for one or more torrents."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.set_torrent_download_limit(hashes, limit)
 
     @mcp.tool(tags={"torrents"})
@@ -471,6 +641,9 @@ def register_torrents_tools(mcp: FastMCP):
             default=-2,
             description="Max inactive seeding time in minutes (-2:Global, -1:No limit)",
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set share limits for one or more torrents."""
         client = get_client()
@@ -479,26 +652,39 @@ def register_torrents_tools(mcp: FastMCP):
         )
 
     @mcp.tool(tags={"torrents"})
-    def get_torrent_upload_limit(
+    async def get_torrent_upload_limit(
         hashes: str = Field(default="all", description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
+        await ctx_progress(ctx, 0, 100)
         """Get upload limit for one or more torrents."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.get_torrent_upload_limit(hashes)
 
     @mcp.tool(tags={"torrents"})
-    def set_torrent_upload_limit(
+    async def set_torrent_upload_limit(
         hashes: str = Field(description="Torrent hashes separated by |"),
         limit: int = Field(description="Limit in bytes/second"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Set upload limit for one or more torrents."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.set_torrent_upload_limit(hashes, limit)
 
     @mcp.tool(tags={"torrents"})
     def set_torrent_location(
         hashes: str = Field(description="Torrent hashes separated by |"),
         location: str = Field(description="New location path"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set download location for one or more torrents."""
         client = get_client()
@@ -508,6 +694,9 @@ def register_torrents_tools(mcp: FastMCP):
     def set_torrent_name(
         hash: str = Field(description="Torrent hash"),
         name: str = Field(description="New torrent name"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Rename a torrent."""
         client = get_client()
@@ -517,13 +706,20 @@ def register_torrents_tools(mcp: FastMCP):
     def set_torrent_category(
         hashes: str = Field(description="Torrent hashes separated by |"),
         category: str = Field(description="Category name"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Assign a category to one or more torrents."""
         client = get_client()
         return client.set_torrent_category(hashes, category)
 
     @mcp.tool(tags={"torrents"})
-    def get_all_categories() -> dict:
+    def get_all_categories(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
         """Get all defined categories."""
         client = get_client()
         return client.get_categories()
@@ -532,6 +728,9 @@ def register_torrents_tools(mcp: FastMCP):
     def add_new_category(
         category: str = Field(description="Category name"),
         save_path: str = Field(default="", description="Save path for this category"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add a new category."""
         client = get_client()
@@ -543,16 +742,25 @@ def register_torrents_tools(mcp: FastMCP):
         save_path: str = Field(
             default="", description="New save path for this category"
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Edit an existing category."""
         client = get_client()
         return client.edit_category(category, save_path)
 
     @mcp.tool(tags={"torrents"})
-    def remove_categories(
+    async def remove_categories(
         categories: str = Field(description="Category names separated by newline"),
-    ) -> str:
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Remove one or more categories."""
+        if not await ctx_confirm_destructive(ctx, "remove categories"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_categories(categories)
 
@@ -560,22 +768,35 @@ def register_torrents_tools(mcp: FastMCP):
     def add_torrent_tags(
         hashes: str = Field(description="Torrent hashes separated by |"),
         tags: str = Field(description="Tags separated by ,"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add tags to one or more torrents."""
         client = get_client()
         return client.add_torrent_tags(hashes, tags)
 
     @mcp.tool(tags={"torrents"})
-    def remove_torrent_tags(
+    async def remove_torrent_tags(
         hashes: str = Field(description="Torrent hashes separated by |"),
         tags: str = Field(default="", description="Tags to remove separated by ,"),
-    ) -> str:
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str | dict:
         """Remove tags from one or more torrents. Empty list removes all tags."""
+        if not await ctx_confirm_destructive(ctx, "remove torrent tags"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_torrent_tags(hashes, tags)
 
     @mcp.tool(tags={"torrents"})
-    def get_all_tags() -> list[str]:
+    def get_all_tags(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> list[str]:
         """Get all defined tags."""
         client = get_client()
         return client.get_tags()
@@ -583,16 +804,25 @@ def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     def create_tags(
         tags: str = Field(description="Tags to create, separated by ,"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Create new tags."""
         client = get_client()
         return client.create_tags(tags)
 
     @mcp.tool(tags={"torrents"})
-    def delete_tags(
+    async def delete_tags(
         tags: str = Field(description="Tags to delete, separated by ,"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Delete tags."""
+        if not await ctx_confirm_destructive(ctx, "delete tags"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.delete_tags(tags)
 
@@ -600,33 +830,50 @@ def register_torrents_tools(mcp: FastMCP):
     def set_auto_management(
         hashes: str = Field(description="Torrent hashes separated by |"),
         enable: bool = Field(default=True, description="Enable automatic management"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set automatic torrent management for one or more torrents."""
         client = get_client()
         return client.set_auto_management(hashes, enable)
 
     @mcp.tool(tags={"torrents"})
-    def toggle_sequential_download(
+    async def toggle_sequential_download(
         hashes: str = Field(description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Toggle sequential download for one or more torrents."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.toggle_sequential_download(hashes)
 
     @mcp.tool(tags={"torrents"})
     def toggle_first_last_piece_priority(
         hashes: str = Field(description="Torrent hashes separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Toggle prioritization of first/last pieces for one or more torrents."""
         client = get_client()
         return client.toggle_first_last_piece_priority(hashes)
 
     @mcp.tool(tags={"torrents"})
-    def set_force_start(
+    async def set_force_start(
         hashes: str = Field(description="Torrent hashes separated by |"),
         value: bool = Field(default=True, description="Force start value"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set force start for one or more torrents."""
+        if not await ctx_confirm_destructive(ctx, "set force start"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.set_force_start(hashes, value)
 
@@ -634,6 +881,9 @@ def register_torrents_tools(mcp: FastMCP):
     def set_super_seeding(
         hashes: str = Field(description="Torrent hashes separated by |"),
         value: bool = Field(default=True, description="Super seeding value"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Set super seeding for one or more torrents."""
         client = get_client()
@@ -644,6 +894,9 @@ def register_torrents_tools(mcp: FastMCP):
         hash: str = Field(description="Torrent hash"),
         old_path: str = Field(description="Old file path"),
         new_path: str = Field(description="New file path"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Rename a file within a torrent."""
         client = get_client()
@@ -654,6 +907,9 @@ def register_torrents_tools(mcp: FastMCP):
         hash: str = Field(description="Torrent hash"),
         old_path: str = Field(description="Old folder path"),
         new_path: str = Field(description="New folder path"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Rename a folder within a torrent."""
         client = get_client()
@@ -664,6 +920,9 @@ def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     def add_rss_folder(
         path: str = Field(description="Full path of folder to add"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add an RSS folder."""
         client = get_client()
@@ -673,16 +932,25 @@ def register_rss_tools(mcp: FastMCP):
     def add_rss_feed(
         url: str = Field(description="URL of RSS feed"),
         path: str = Field(default="", description="Full path of folder to add feed to"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Add an RSS feed."""
         client = get_client()
         return client.add_rss_feed(url, path)
 
     @mcp.tool(tags={"rss"})
-    def remove_rss_item(
+    async def remove_rss_item(
         path: str = Field(description="Full path of item (folder or feed) to remove"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Remove an RSS item (folder or feed)."""
+        if not await ctx_confirm_destructive(ctx, "remove rss item"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_rss_item(path)
 
@@ -690,6 +958,9 @@ def register_rss_tools(mcp: FastMCP):
     def move_rss_item(
         item_path: str = Field(description="Current full path of item"),
         dest_path: str = Field(description="New full path of item"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Move or rename an RSS item."""
         client = get_client()
@@ -699,6 +970,9 @@ def register_rss_tools(mcp: FastMCP):
     def get_all_rss_items(
         with_data: bool = Field(
             default=False, description="Include current feed articles"
+        ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
         ),
     ) -> dict:
         """Get all RSS items (folders and feeds)."""
@@ -712,6 +986,9 @@ def register_rss_tools(mcp: FastMCP):
             default=None,
             description="Article ID. If omitted, marks whole feed as read.",
         ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Mark RSS articles or feeds as read."""
         client = get_client()
@@ -720,46 +997,74 @@ def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     def refresh_rss_item(
         item_path: str = Field(description="Full path of item to refresh"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Refresh an RSS item (folder or feed)."""
         client = get_client()
         return client.refresh_rss_item(item_path)
 
     @mcp.tool(tags={"rss"})
-    def set_rss_auto_downloading_rule(
+    async def set_rss_auto_downloading_rule(
         rule_name: str = Field(description="Rule name"),
         rule_def: dict = Field(description="JSON rule definition object"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Set or update an RSS auto-downloading rule."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.set_rss_rule(rule_name, rule_def)
 
     @mcp.tool(tags={"rss"})
-    def rename_rss_auto_downloading_rule(
+    async def rename_rss_auto_downloading_rule(
         rule_name: str = Field(description="Current rule name"),
         new_rule_name: str = Field(description="New rule name"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
+        await ctx_progress(ctx, 0, 100)
         """Rename an RSS auto-downloading rule."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.rename_rss_rule(rule_name, new_rule_name)
 
     @mcp.tool(tags={"rss"})
-    def remove_rss_auto_downloading_rule(
+    async def remove_rss_auto_downloading_rule(
         rule_name: str = Field(description="Rule name to remove"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Remove an RSS auto-downloading rule."""
+        if not await ctx_confirm_destructive(ctx, "remove rss auto downloading rule"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_rss_rule(rule_name)
 
     @mcp.tool(tags={"rss"})
-    def get_all_rss_auto_downloading_rules() -> dict:
+    async def get_all_rss_auto_downloading_rules(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> dict:
+        await ctx_progress(ctx, 0, 100)
         """Get all RSS auto-downloading rules."""
         client = get_client()
+        await ctx_progress(ctx, 100, 100)
         return client.get_rss_rules()
 
     @mcp.tool(tags={"rss"})
     def get_all_rss_articles_matching_rule(
         rule_name: str = Field(description="Rule name"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
         """Get all articles matching an RSS rule."""
         client = get_client()
@@ -774,14 +1079,25 @@ def register_search_tools(mcp: FastMCP):
             default="all", description="Plugins to use separated by |"
         ),
         category: str = Field(default="all", description="Category for search"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
         """Start a search job."""
         client = get_client()
         return client.search_start(pattern, plugins, category)
 
     @mcp.tool(tags={"search"})
-    def stop_search(search_id: int = Field(description="Search job ID")) -> str:
+    async def stop_search(
+        search_id: int = Field(description="Search job ID"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Stop a running search job."""
+        if not await ctx_confirm_destructive(ctx, "stop search"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.search_stop(search_id)
 
@@ -789,6 +1105,9 @@ def register_search_tools(mcp: FastMCP):
     def get_search_status(
         search_id: int | None = Field(
             default=None, description="Search job ID. If omitted, returns all."
+        ),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
         ),
     ) -> list[dict]:
         """Get status of search jobs."""
@@ -800,19 +1119,34 @@ def register_search_tools(mcp: FastMCP):
         search_id: int = Field(description="Search job ID"),
         limit: int = Field(default=10, description="Max results to return"),
         offset: int = Field(default=0, description="Result offset"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> dict:
         """Get results of a search job."""
         client = get_client()
         return client.search_results(search_id, limit, offset)
 
     @mcp.tool(tags={"search"})
-    def delete_search(search_id: int = Field(description="Search job ID")) -> str:
+    async def delete_search(
+        search_id: int = Field(description="Search job ID"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Delete a search job."""
+        if not await ctx_confirm_destructive(ctx, "delete search"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.search_delete(search_id)
 
     @mcp.tool(tags={"search"})
-    def get_search_plugins() -> list[dict]:
+    def get_search_plugins(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> list[dict]:
         """Get all search plugins."""
         client = get_client()
         return client.get_search_plugins()
@@ -820,16 +1154,25 @@ def register_search_tools(mcp: FastMCP):
     @mcp.tool(tags={"search"})
     def install_search_plugin(
         sources: str = Field(description="URLs or paths separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Install one or more search plugins."""
         client = get_client()
         return client.install_search_plugin(sources)
 
     @mcp.tool(tags={"search"})
-    def uninstall_search_plugin(
+    async def uninstall_search_plugin(
         names: str = Field(description="Plugin names separated by |"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Uninstall one or more search plugins."""
+        if not await ctx_confirm_destructive(ctx, "uninstall search plugin"):
+            return {"status": "cancelled", "message": "Operation cancelled by user"}
+        await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.uninstall_search_plugin(names)
 
@@ -837,13 +1180,20 @@ def register_search_tools(mcp: FastMCP):
     def enable_search_plugin(
         names: str = Field(description="Plugin names separated by |"),
         enable: bool = Field(default=True, description="Enable or disable"),
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
     ) -> str:
         """Enable or disable one or more search plugins."""
         client = get_client()
         return client.enable_search_plugin(names, enable)
 
     @mcp.tool(tags={"search"})
-    def update_search_plugins() -> str:
+    def update_search_plugins(
+        ctx: Context = Field(
+            description="MCP context for progress reporting", default=None
+        ),
+    ) -> str:
         """Update all installed search plugins."""
         client = get_client()
         return client.update_search_plugins()
