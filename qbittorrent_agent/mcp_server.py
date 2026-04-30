@@ -31,7 +31,7 @@ from pydantic import Field
 
 from qbittorrent_agent.auth import get_client
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 
 logger = get_logger(name="QBittorrent_MCP")
 logger.setLevel(logging.INFO)
