@@ -31,7 +31,7 @@ from pydantic import Field
 
 from qbittorrent_agent.auth import get_client
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 logger = get_logger(name="QBittorrent_MCP")
 logger.setLevel(logging.INFO)
@@ -821,7 +821,7 @@ def register_torrents_tools(mcp: FastMCP):
     ) -> str:
         """Delete tags."""
         if not await ctx_confirm_destructive(ctx, "delete tags"):
-            return {"status": "cancelled", "message": "Operation cancelled by user"}
+            return {"status": "cancelled", "message": "Operation cancelled by user"}  # type: ignore[return-value]
         await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.delete_tags(tags)
@@ -872,7 +872,7 @@ def register_torrents_tools(mcp: FastMCP):
     ) -> str:
         """Set force start for one or more torrents."""
         if not await ctx_confirm_destructive(ctx, "set force start"):
-            return {"status": "cancelled", "message": "Operation cancelled by user"}
+            return {"status": "cancelled", "message": "Operation cancelled by user"}  # type: ignore[return-value]
         await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.set_force_start(hashes, value)
@@ -949,7 +949,7 @@ def register_rss_tools(mcp: FastMCP):
     ) -> str:
         """Remove an RSS item (folder or feed)."""
         if not await ctx_confirm_destructive(ctx, "remove rss item"):
-            return {"status": "cancelled", "message": "Operation cancelled by user"}
+            return {"status": "cancelled", "message": "Operation cancelled by user"}  # type: ignore[return-value]
         await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_rss_item(path)
@@ -1042,7 +1042,7 @@ def register_rss_tools(mcp: FastMCP):
     ) -> str:
         """Remove an RSS auto-downloading rule."""
         if not await ctx_confirm_destructive(ctx, "remove rss auto downloading rule"):
-            return {"status": "cancelled", "message": "Operation cancelled by user"}
+            return {"status": "cancelled", "message": "Operation cancelled by user"}  # type: ignore[return-value]
         await ctx_progress(ctx, 0, 100)
         client = get_client()
         return client.remove_rss_rule(rule_name)
@@ -1093,7 +1093,7 @@ def register_search_tools(mcp: FastMCP):
         ctx: Context = Field(
             description="MCP context for progress reporting", default=None
         ),
-    ) -> str:
+    ) -> str | dict:
         """Stop a running search job."""
         if not await ctx_confirm_destructive(ctx, "stop search"):
             return {"status": "cancelled", "message": "Operation cancelled by user"}
@@ -1133,7 +1133,7 @@ def register_search_tools(mcp: FastMCP):
         ctx: Context = Field(
             description="MCP context for progress reporting", default=None
         ),
-    ) -> str:
+    ) -> str | dict:
         """Delete a search job."""
         if not await ctx_confirm_destructive(ctx, "delete search"):
             return {"status": "cancelled", "message": "Operation cancelled by user"}
@@ -1168,7 +1168,7 @@ def register_search_tools(mcp: FastMCP):
         ctx: Context = Field(
             description="MCP context for progress reporting", default=None
         ),
-    ) -> str:
+    ) -> str | dict:
         """Uninstall one or more search plugins."""
         if not await ctx_confirm_destructive(ctx, "uninstall search plugin"):
             return {"status": "cancelled", "message": "Operation cancelled by user"}

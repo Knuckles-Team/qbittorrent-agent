@@ -5,8 +5,8 @@ from typing import Any
 
 import requests
 import urllib3
-from agent_utilities.decorators import require_auth
-from agent_utilities.exceptions import (
+from agent_utilities.core.decorators import require_auth
+from agent_utilities.core.exceptions import (
     AuthError,
     UnauthorizedError,
 )
@@ -64,7 +64,7 @@ class QbittorrentApi:
                     f"Login failed with status code {response.status_code}: {response.text}"
                 )
         except requests.exceptions.RequestException as e:
-            raise AuthError(f"Connection error during login: {str(e)}")
+            raise AuthError(f"Connection error during login: {str(e)}") from e
 
     def logout(self):
         """Log out from qBittorrent."""
@@ -362,7 +362,7 @@ class QbittorrentApi:
                     )
 
         # multipart/form-data is handled by requests when 'files' is provided
-        return self._post("torrents/add", data=data, files=files)
+        return self._post("torrents/add", data=data, files=files)  # type: ignore[arg-type]
 
     @require_auth
     def add_trackers(self, hash: str, urls: str):
