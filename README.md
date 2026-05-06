@@ -21,7 +21,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/qbittorrent-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/qbittorrent-agent)
 
-*Version: 0.5.0*
+*Version: 0.6.0*
 
 ## Overview
 
@@ -138,3 +138,62 @@ uv pip install qbittorrent-agent
 
 ![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
 ![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
+
+
+## MCP Configuration Examples
+
+### 1. Standard IO (stdio) Deployment
+
+```json
+{
+  "mcpServers": {
+    "qbittorrent-agent": {
+      "command": "uv",
+      "args": [
+        "run",
+        "qbittorrent-mcp"
+      ],
+      "env": {
+        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
+        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
+        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
+        "QBITTORRENT_AGENT_VERIFY": "<YOUR_QBITTORRENT_AGENT_VERIFY>",
+        "QBITTORRENT_PASSWORD": "<YOUR_QBITTORRENT_PASSWORD>",
+        "QBITTORRENT_URL": "<YOUR_QBITTORRENT_URL>",
+        "QBITTORRENT_USERNAME": "<YOUR_QBITTORRENT_USERNAME>"
+      }
+    }
+  }
+}
+```
+
+### 2. Streamable HTTP (SSE) Deployment
+
+```json
+{
+  "mcpServers": {
+    "qbittorrent-agent": {
+      "command": "uv",
+      "args": [
+        "run",
+        "qbittorrent-mcp",
+        "--transport",
+        "http",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "env": {
+        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
+        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
+        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
+        "QBITTORRENT_AGENT_VERIFY": "<YOUR_QBITTORRENT_AGENT_VERIFY>",
+        "QBITTORRENT_PASSWORD": "<YOUR_QBITTORRENT_PASSWORD>",
+        "QBITTORRENT_URL": "<YOUR_QBITTORRENT_URL>",
+        "QBITTORRENT_USERNAME": "<YOUR_QBITTORRENT_USERNAME>"
+      }
+    }
+  }
+}
+```
