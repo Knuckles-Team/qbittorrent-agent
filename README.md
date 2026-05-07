@@ -21,7 +21,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/qbittorrent-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/qbittorrent-agent)
 
-*Version: 0.7.1*
+*Version: 0.8.0*
 
 ## Overview
 
