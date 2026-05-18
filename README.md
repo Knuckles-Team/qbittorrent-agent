@@ -197,3 +197,17 @@ uv pip install qbittorrent-agent
   }
 }
 ```
+
+## Available MCP Tools
+
+This server utilizes dynamic Action-Routed tools to optimize token overhead and maximize IDE compatibility.
+
+| Tool Name | Description |
+|-----------|-------------|
+| `qbittorrent_app` | Consolidated Action-Routed tool for app. Methods: get_application_version, get_api_version, get_build_info, shutdown_application, get_preferences, set_preferences, get_default_save_path |
+| `qbittorrent_log` | Consolidated Action-Routed tool for log. Methods: get_main_log, get_peer_log |
+| `qbittorrent_rss` | Consolidated Action-Routed tool for rss. Methods: add_rss_folder, add_rss_feed, remove_rss_item, move_rss_item, get_all_rss_items, mark_rss_as_read, refresh_rss_item, set_rss_auto_downloading_rule, rename_rss_auto_downloading_rule, remove_rss_auto_downloading_rule, get_all_rss_auto_downloading_rules, get_all_rss_articles_matching_rule |
+| `qbittorrent_search` | Consolidated Action-Routed tool for search. Methods: start_search, stop_search, get_search_status, get_search_results, delete_search, get_search_plugins, install_search_plugin, uninstall_search_plugin, enable_search_plugin, update_search_plugins |
+| `qbittorrent_sync` | Consolidated Action-Routed tool for sync. Methods: get_main_data, get_torrent_peers_data |
+| `qbittorrent_torrents` | Consolidated Action-Routed tool for torrents. Methods: get_torrent_list, get_torrent_properties, get_torrent_trackers, get_torrent_webseeds, get_torrent_contents, get_torrent_piece_states, get_torrent_piece_hashes, pause_torrents, resume_torrents, delete_torrents, recheck_torrents, reannounce_torrents, edit_tracker, remove_trackers, add_peers, add_new_torrent, add_trackers_to_torrent, increase_torrent_priority, decrease_torrent_priority, top_torrent_priority, bottom_torrent_priority, set_file_priority, get_torrent_download_limit, set_torrent_download_limit, set_torrent_share_limit, get_torrent_upload_limit, set_torrent_upload_limit, set_torrent_location, set_torrent_name, set_torrent_category, get_all_categories, add_new_category, edit_category, remove_categories, add_torrent_tags, remove_torrent_tags, get_all_tags, create_tags, delete_tags, set_auto_management, toggle_sequential_download, toggle_first_last_piece_priority, set_force_start, set_super_seeding, rename_file, rename_folder |
+| `qbittorrent_transfer` | Consolidated Action-Routed tool for transfer. Methods: get_global_transfer_info, get_speed_limits_mode, toggle_speed_limits_mode, get_global_download_limit, set_global_download_limit, get_global_upload_limit, set_global_upload_limit, ban_peers |
