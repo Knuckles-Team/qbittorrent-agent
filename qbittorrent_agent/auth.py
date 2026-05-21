@@ -1,15 +1,13 @@
 #!/usr/bin/python
-
-
 import os
 
 import urllib3
 
+from qbittorrent_agent.api_client import QbittorrentApi
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from agent_utilities.core.exceptions import AuthError, UnauthorizedError
-
-from qbittorrent_agent.api_client import QbittorrentApi
 
 _client = None
 
