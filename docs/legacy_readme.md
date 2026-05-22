@@ -43,7 +43,7 @@
 
 This agent wraps the AI agent for qBittorrent management, RSS automation, and search. API. You can interact with it programmatically or via its integrated execution entrypoints.
 
-Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/index.md).
+Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](index.md).
 
 ---
 
@@ -62,7 +62,7 @@ This server utilizes dynamic Action-Routed tools to optimize token overhead and 
 | **Rss** | `RSSTOOL` | `True` | Manage qbittorrent rss operations. Action-routed methods: `add_rss_folder`, `add_rss_feed`, `remove_rss_item`, `move_rss_item`, `get_all_rss_items`, `mark_rss_as_read`, `refresh_rss_item`, `set_rss_auto_downloading_rule`, `rename_rss_auto_downloading_rule`, `remove_rss_auto_downloading_rule`, `get_all_rss_auto_downloading_rules`, `get_all_rss_articles_matching_rule`. |
 | **Search** | `SEARCHTOOL` | `True` | Manage qbittorrent search operations. Action-routed methods: `start_search`, `stop_search`, `get_search_status`, `get_search_results`, `delete_search`, `get_search_plugins`, `install_search_plugin`, `uninstall_search_plugin`, `enable_search_plugin`, `update_search_plugins`. |
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/mcp.md).
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](mcp.md).
 
 ### MCP Configuration Examples
 
@@ -209,7 +209,7 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](agent.md).
 
 ---
 

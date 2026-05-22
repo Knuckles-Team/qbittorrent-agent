@@ -65,7 +65,7 @@ def register_app_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         if action == "get_application_version":
-            return client.get_application_version(**kwargs)
+            return client.get_version(**kwargs)
         if action == "get_api_version":
             return client.get_api_version(**kwargs)
         if action == "get_build_info":
@@ -108,7 +108,7 @@ def register_log_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         if action == "get_main_log":
-            return client.get_main_log(**kwargs)
+            return client.get_log(**kwargs)
         if action == "get_peer_log":
             return client.get_peer_log(**kwargs)
         raise ValueError(f"Unknown action: {action}")
@@ -174,7 +174,7 @@ def register_transfer_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         if action == "get_global_transfer_info":
-            return client.get_global_transfer_info(**kwargs)
+            return client.get_transfer_info(**kwargs)
         if action == "get_speed_limits_mode":
             return client.get_speed_limits_mode(**kwargs)
         if action == "toggle_speed_limits_mode":
@@ -219,7 +219,7 @@ def register_torrents_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         if action == "get_torrent_list":
-            return client.get_torrent_list(**kwargs)
+            return client.get_torrents(**kwargs)
         if action == "get_torrent_properties":
             return client.get_torrent_properties(**kwargs)
         if action == "get_torrent_trackers":
@@ -249,17 +249,17 @@ def register_torrents_tools(mcp: FastMCP):
         if action == "add_peers":
             return client.add_peers(**kwargs)
         if action == "add_new_torrent":
-            return client.add_new_torrent(**kwargs)
+            return client.add_torrent(**kwargs)
         if action == "add_trackers_to_torrent":
-            return client.add_trackers_to_torrent(**kwargs)
+            return client.add_trackers(**kwargs)
         if action == "increase_torrent_priority":
-            return client.increase_torrent_priority(**kwargs)
+            return client.increase_priority(**kwargs)
         if action == "decrease_torrent_priority":
-            return client.decrease_torrent_priority(**kwargs)
+            return client.decrease_priority(**kwargs)
         if action == "top_torrent_priority":
-            return client.top_torrent_priority(**kwargs)
+            return client.top_priority(**kwargs)
         if action == "bottom_torrent_priority":
-            return client.bottom_torrent_priority(**kwargs)
+            return client.bottom_priority(**kwargs)
         if action == "set_file_priority":
             return client.set_file_priority(**kwargs)
         if action == "get_torrent_download_limit":
@@ -279,9 +279,9 @@ def register_torrents_tools(mcp: FastMCP):
         if action == "set_torrent_category":
             return client.set_torrent_category(**kwargs)
         if action == "get_all_categories":
-            return client.get_all_categories(**kwargs)
+            return client.get_categories(**kwargs)
         if action == "add_new_category":
-            return client.add_new_category(**kwargs)
+            return client.create_category(**kwargs)
         if action == "edit_category":
             return client.edit_category(**kwargs)
         if action == "remove_categories":
@@ -291,7 +291,7 @@ def register_torrents_tools(mcp: FastMCP):
         if action == "remove_torrent_tags":
             return client.remove_torrent_tags(**kwargs)
         if action == "get_all_tags":
-            return client.get_all_tags(**kwargs)
+            return client.get_tags(**kwargs)
         if action == "create_tags":
             return client.create_tags(**kwargs)
         if action == "delete_tags":
@@ -348,21 +348,21 @@ def register_rss_tools(mcp: FastMCP):
         if action == "move_rss_item":
             return client.move_rss_item(**kwargs)
         if action == "get_all_rss_items":
-            return client.get_all_rss_items(**kwargs)
+            return client.get_rss_items(**kwargs)
         if action == "mark_rss_as_read":
             return client.mark_rss_as_read(**kwargs)
         if action == "refresh_rss_item":
             return client.refresh_rss_item(**kwargs)
         if action == "set_rss_auto_downloading_rule":
-            return client.set_rss_auto_downloading_rule(**kwargs)
+            return client.set_rss_rule(**kwargs)
         if action == "rename_rss_auto_downloading_rule":
-            return client.rename_rss_auto_downloading_rule(**kwargs)
+            return client.rename_rss_rule(**kwargs)
         if action == "remove_rss_auto_downloading_rule":
-            return client.remove_rss_auto_downloading_rule(**kwargs)
+            return client.remove_rss_rule(**kwargs)
         if action == "get_all_rss_auto_downloading_rules":
-            return client.get_all_rss_auto_downloading_rules(**kwargs)
+            return client.get_rss_rules(**kwargs)
         if action == "get_all_rss_articles_matching_rule":
-            return client.get_all_rss_articles_matching_rule(**kwargs)
+            return client.get_rss_matching_articles(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -393,15 +393,15 @@ def register_search_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         if action == "start_search":
-            return client.start_search(**kwargs)
+            return client.search_start(**kwargs)
         if action == "stop_search":
-            return client.stop_search(**kwargs)
+            return client.search_stop(**kwargs)
         if action == "get_search_status":
-            return client.get_search_status(**kwargs)
+            return client.search_status(**kwargs)
         if action == "get_search_results":
-            return client.get_search_results(**kwargs)
+            return client.search_results(**kwargs)
         if action == "delete_search":
-            return client.delete_search(**kwargs)
+            return client.search_delete(**kwargs)
         if action == "get_search_plugins":
             return client.get_search_plugins(**kwargs)
         if action == "install_search_plugin":

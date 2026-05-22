@@ -43,7 +43,7 @@
 
 This agent wraps the AI agent for qBittorrent management, RSS automation, and search. API. You can interact with it programmatically or via its integrated execution entrypoints.
 
-Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/index.md).
+Detailed instructions on how to use the underlying API wrappers, extended schema bindings, and developer SDK references are maintained in [docs/index.md](docs/index.md).
 
 ---
 
@@ -54,15 +54,15 @@ This server utilizes dynamic Action-Routed tools to optimize token overhead and 
 ### Available MCP Tools
 | Tool Module | Toggle Env Var | Enabled by Default | Description & Nested Methods |
 |-------------|----------------|--------------------|------------------------------|
-| **App** | `APPTOOL` | `True` | Manage qbittorrent app operations. Action-routed methods: `get_application_version`, `get_api_version`, `get_build_info`, `shutdown_application`, `get_preferences`, `set_preferences`, `get_default_save_path`. |
-| **Log** | `LOGTOOL` | `True` | Manage qbittorrent log operations. Action-routed methods: `get_main_log`, `get_peer_log`. |
-| **Sync** | `SYNCTOOL` | `True` | Manage qbittorrent sync operations. Action-routed methods: `get_main_data`, `get_torrent_peers_data`. |
-| **Transfer** | `TRANSFERTOOL` | `True` | Manage qbittorrent transfer operations. Action-routed methods: `get_global_transfer_info`, `get_speed_limits_mode`, `toggle_speed_limits_mode`, `get_global_download_limit`, `set_global_download_limit`, `get_global_upload_limit`, `set_global_upload_limit`, `ban_peers`. |
-| **Torrents** | `TORRENTSTOOL` | `True` | Manage qbittorrent torrents operations. Action-routed methods: `get_torrent_list`, `get_torrent_properties`, `get_torrent_trackers`, `get_torrent_webseeds`, `get_torrent_contents`, `get_torrent_piece_states`, `get_torrent_piece_hashes`, `pause_torrents`, `resume_torrents`, `delete_torrents`, `recheck_torrents`, `reannounce_torrents`, `edit_tracker`, `remove_trackers`, `add_peers`, `add_new_torrent`, `add_trackers_to_torrent`, `increase_torrent_priority`, `decrease_torrent_priority`, `top_torrent_priority`, `bottom_torrent_priority`, `set_file_priority`, `get_torrent_download_limit`, `set_torrent_download_limit`, `set_torrent_share_limit`, `get_torrent_upload_limit`, `set_torrent_upload_limit`, `set_torrent_location`, `set_torrent_name`, `set_torrent_category`, `get_all_categories`, `add_new_category`, `edit_category`, `remove_categories`, `add_torrent_tags`, `remove_torrent_tags`, `get_all_tags`, `create_tags`, `delete_tags`, `set_auto_management`, `toggle_sequential_download`, `toggle_first_last_piece_priority`, `set_force_start`, `set_super_seeding`, `rename_file`, `rename_folder`. |
-| **Rss** | `RSSTOOL` | `True` | Manage qbittorrent rss operations. Action-routed methods: `add_rss_folder`, `add_rss_feed`, `remove_rss_item`, `move_rss_item`, `get_all_rss_items`, `mark_rss_as_read`, `refresh_rss_item`, `set_rss_auto_downloading_rule`, `rename_rss_auto_downloading_rule`, `remove_rss_auto_downloading_rule`, `get_all_rss_auto_downloading_rules`, `get_all_rss_articles_matching_rule`. |
-| **Search** | `SEARCHTOOL` | `True` | Manage qbittorrent search operations. Action-routed methods: `start_search`, `stop_search`, `get_search_status`, `get_search_results`, `delete_search`, `get_search_plugins`, `install_search_plugin`, `uninstall_search_plugin`, `enable_search_plugin`, `update_search_plugins`. |
+| **App** | `APP_TOOL` | `True` | Manage qbittorrent app operations. Action-routed methods: `get_api_version`, `get_application_version`, `get_build_info`, `get_default_save_path`, `get_preferences`, `set_preferences`, `shutdown_application`. |
+| **Log** | `LOG_TOOL` | `True` | Manage qbittorrent log operations. Action-routed methods: `get_main_log`, `get_peer_log`. |
+| **Sync** | `SYNC_TOOL` | `True` | Manage qbittorrent sync operations. Action-routed methods: `get_main_data`, `get_torrent_peers_data`. |
+| **Transfer** | `TRANSFER_TOOL` | `True` | Manage qbittorrent transfer operations. Action-routed methods: `ban_peers`, `get_global_download_limit`, `get_global_transfer_info`, `get_global_upload_limit`, `get_speed_limits_mode`, `set_global_download_limit`, `set_global_upload_limit`, `toggle_speed_limits_mode`. |
+| **Torrents** | `TORRENTS_TOOL` | `True` | Manage qbittorrent torrents operations. Action-routed methods: `add_new_category`, `add_new_torrent`, `add_peers`, `add_torrent_tags`, `add_trackers_to_torrent`, `bottom_torrent_priority`, `create_tags`, `decrease_torrent_priority`, `delete_tags`, `delete_torrents`, `edit_category`, `edit_tracker`, `get_all_categories`, `get_all_tags`, `get_torrent_contents`, `get_torrent_download_limit`, `get_torrent_list`, `get_torrent_piece_hashes`, `get_torrent_piece_states`, `get_torrent_properties`, `get_torrent_trackers`, `get_torrent_upload_limit`, `get_torrent_webseeds`, `increase_torrent_priority`, `pause_torrents`, `reannounce_torrents`, `recheck_torrents`, `remove_categories`, `remove_torrent_tags`, `remove_trackers`, `rename_file`, `rename_folder`, `resume_torrents`, `set_auto_management`, `set_file_priority`, `set_force_start`, `set_super_seeding`, `set_torrent_category`, `set_torrent_download_limit`, `set_torrent_location`, `set_torrent_name`, `set_torrent_share_limit`, `set_torrent_upload_limit`, `toggle_first_last_piece_priority`, `toggle_sequential_download`, `top_torrent_priority`. |
+| **Rss** | `RSS_TOOL` | `True` | Manage qbittorrent rss operations. Action-routed methods: `add_rss_feed`, `add_rss_folder`, `get_all_rss_articles_matching_rule`, `get_all_rss_auto_downloading_rules`, `get_all_rss_items`, `mark_rss_as_read`, `move_rss_item`, `refresh_rss_item`, `remove_rss_auto_downloading_rule`, `remove_rss_item`, `rename_rss_auto_downloading_rule`, `set_rss_auto_downloading_rule`. |
+| **Search** | `SEARCH_TOOL` | `True` | Manage qbittorrent search operations. Action-routed methods: `delete_search`, `enable_search_plugin`, `get_search_plugins`, `get_search_results`, `get_search_status`, `install_search_plugin`, `start_search`, `stop_search`, `uninstall_search_plugin`, `update_search_plugins`. |
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/mcp.md).
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
 
 ### MCP Configuration Examples
 
@@ -236,7 +236,7 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](file:///home/apps/workspace/agent-packages/agents/qbittorrent-agent/docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
 
 ---
 
