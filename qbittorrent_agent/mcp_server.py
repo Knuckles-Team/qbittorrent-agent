@@ -32,7 +32,7 @@ from starlette.responses import JSONResponse
 
 from qbittorrent_agent.auth import get_client
 
-__version__ = "0.13.0"
+__version__ = "0.14.0"
 
 logger = get_logger(name="qbittorrent-agent")
 logger.setLevel(logging.INFO)
