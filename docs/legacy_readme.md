@@ -92,34 +92,7 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
 ```
 
 #### Streamable-HTTP Transport (Recommended for production deployments)
-Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx` with explicit host and port definition:
-
-```json
-{
-  "mcpServers": {
-    "qbittorrent-agent": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "qbittorrent-agent",
-        "qbittorrent-mcp"
-      ],
-      "env": {
-        "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
-        "PORT": "8000",
-        "QBITTORRENT_HOST": "your_qbittorrent_host_here",
-        "QBITTORRENT_PORT": "your_qbittorrent_port_here",
-        "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_API_KEY": "your_qbittorrent_api_key_here"
-      }
-    }
-  }
-}
-```
-
-Alternatively, connect to a pre-deployed remote or local Streamable-HTTP instance:
+To run the server as a long-running Streamable-HTTP service:
 
 ```json
 {
