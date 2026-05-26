@@ -13,17 +13,19 @@ _client = None
 
 
 def get_client():
-    """Get or create a singleton API client instance."""
+    """Get or create a singleton API client instance.
+
+    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    """
     global _client
     if _client is None:
         base_url = os.getenv("QBITTORRENT_URL", "http://localhost:8080")
         username = os.getenv("QBITTORRENT_USERNAME", "admin")
         password = os.getenv("QBITTORRENT_PASSWORD", "adminadmin")
-        verify = os.getenv("QBITTORRENT_AGENT_VERIFY", "True").lower() in (
-            "true",
-            "1",
-            "yes",
-        )
+        verify_env = os.getenv("QBITTORRENT_SSL_VERIFY")
+        if verify_env is None:
+            verify_env = os.getenv("QBITTORRENT_AGENT_VERIFY") or "True"
+        verify: bool = verify_env.lower() in ("true", "1", "yes")
 
         try:
             _client = QbittorrentApi(

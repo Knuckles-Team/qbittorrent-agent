@@ -1,0 +1,61 @@
+# Tasks: Code Enhancement: qbittorrent-agent
+
+Generated: 2026-05-22T22:15:30.129258+00:00
+Skipped informational: 5
+
+- [ ] [P] **T001** [Codebase Optimization] 7 functions with nesting depth >4
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T002** [Test Coverage] Test suite lacks intent diversity (only one type)
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T003** [Test Coverage] 15 potential doc-test drift items
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T004** [Documentation & Governance] README.md missing sections: usage|quick start
+  - Priority: P4-Enhancement | Effort: Small
+- [ ] [P] **T005** [Documentation & Governance] 2 broken internal links in README.md
+  - Priority: P4-Enhancement | Effort: Medium
+- [ ] [P] **T006** [Documentation & Governance] README missing: Has a Table of Contents
+  - Priority: P4-Enhancement | Effort: Small
+- [ ] [P] **T007** [Documentation & Governance] README missing: Has usage examples with code blocks
+  - Priority: P4-Enhancement | Effort: Small
+- [ ] [P] **T008** [Architecture & Design Patterns] SRP: 1 modules exceed 500 lines (god modules)
+  - Priority: P2-Medium | Effort: Large
+- [ ] [P] **T009** [Architecture & Design Patterns] SRP: 1 classes have >15 methods
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T010** [Architecture & Design Patterns] No discernible layer architecture (no domain/service/adapter separation)
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T011** [Architecture & Design Patterns] Low dependency injection ratio: 3%
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T012** [Concept Traceability] Low traceability ratio: 0% concepts fully traced
+  - Priority: P4-Enhancement | Effort: Medium
+- [ ] [P] **T013** [Concept Traceability] 19 test functions missing concept markers
+  - Priority: P4-Enhancement | Effort: Small
+- [ ] [P] **T014** [Concept Traceability] 29 significant functions (>10 lines) missing concept markers in docstrings
+  - Priority: P4-Enhancement | Effort: Small
+- [ ] [P] **T015** [Linting & Formatting] Total lint findings: 3 (high/error: 0, medium/warning: 0, low: 3)
+  - Priority: P4-Enhancement | Effort: Medium
+- [ ] [P] **T016** [Pre-Commit Compliance] 2 hook(s) may be outdated: ruff-pre-commit, uv-pre-commit
+  - Priority: P2-Medium | Effort: Small
+- [ ] [P] **T017** [Changelog Audit] CHANGELOG.md exists but could not be parsed — check format compliance
+  - Priority: P3-Low | Effort: Medium
+- [ ] [P] **T018** [Changelog Audit] No changelog entries within the last 30 days
+  - Priority: P3-Low | Effort: Medium
+- [ ] [P] **T019** [Changelog Audit] keepachangelog not installed — pip install 'universal-skills[code-enhancer]'
+  - Priority: P3-Low | Effort: Small
+- [ ] [P] **T020** [Pytest Quality] 1 test files exceed 500 lines — split into focused modules
+  - Priority: P2-Medium | Effort: Large
+- [ ] [P] **T021** [Pytest Quality] Missing conftest.py for shared fixtures
+  - Priority: P2-Medium | Effort: Small
+- [ ] [P] **T022** [Pytest Quality] No @pytest.mark.parametrize usage — consider data-driven tests
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T023** [Pytest Quality] No shared fixtures in conftest.py
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T024** [Pytest Quality] 4 tests have no assertions
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T025** [Pytest Quality] 1 tests exceed 100 lines — likely doing too much per test
+  - Priority: P2-Medium | Effort: Medium
+- [ ] [P] **T026** [Environment Variables] Partial env var documentation: 41% coverage
+  - Priority: P3-Low | Effort: Medium
+- [ ] [P] **T027** [Environment Variables] Undocumented env vars: APPTOOL, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, LO
+  - Priority: P3-Low | Effort: Medium
+- [ ] [P] **T028** [Environment Variables] 2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL
+  - Priority: P3-Low | Effort: Medium

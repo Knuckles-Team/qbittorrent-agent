@@ -24,6 +24,28 @@
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [CLI or API](#cli-or-api)
+- [MCP](#mcp)
+  - [Available MCP Tools](#available-mcp-tools)
+  - [MCP Configuration Examples](#mcp-configuration-examples)
+  - [Dynamic Tool Selection & Visibility](#dynamic-tool-selection--visibility)
+- [Agent](#agent)
+  - [Running the Agent CLI](#running-the-agent-cli)
+  - [Docker Compose Orchestration](#docker-compose-orchestration)
+- [Environment Variables](#environment-variables)
+- [Security & Governance](#security--governance)
+  - [Access Control & Policy Enforcement](#access-control--policy-enforcement)
+  - [Runtime Security Grid](#runtime-security-grid)
+- [Installation](#installation)
+- [Repository Owners](#repository-owners)
+- [Contribute](#contribute)
+
+---
+
 ## Overview
 
 **Qbittorrent Agent** is a production-grade Agent and Model Context Protocol (MCP) server designed to interface directly with AI agent for qBittorrent management, RSS automation, and search..
@@ -63,6 +85,27 @@ This server utilizes dynamic Action-Routed tools to optimize token overhead and 
 | **Search** | `SEARCH_TOOL` | `True` | Manage qbittorrent search operations. Action-routed methods: `delete_search`, `enable_search_plugin`, `get_search_plugins`, `get_search_results`, `get_search_status`, `install_search_plugin`, `start_search`, `stop_search`, `uninstall_search_plugin`, `update_search_plugins`. |
 
 Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
+
+### Dynamic Tool Selection & Visibility
+
+This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows you to restrict the set of exposed tools in order to prevent blowing up the LLM's context window.
+
+You can configure tool filtering via multiple input channels:
+
+- **CLI Arguments:** Pass `--tools` or `--toolsets` (or their disabled counterparts `--disabled-tools` and `--disabled-toolsets`) during startup.
+- **Environment Variables:** Define standard environment variables:
+  - `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS`
+  - `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS`
+- **HTTP SSE Request Headers:** Pass custom headers during transport initialization:
+  - `x-mcp-enabled-tools` / `x-mcp-disabled-tools`
+  - `x-mcp-enabled-tags` / `x-mcp-disabled-tags`
+- **HTTP SSE Request Query Parameters:** Append query parameters directly to your transport connection URL:
+  - `?tools=tool1,tool2`
+  - `?tags=tag1`
+
+When query strings or parameters are supplied, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
+
+---
 
 ### MCP Configuration Examples
 
@@ -237,6 +280,33 @@ services:
 ```
 
 Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
+
+---
+
+## Environment Variables
+
+The agent and MCP server can be fully configured using the following environment variables:
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| **`QBITTORRENT_HOST`** | String | `None` | **Required**. Hostname or IP address of the qBittorrent Web UI server. |
+| **`QBITTORRENT_PORT`** | Integer | `8080` | Port of the qBittorrent Web UI server. |
+| **`QBITTORRENT_USERNAME`** | String | `None` | Username for authentication. |
+| **`QBITTORRENT_PASSWORD`** | String | `None` | Password for authentication. |
+| **`QBITTORRENT_API_KEY`** | String | `None` | Optional API Key for credential-less authentication. |
+| **`APPTOOL`** | Boolean | `True` | Toggle to enable/disable the App tool module. |
+| **`LOGTOOL`** | Boolean | `True` | Toggle to enable/disable the Log tool module. |
+| **`SYNCTOOL`** | Boolean | `True` | Toggle to enable/disable the Sync tool module. |
+| **`TRANSFERTOOL`** | Boolean | `True` | Toggle to enable/disable the Transfer tool module. |
+| **`TORRENTSTOOL`** | Boolean | `True` | Toggle to enable/disable the Torrents tool module. |
+| **`RSSTOOL`** | Boolean | `True` | Toggle to enable/disable the RSS tool module. |
+| **`SEARCHTOOL`** | Boolean | `True` | Toggle to enable/disable the Search tool module. |
+| **`TRANSPORT`** | String | `stdio` | Server transport protocol (`stdio`, `sse`, or `streamable-http`). |
+| **`HOST`** | String | `127.0.0.1` | The network interface/IP to bind the server to. |
+| **`PORT`** | Integer | `8000` | The port to run the server on when using HTTP-based transports. |
+| **`AUTH_TYPE`** | String | `none` | Security authentication mode (`none`, `oidc`). |
+| **`POLICY_MODE`** | String | `none` | Eunomia policy enforcement mode (`none`, `embedded`, `remote`). |
+| **`LOGFIRE_TOKEN`** | String | `None` | Optional telemetry token to export metrics/logs to Logfire. |
 
 ---
 

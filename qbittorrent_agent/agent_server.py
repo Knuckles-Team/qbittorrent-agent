@@ -41,6 +41,10 @@ DEFAULT_AGENT_SYSTEM_PROMPT = os.getenv(
 
 
 def agent_server():
+    """Start the agent server and schedule resources.
+
+    CONCEPT:OS-5.2 — Resource Scheduling
+    """
     warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
     warnings.filterwarnings("ignore", category=DeprecationWarning, module="fastmcp")
 

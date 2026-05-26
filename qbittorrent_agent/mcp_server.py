@@ -1,4 +1,13 @@
 #!/usr/bin/python
+"""qBittorrent MCP Server.
+
+Provides the FastMCP tools wrapper for managing qBittorrent endpoints.
+Tracks execution limits, budgets, and action workflows.
+
+Action Execution Pipeline
+Guardrail Engine
+"""
+
 import warnings
 
 from fastmcp import Context, FastMCP
@@ -37,7 +46,6 @@ __version__ = "0.14.0"
 logger = get_logger(name="qbittorrent-agent")
 logger.setLevel(logging.INFO)
 
-
 def register_app_tools(mcp: FastMCP):
     @mcp.tool(tags={"app"})
     async def qbittorrent_app(
@@ -54,7 +62,11 @@ def register_app_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent app operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -80,7 +92,6 @@ def register_app_tools(mcp: FastMCP):
             return client.get_default_save_path(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
-
 def register_log_tools(mcp: FastMCP):
     @mcp.tool(tags={"log"})
     async def qbittorrent_log(
@@ -97,7 +108,11 @@ def register_log_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent log operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -112,7 +127,6 @@ def register_log_tools(mcp: FastMCP):
         if action == "get_peer_log":
             return client.get_peer_log(**kwargs)
         raise ValueError(f"Unknown action: {action}")
-
 
 def register_sync_tools(mcp: FastMCP):
     @mcp.tool(tags={"sync"})
@@ -130,7 +144,11 @@ def register_sync_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent sync operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -145,7 +163,6 @@ def register_sync_tools(mcp: FastMCP):
         if action == "get_torrent_peers_data":
             return client.get_torrent_peers_data(**kwargs)
         raise ValueError(f"Unknown action: {action}")
-
 
 def register_transfer_tools(mcp: FastMCP):
     @mcp.tool(tags={"transfer"})
@@ -163,7 +180,11 @@ def register_transfer_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent transfer operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -191,7 +212,6 @@ def register_transfer_tools(mcp: FastMCP):
             return client.ban_peers(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
-
 def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     async def qbittorrent_torrents(
@@ -208,7 +228,11 @@ def register_torrents_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent torrents operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -312,7 +336,6 @@ def register_torrents_tools(mcp: FastMCP):
             return client.rename_folder(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
-
 def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     async def qbittorrent_rss(
@@ -329,7 +352,11 @@ def register_rss_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent rss operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -365,7 +392,6 @@ def register_rss_tools(mcp: FastMCP):
             return client.get_rss_matching_articles(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
-
 def register_search_tools(mcp: FastMCP):
     @mcp.tool(tags={"search"})
     async def qbittorrent_search(
@@ -382,7 +408,11 @@ def register_search_tools(mcp: FastMCP):
     ) -> dict:
         """Manage qbittorrent search operations."""
         if ctx:
-            ctx.info("Executing tool...")
+            import inspect
+
+            res = ctx.info("Executing tool...")
+            if inspect.isawaitable(res):
+                await res
         import json
 
         try:
@@ -413,7 +443,6 @@ def register_search_tools(mcp: FastMCP):
         if action == "update_search_plugins":
             return client.update_search_plugins(**kwargs)
         raise ValueError(f"Unknown action: {action}")
-
 
 def get_mcp_instance() -> tuple[Any, ...]:
     """Initialize and return the MCP instance."""
@@ -454,7 +483,6 @@ def get_mcp_instance() -> tuple[Any, ...]:
         mcp.add_middleware(mw)
     return mcp, args, middlewares
 
-
 def mcp_server() -> None:
     mcp, args, middlewares = get_mcp_instance()
     print(f"qbittorrent-agent MCP v{__version__}", file=sys.stderr)
@@ -471,7 +499,6 @@ def mcp_server() -> None:
     else:
         logger.error("Invalid transport", extra={"transport": args.transport})
         sys.exit(1)
-
 
 if __name__ == "__main__":
     mcp_server()
