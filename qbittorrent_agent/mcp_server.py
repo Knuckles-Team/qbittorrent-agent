@@ -41,10 +41,11 @@ from starlette.responses import JSONResponse
 
 from qbittorrent_agent.auth import get_client
 
-__version__ = "0.14.0"
+__version__ = "0.15.0"
 
 logger = get_logger(name="qbittorrent-agent")
 logger.setLevel(logging.INFO)
+
 
 def register_app_tools(mcp: FastMCP):
     @mcp.tool(tags={"app"})
@@ -92,6 +93,7 @@ def register_app_tools(mcp: FastMCP):
             return client.get_default_save_path(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_log_tools(mcp: FastMCP):
     @mcp.tool(tags={"log"})
     async def qbittorrent_log(
@@ -128,6 +130,7 @@ def register_log_tools(mcp: FastMCP):
             return client.get_peer_log(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_sync_tools(mcp: FastMCP):
     @mcp.tool(tags={"sync"})
     async def qbittorrent_sync(
@@ -163,6 +166,7 @@ def register_sync_tools(mcp: FastMCP):
         if action == "get_torrent_peers_data":
             return client.get_torrent_peers_data(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def register_transfer_tools(mcp: FastMCP):
     @mcp.tool(tags={"transfer"})
@@ -211,6 +215,7 @@ def register_transfer_tools(mcp: FastMCP):
         if action == "ban_peers":
             return client.ban_peers(**kwargs)
         raise ValueError(f"Unknown action: {action}")
+
 
 def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
@@ -336,6 +341,7 @@ def register_torrents_tools(mcp: FastMCP):
             return client.rename_folder(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     async def qbittorrent_rss(
@@ -392,6 +398,7 @@ def register_rss_tools(mcp: FastMCP):
             return client.get_rss_matching_articles(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def register_search_tools(mcp: FastMCP):
     @mcp.tool(tags={"search"})
     async def qbittorrent_search(
@@ -444,6 +451,7 @@ def register_search_tools(mcp: FastMCP):
             return client.update_search_plugins(**kwargs)
         raise ValueError(f"Unknown action: {action}")
 
+
 def get_mcp_instance() -> tuple[Any, ...]:
     """Initialize and return the MCP instance."""
     load_dotenv(find_dotenv())
@@ -483,6 +491,7 @@ def get_mcp_instance() -> tuple[Any, ...]:
         mcp.add_middleware(mw)
     return mcp, args, middlewares
 
+
 def mcp_server() -> None:
     mcp, args, middlewares = get_mcp_instance()
     print(f"qbittorrent-agent MCP v{__version__}", file=sys.stderr)
@@ -499,6 +508,7 @@ def mcp_server() -> None:
     else:
         logger.error("Invalid transport", extra={"transport": args.transport})
         sys.exit(1)
+
 
 if __name__ == "__main__":
     mcp_server()
