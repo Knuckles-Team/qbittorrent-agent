@@ -8,9 +8,9 @@ client, a thin MCP tool surface, and an optional A2A agent server — all built 
 
 ```mermaid
 graph TD
-    User([User / A2A client]) --> Agent[A2A Agent Server<br/>qbittorrent-agent]
-    Agent -->|MCP_URL| MCP[MCP Server<br/>qbittorrent-mcp]
-    MCP --> Client[QbittorrentApi<br/>layered REST facade]
+    User([User / A2A client]) --> Agent["A2A Agent Server<br/>qbittorrent-agent"]
+    Agent -->|MCP_URL| MCP["MCP Server<br/>qbittorrent-mcp"]
+    MCP --> Client["QbittorrentApi<br/>layered REST facade"]
     Client --> WebUI([qBittorrent WebUI v2 API])
 ```
 
