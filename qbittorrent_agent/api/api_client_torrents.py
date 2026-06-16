@@ -74,13 +74,13 @@ class Api(BaseApiClient):
 
     @require_auth
     def pause_torrents(self, hashes: str = "all"):
-        """Pause torrents."""
-        return self._post("torrents/pause", data={"hashes": hashes})
+        """Pause (stop) torrents. qBittorrent 5.x renamed the endpoint to torrents/stop."""
+        return self._post("torrents/stop", data={"hashes": hashes})
 
     @require_auth
     def resume_torrents(self, hashes: str = "all"):
-        """Resume torrents."""
-        return self._post("torrents/resume", data={"hashes": hashes})
+        """Resume (start) torrents. qBittorrent 5.x renamed the endpoint to torrents/start."""
+        return self._post("torrents/start", data={"hashes": hashes})
 
     @require_auth
     def delete_torrents(self, hashes: str, delete_files: bool = False):

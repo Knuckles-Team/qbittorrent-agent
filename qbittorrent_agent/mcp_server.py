@@ -64,7 +64,7 @@ def register_app_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent app operations."""
         if ctx:
             import inspect
@@ -125,7 +125,7 @@ def register_log_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent log operations."""
         if ctx:
             import inspect
@@ -168,7 +168,7 @@ def register_sync_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent sync operations."""
         if ctx:
             import inspect
@@ -211,7 +211,7 @@ def register_transfer_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent transfer operations."""
         if ctx:
             import inspect
@@ -275,7 +275,7 @@ def register_torrents_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent torrents operations."""
         if ctx:
             import inspect
@@ -453,7 +453,7 @@ def register_rss_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent rss operations."""
         if ctx:
             import inspect
@@ -529,7 +529,7 @@ def register_search_tools(mcp: FastMCP):
         ctx: Context | None = Field(
             default=None, description="MCP context for progress reporting"
         ),
-    ) -> dict:
+    ) -> Any:
         """Manage qbittorrent search operations."""
         if ctx:
             import inspect
