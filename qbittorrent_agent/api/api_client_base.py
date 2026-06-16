@@ -47,15 +47,19 @@ class BaseApiClient:
 
         try:
             response = self.session.post(url, data=data, headers=headers, timeout=10)
-            if response.status_code == 200:
-                if "SID" in self.session.cookies:
+            # qBittorrent success: <5.1 returns 200 "Ok." + cookie "SID";
+            # 5.1/5.2+ returns 204 No Content + cookie "QBT_SID_<port>".
+            if response.status_code in (200, 204):
+                cookie_names = list(self.session.cookies.keys())
+                if any(n == "SID" or n.startswith("QBT_SID") for n in cookie_names):
                     self._authenticated = True
                     logger.info(
                         f"Successfully logged in to qBittorrent at {self.base_url}"
                     )
                 else:
                     raise AuthError(
-                        "Login successful but SID cookie not found in response."
+                        "Login response received but no session cookie set "
+                        "(check QBITTORRENT_USERNAME/PASSWORD)."
                     )
             elif response.status_code == 403:
                 raise AuthError(
