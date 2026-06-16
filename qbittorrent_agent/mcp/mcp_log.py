@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -51,7 +51,7 @@ def register_log_tools(mcp: FastMCP):
         action = resolved
 
         if action == "get_main_log":
-            return client.get_log(**kwargs)
+            return await run_blocking(client.get_log, **kwargs)
         if action == "get_peer_log":
-            return client.get_peer_log(**kwargs)
+            return await run_blocking(client.get_peer_log, **kwargs)
         raise ValueError(f"Unknown action: {action}")

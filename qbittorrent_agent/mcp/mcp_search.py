@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -59,23 +59,23 @@ def register_search_tools(mcp: FastMCP):
         action = resolved
 
         if action == "start_search":
-            return client.search_start(**kwargs)
+            return await run_blocking(client.search_start, **kwargs)
         if action == "stop_search":
-            return client.search_stop(**kwargs)
+            return await run_blocking(client.search_stop, **kwargs)
         if action == "get_search_status":
-            return client.search_status(**kwargs)
+            return await run_blocking(client.search_status, **kwargs)
         if action == "get_search_results":
-            return client.search_results(**kwargs)
+            return await run_blocking(client.search_results, **kwargs)
         if action == "delete_search":
-            return client.search_delete(**kwargs)
+            return await run_blocking(client.search_delete, **kwargs)
         if action == "get_search_plugins":
-            return client.get_search_plugins(**kwargs)
+            return await run_blocking(client.get_search_plugins, **kwargs)
         if action == "install_search_plugin":
-            return client.install_search_plugin(**kwargs)
+            return await run_blocking(client.install_search_plugin, **kwargs)
         if action == "uninstall_search_plugin":
-            return client.uninstall_search_plugin(**kwargs)
+            return await run_blocking(client.uninstall_search_plugin, **kwargs)
         if action == "enable_search_plugin":
-            return client.enable_search_plugin(**kwargs)
+            return await run_blocking(client.enable_search_plugin, **kwargs)
         if action == "update_search_plugins":
-            return client.update_search_plugins(**kwargs)
+            return await run_blocking(client.update_search_plugins, **kwargs)
         raise ValueError(f"Unknown action: {action}")

@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -56,17 +56,17 @@ def register_app_tools(mcp: FastMCP):
         action = resolved
 
         if action == "get_application_version":
-            return client.get_version(**kwargs)
+            return await run_blocking(client.get_version, **kwargs)
         if action == "get_api_version":
-            return client.get_api_version(**kwargs)
+            return await run_blocking(client.get_api_version, **kwargs)
         if action == "get_build_info":
-            return client.get_build_info(**kwargs)
+            return await run_blocking(client.get_build_info, **kwargs)
         if action == "shutdown_application":
-            return client.shutdown_application(**kwargs)
+            return await run_blocking(client.shutdown_application, **kwargs)
         if action == "get_preferences":
-            return client.get_preferences(**kwargs)
+            return await run_blocking(client.get_preferences, **kwargs)
         if action == "set_preferences":
-            return client.set_preferences(**kwargs)
+            return await run_blocking(client.set_preferences, **kwargs)
         if action == "get_default_save_path":
-            return client.get_default_save_path(**kwargs)
+            return await run_blocking(client.get_default_save_path, **kwargs)
         raise ValueError(f"Unknown action: {action}")

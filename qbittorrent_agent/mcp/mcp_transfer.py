@@ -3,7 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
-from agent_utilities.mcp_utilities import resolve_action
+from agent_utilities.mcp_utilities import resolve_action, run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -57,19 +57,19 @@ def register_transfer_tools(mcp: FastMCP):
         action = resolved
 
         if action == "get_global_transfer_info":
-            return client.get_transfer_info(**kwargs)
+            return await run_blocking(client.get_transfer_info, **kwargs)
         if action == "get_speed_limits_mode":
-            return client.get_speed_limits_mode(**kwargs)
+            return await run_blocking(client.get_speed_limits_mode, **kwargs)
         if action == "toggle_speed_limits_mode":
-            return client.toggle_speed_limits_mode(**kwargs)
+            return await run_blocking(client.toggle_speed_limits_mode, **kwargs)
         if action == "get_global_download_limit":
-            return client.get_global_download_limit(**kwargs)
+            return await run_blocking(client.get_global_download_limit, **kwargs)
         if action == "set_global_download_limit":
-            return client.set_global_download_limit(**kwargs)
+            return await run_blocking(client.set_global_download_limit, **kwargs)
         if action == "get_global_upload_limit":
-            return client.get_global_upload_limit(**kwargs)
+            return await run_blocking(client.get_global_upload_limit, **kwargs)
         if action == "set_global_upload_limit":
-            return client.set_global_upload_limit(**kwargs)
+            return await run_blocking(client.set_global_upload_limit, **kwargs)
         if action == "ban_peers":
-            return client.ban_peers(**kwargs)
+            return await run_blocking(client.ban_peers, **kwargs)
         raise ValueError(f"Unknown action: {action}")
