@@ -3,6 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp_utilities import resolve_action
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -39,6 +40,25 @@ def register_rss_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "add_rss_folder",
+            "add_rss_feed",
+            "remove_rss_item",
+            "move_rss_item",
+            "get_all_rss_items",
+            "mark_rss_as_read",
+            "refresh_rss_item",
+            "set_rss_auto_downloading_rule",
+            "rename_rss_auto_downloading_rule",
+            "remove_rss_auto_downloading_rule",
+            "get_all_rss_auto_downloading_rules",
+            "get_all_rss_articles_matching_rule",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "add_rss_folder":
             return client.add_rss_folder(**kwargs)

@@ -3,6 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp_utilities import resolve_action
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -39,6 +40,23 @@ def register_search_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "start_search",
+            "stop_search",
+            "get_search_status",
+            "get_search_results",
+            "delete_search",
+            "get_search_plugins",
+            "install_search_plugin",
+            "uninstall_search_plugin",
+            "enable_search_plugin",
+            "update_search_plugins",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "start_search":
             return client.search_start(**kwargs)

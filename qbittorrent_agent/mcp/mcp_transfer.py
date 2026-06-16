@@ -3,6 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp_utilities import resolve_action
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -39,6 +40,21 @@ def register_transfer_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "get_global_transfer_info",
+            "get_speed_limits_mode",
+            "toggle_speed_limits_mode",
+            "get_global_download_limit",
+            "set_global_download_limit",
+            "get_global_upload_limit",
+            "set_global_upload_limit",
+            "ban_peers",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "get_global_transfer_info":
             return client.get_transfer_info(**kwargs)
