@@ -1,7 +1,7 @@
 import inspect
 from typing import Any
+
 from pydantic import BaseModel
-import pytest
 
 
 def test_qbittorrent_models_coverage():

@@ -1,6 +1,7 @@
 import builtins
 import sys
 from unittest.mock import MagicMock, patch
+
 import pytest
 
 # Setup standard agent_utilities and parser mocks to isolate execution
@@ -188,6 +189,7 @@ def test_requests_dependency_warning_import_error():
 
     with patch("builtins.__import__", side_effect=mock_import):
         import importlib
+
         import qbittorrent_agent.mcp_server
 
         importlib.reload(qbittorrent_agent.mcp_server)

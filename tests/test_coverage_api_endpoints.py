@@ -1,8 +1,9 @@
 import inspect
 from typing import Any
 from unittest.mock import MagicMock, patch
-import pytest
+
 import requests
+
 from qbittorrent_agent.api_client import QbittorrentApi
 
 
