@@ -34,7 +34,7 @@ import sys
 from typing import Any
 
 from agent_utilities.base_utilities import to_boolean
-from agent_utilities.mcp_utilities import create_mcp_server
+from agent_utilities.mcp_utilities import create_mcp_server, resolve_action
 from dotenv import find_dotenv, load_dotenv
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -76,6 +76,20 @@ def register_app_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "get_application_version",
+            "get_api_version",
+            "get_build_info",
+            "shutdown_application",
+            "get_preferences",
+            "set_preferences",
+            "get_default_save_path",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "get_application_version":
             return client.get_version(**kwargs)
@@ -124,6 +138,12 @@ def register_log_tools(mcp: FastMCP):
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = ("get_main_log", "get_peer_log")
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "get_main_log":
             return client.get_log(**kwargs)
         if action == "get_peer_log":
@@ -161,6 +181,12 @@ def register_sync_tools(mcp: FastMCP):
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = ("get_main_data", "get_torrent_peers_data")
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "get_main_data":
             return client.get_main_data(**kwargs)
         if action == "get_torrent_peers_data":
@@ -197,6 +223,21 @@ def register_transfer_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "get_global_transfer_info",
+            "get_speed_limits_mode",
+            "toggle_speed_limits_mode",
+            "get_global_download_limit",
+            "set_global_download_limit",
+            "get_global_upload_limit",
+            "set_global_upload_limit",
+            "ban_peers",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "get_global_transfer_info":
             return client.get_transfer_info(**kwargs)
@@ -246,6 +287,59 @@ def register_torrents_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "get_torrent_list",
+            "get_torrent_properties",
+            "get_torrent_trackers",
+            "get_torrent_webseeds",
+            "get_torrent_contents",
+            "get_torrent_piece_states",
+            "get_torrent_piece_hashes",
+            "pause_torrents",
+            "resume_torrents",
+            "delete_torrents",
+            "recheck_torrents",
+            "reannounce_torrents",
+            "edit_tracker",
+            "remove_trackers",
+            "add_peers",
+            "add_new_torrent",
+            "add_trackers_to_torrent",
+            "increase_torrent_priority",
+            "decrease_torrent_priority",
+            "top_torrent_priority",
+            "bottom_torrent_priority",
+            "set_file_priority",
+            "get_torrent_download_limit",
+            "set_torrent_download_limit",
+            "set_torrent_share_limit",
+            "get_torrent_upload_limit",
+            "set_torrent_upload_limit",
+            "set_torrent_location",
+            "set_torrent_name",
+            "set_torrent_category",
+            "get_all_categories",
+            "add_new_category",
+            "edit_category",
+            "remove_categories",
+            "add_torrent_tags",
+            "remove_torrent_tags",
+            "get_all_tags",
+            "create_tags",
+            "delete_tags",
+            "set_auto_management",
+            "toggle_sequential_download",
+            "toggle_first_last_piece_priority",
+            "set_force_start",
+            "set_super_seeding",
+            "rename_file",
+            "rename_folder",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "get_torrent_list":
             return client.get_torrents(**kwargs)
@@ -372,6 +466,25 @@ def register_rss_tools(mcp: FastMCP):
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = (
+            "add_rss_folder",
+            "add_rss_feed",
+            "remove_rss_item",
+            "move_rss_item",
+            "get_all_rss_items",
+            "mark_rss_as_read",
+            "refresh_rss_item",
+            "set_rss_auto_downloading_rule",
+            "rename_rss_auto_downloading_rule",
+            "remove_rss_auto_downloading_rule",
+            "get_all_rss_auto_downloading_rules",
+            "get_all_rss_articles_matching_rule",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "add_rss_folder":
             return client.add_rss_folder(**kwargs)
         if action == "add_rss_feed":
@@ -428,6 +541,23 @@ def register_search_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "start_search",
+            "stop_search",
+            "get_search_status",
+            "get_search_results",
+            "delete_search",
+            "get_search_plugins",
+            "install_search_plugin",
+            "uninstall_search_plugin",
+            "enable_search_plugin",
+            "update_search_plugins",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "start_search":
             return client.search_start(**kwargs)

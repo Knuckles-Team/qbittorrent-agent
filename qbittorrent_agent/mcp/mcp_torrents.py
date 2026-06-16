@@ -3,6 +3,7 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp_utilities import resolve_action
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -39,6 +40,59 @@ def register_torrents_tools(mcp: FastMCP):
             return {"error": f"Invalid params_json: {e}"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        valid_actions = (
+            "get_torrent_list",
+            "get_torrent_properties",
+            "get_torrent_trackers",
+            "get_torrent_webseeds",
+            "get_torrent_contents",
+            "get_torrent_piece_states",
+            "get_torrent_piece_hashes",
+            "pause_torrents",
+            "resume_torrents",
+            "delete_torrents",
+            "recheck_torrents",
+            "reannounce_torrents",
+            "edit_tracker",
+            "remove_trackers",
+            "add_peers",
+            "add_new_torrent",
+            "add_trackers_to_torrent",
+            "increase_torrent_priority",
+            "decrease_torrent_priority",
+            "top_torrent_priority",
+            "bottom_torrent_priority",
+            "set_file_priority",
+            "get_torrent_download_limit",
+            "set_torrent_download_limit",
+            "set_torrent_share_limit",
+            "get_torrent_upload_limit",
+            "set_torrent_upload_limit",
+            "set_torrent_location",
+            "set_torrent_name",
+            "set_torrent_category",
+            "get_all_categories",
+            "add_new_category",
+            "edit_category",
+            "remove_categories",
+            "add_torrent_tags",
+            "remove_torrent_tags",
+            "get_all_tags",
+            "create_tags",
+            "delete_tags",
+            "set_auto_management",
+            "toggle_sequential_download",
+            "toggle_first_last_piece_priority",
+            "set_force_start",
+            "set_super_seeding",
+            "rename_file",
+            "rename_folder",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
 
         if action == "get_torrent_list":
             return client.get_torrents(**kwargs)
