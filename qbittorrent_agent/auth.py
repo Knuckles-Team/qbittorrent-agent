@@ -1,12 +1,11 @@
 #!/usr/bin/python
-import os
-
 import urllib3
 
 from qbittorrent_agent.api_client import QbittorrentApi
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+from agent_utilities.core.config import setting
 from agent_utilities.core.exceptions import AuthError, UnauthorizedError
 
 _client = None
@@ -19,12 +18,12 @@ def get_client():
     """
     global _client
     if _client is None:
-        base_url = os.getenv("QBITTORRENT_URL", "http://localhost:8080")
-        username = os.getenv("QBITTORRENT_USERNAME", "admin")
-        password = os.getenv("QBITTORRENT_PASSWORD", "adminadmin")
-        verify_env = os.getenv("QBITTORRENT_SSL_VERIFY")
+        base_url = setting("QBITTORRENT_URL", "http://localhost:8080")
+        username = setting("QBITTORRENT_USERNAME", "admin")
+        password = setting("QBITTORRENT_PASSWORD", "adminadmin")
+        verify_env = setting("QBITTORRENT_SSL_VERIFY")
         if verify_env is None:
-            verify_env = os.getenv("QBITTORRENT_AGENT_VERIFY") or "True"
+            verify_env = setting("QBITTORRENT_AGENT_VERIFY") or "True"
         verify: bool = verify_env.lower() in ("true", "1", "yes")
 
         try:

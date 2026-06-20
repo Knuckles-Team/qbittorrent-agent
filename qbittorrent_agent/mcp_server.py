@@ -29,20 +29,20 @@ warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
 import logging
-import os
 import sys
 from typing import Any
 
-from agent_utilities.base_utilities import to_boolean
 from agent_utilities.mcp_utilities import (
     create_mcp_server,
     load_config,
+    register_tool_surface,
     resolve_action,
     run_blocking,
 )
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from qbittorrent_agent.api_client import QbittorrentApi
 from qbittorrent_agent.auth import get_client
 
 __version__ = "0.33.0"
@@ -599,27 +599,13 @@ def get_mcp_instance() -> tuple[Any, ...]:
     async def health_check(request: Request) -> JSONResponse:
         return JSONResponse({"status": "OK"})
 
-    DEFAULT_APPTOOL = to_boolean(os.getenv("APPTOOL", "True"))
-    if DEFAULT_APPTOOL:
-        register_app_tools(mcp)
-    DEFAULT_LOGTOOL = to_boolean(os.getenv("LOGTOOL", "True"))
-    if DEFAULT_LOGTOOL:
-        register_log_tools(mcp)
-    DEFAULT_SYNCTOOL = to_boolean(os.getenv("SYNCTOOL", "True"))
-    if DEFAULT_SYNCTOOL:
-        register_sync_tools(mcp)
-    DEFAULT_TRANSFERTOOL = to_boolean(os.getenv("TRANSFERTOOL", "True"))
-    if DEFAULT_TRANSFERTOOL:
-        register_transfer_tools(mcp)
-    DEFAULT_TORRENTSTOOL = to_boolean(os.getenv("TORRENTSTOOL", "True"))
-    if DEFAULT_TORRENTSTOOL:
-        register_torrents_tools(mcp)
-    DEFAULT_RSSTOOL = to_boolean(os.getenv("RSSTOOL", "True"))
-    if DEFAULT_RSSTOOL:
-        register_rss_tools(mcp)
-    DEFAULT_SEARCHTOOL = to_boolean(os.getenv("SEARCHTOOL", "True"))
-    if DEFAULT_SEARCHTOOL:
-        register_search_tools(mcp)
+    register_tool_surface(
+        mcp,
+        client_cls=QbittorrentApi,
+        get_client=get_client,
+        service="qbittorrent-agent",
+        tools_module=sys.modules[__name__],
+    )
 
     for mw in middlewares:
         mcp.add_middleware(mw)
