@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   qbittorrent-agent-mcp:
-    image: knucklessg1/qbittorrent-agent:latest
+    image: knucklessg1/qbittorrent-agent:mcp
     container_name: qbittorrent-agent-mcp
     hostname: qbittorrent-agent-mcp
     restart: always
