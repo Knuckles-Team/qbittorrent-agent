@@ -141,6 +141,14 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ### MCP Configuration Examples
 
+> **Install the slim `[mcp]` extra.** All examples below install
+> `qbittorrent-agent[mcp]` — the MCP-server extra that pulls only the FastMCP /
+> FastAPI tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy
+> agent runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`,
+> `tree-sitter`), so `uvx`/container installs are dramatically smaller and faster.
+> Use the full `[agent]` extra only when you need the integrated Pydantic AI agent
+> (see [Installation](#installation)).
+
 #### stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)
 Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
 
@@ -151,7 +159,7 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
       "command": "uvx",
       "args": [
         "--from",
-        "qbittorrent-agent",
+        "qbittorrent-agent[mcp]",
         "qbittorrent-mcp"
       ],
       "env": {
@@ -176,7 +184,7 @@ Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx
       "command": "uvx",
       "args": [
         "--from",
-        "qbittorrent-agent",
+        "qbittorrent-agent[mcp]",
         "qbittorrent-mcp"
       ],
       "env": {
@@ -219,8 +227,15 @@ docker run -d \
   -e QBITTORRENT_USERNAME="your_value" \
   -e QBITTORRENT_PASSWORD="your_value" \
   -e QBITTORRENT_API_KEY="your_value" \
-  knucklessg1/qbittorrent-agent:latest
+  knucklessg1/qbittorrent-agent:mcp
 ```
+
+> The `:mcp` tag is the **slim MCP-server image** (built from
+> `docker/Dockerfile --target mcp`, installing `qbittorrent-agent[mcp]`). The default
+> `:latest` tag is the **full agent image** (`--target agent`, `qbittorrent-agent[agent]`)
+> which also bundles the Pydantic AI agent and the epistemic-graph engine — use it
+> when you run `qbittorrent-agent` (the agent), not just the MCP server. See
+> [Container images](#container-images-mcp-vs-agent).
 
 ---
 
@@ -266,7 +281,7 @@ version: '3.8'
 
 services:
   qbittorrent-agent-mcp:
-    image: knucklessg1/qbittorrent-agent:latest
+    image: knucklessg1/qbittorrent-agent:mcp
     container_name: qbittorrent-agent-mcp
     hostname: qbittorrent-agent-mcp
     restart: always
@@ -336,11 +351,14 @@ The agent and MCP server can be fully configured using the following environment
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| **`QBITTORRENT_HOST`** | String | `None` | **Required**. Hostname or IP address of the qBittorrent Web UI server. |
+| **`QBITTORRENT_URL`** | String | `http://localhost:8080` | Unified qBittorrent Web UI base URL. If set, overrides `QBITTORRENT_HOST` / `QBITTORRENT_PORT`. |
+| **`QBITTORRENT_HOST`** | String | `127.0.0.1` | Hostname or IP address of the qBittorrent Web UI server. |
 | **`QBITTORRENT_PORT`** | Integer | `8080` | Port of the qBittorrent Web UI server. |
 | **`QBITTORRENT_USERNAME`** | String | `None` | Username for authentication. |
 | **`QBITTORRENT_PASSWORD`** | String | `None` | Password for authentication. |
 | **`QBITTORRENT_API_KEY`** | String | `None` | Optional API Key for credential-less authentication. |
+| **`QBITTORRENT_SSL_VERIFY`** | Boolean | `True` | TLS verification for the API client (takes precedence over `QBITTORRENT_AGENT_VERIFY`). |
+| **`QBITTORRENT_AGENT_VERIFY`** | Boolean | `True` | TLS verification fallback for the API client. |
 | **`APPTOOL`** | Boolean | `True` | Toggle to enable/disable the App tool module. |
 | **`LOGTOOL`** | Boolean | `True` | Toggle to enable/disable the Log tool module. |
 | **`SYNCTOOL`** | Boolean | `True` | Toggle to enable/disable the Sync tool module. |
@@ -351,9 +369,22 @@ The agent and MCP server can be fully configured using the following environment
 | **`TRANSPORT`** | String | `stdio` | Server transport protocol (`stdio`, `sse`, or `streamable-http`). |
 | **`HOST`** | String | `127.0.0.1` | The network interface/IP to bind the server to. |
 | **`PORT`** | Integer | `8000` | The port to run the server on when using HTTP-based transports. |
-| **`AUTH_TYPE`** | String | `none` | Security authentication mode (`none`, `oidc`). |
-| **`POLICY_MODE`** | String | `none` | Eunomia policy enforcement mode (`none`, `embedded`, `remote`). |
-| **`LOGFIRE_TOKEN`** | String | `None` | Optional telemetry token to export metrics/logs to Logfire. |
+| **`MCP_TOOL_MODE`** | String | `condensed` | Tool surface: `condensed`, `verbose`, or `both`. |
+| **`MCP_ENABLED_TOOLS`** / **`MCP_DISABLED_TOOLS`** | String | `None` | Comma-separated tool allow/deny list. |
+| **`MCP_ENABLED_TAGS`** / **`MCP_DISABLED_TAGS`** | String | `None` | Comma-separated tag allow/deny list. |
+| **`DEBUG`** | Boolean | `False` | Verbose logging. |
+| **`PYTHONUNBUFFERED`** | Integer | `1` | Unbuffered stdout (recommended in containers). |
+| **`ENABLE_OTEL`** | Boolean | `True` | Enable OpenTelemetry export. |
+| **`OTEL_EXPORTER_OTLP_ENDPOINT`** | String | `None` | OTLP collector endpoint. |
+| **`OTEL_EXPORTER_OTLP_PUBLIC_KEY`** / **`OTEL_EXPORTER_OTLP_SECRET_KEY`** | String | `None` | OTLP auth keys. |
+| **`OTEL_EXPORTER_OTLP_PROTOCOL`** | String | `None` | OTLP protocol (e.g. `http/protobuf`). |
+| **`EUNOMIA_TYPE`** | String | `none` | Authorization mode: `none`, `embedded`, `remote`. |
+| **`EUNOMIA_POLICY_FILE`** | String | `mcp_policies.json` | Embedded Eunomia policy file. |
+| **`EUNOMIA_REMOTE_URL`** | String | `None` | Remote Eunomia server URL. |
+| **`MCP_URL`** | String | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to (full `[agent]` runtime only). |
+| **`PROVIDER`** | String | `openai` | LLM provider (full `[agent]` runtime only). |
+| **`MODEL_ID`** | String | `gpt-4o` | Model id (full `[agent]` runtime only). |
+| **`ENABLE_WEB_UI`** | Boolean | `True` | Serve the AG-UI web interface (full `[agent]` runtime only). |
 
 ---
 
@@ -377,15 +408,51 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 
 ## Installation
 
-Install the Python package locally:
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `qbittorrent-agent[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
+| `qbittorrent-agent[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `qbittorrent-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
-# Using uv (highly recommended)
-uv pip install qbittorrent-agent[all]
+# MCP server only (recommended for tool hosting — slim deps)
+uv pip install "qbittorrent-agent[mcp]"
 
-# Using standard pip
-python -m pip install qbittorrent-agent[all]
+# Full agent runtime (Pydantic AI + epistemic-graph engine)
+uv pip install "qbittorrent-agent[agent]"
+
+# Everything (development)
+uv pip install "qbittorrent-agent[all]"      # or: python -m pip install "qbittorrent-agent[all]"
 ```
+
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `knucklessg1/qbittorrent-agent:mcp` | `--target mcp` | `qbittorrent-agent[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `qbittorrent-mcp` |
+| `knucklessg1/qbittorrent-agent:latest` | `--target agent` (default) | `qbittorrent-agent[agent]` — **full** agent runtime + epistemic-graph engine | `qbittorrent-agent` |
+
+```bash
+docker build --target mcp   -t knucklessg1/qbittorrent-agent:mcp    docker/   # slim MCP server
+docker build --target agent -t knucklessg1/qbittorrent-agent:latest docker/   # full agent
+```
+
+`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`:latest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
+transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
+across multiple agents — run **epistemic-graph as its own database container** and point the
+agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
+config, and the full database architecture (with diagrams) are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+The slim `[mcp]` server does **not** require the database.
 
 ---
 
