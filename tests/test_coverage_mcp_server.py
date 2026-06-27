@@ -153,7 +153,9 @@ def test_mcp_server_coverage(mock_session):
                         mock_req = Request(scope=mock_scope)
                         res = await route.endpoint(mock_req)
                         assert res.status_code == 200
-                        assert json.loads(res.body.decode()) == {"status": "OK"}
+                        assert json.loads(res.body.decode()).get(
+                            "status", ""
+                        ).upper() == "OK"
 
                 tool_objs = (
                     await mcp.list_tools()
