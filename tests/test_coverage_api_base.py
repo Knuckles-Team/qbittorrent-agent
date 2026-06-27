@@ -119,7 +119,7 @@ def test_qbittorrent_api_login_failures(mock_session):
         QbittorrentApi(base_url="http://test")
     assert "Connection error during login" in str(exc_info.value)
 
-    # 4. 200 OK but SID cookie not found
+    # 4. 200 OK but session cookie not set
     mock_session.post.side_effect = None
     response_200 = MagicMock()
     response_200.status_code = 200
@@ -127,7 +127,7 @@ def test_qbittorrent_api_login_failures(mock_session):
     mock_session.cookies = {}
     with pytest.raises(AuthError) as exc_info:
         QbittorrentApi(base_url="http://test")
-    assert "SID cookie not found" in str(exc_info.value)
+    assert "no session cookie set" in str(exc_info.value)
 
 
 def test_auth_get_client_error():

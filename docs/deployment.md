@@ -26,7 +26,7 @@ The client launches the server over stdio via `uvx` — best for local IDEs
       "command": "uvx",
       "args": ["--from", "qbittorrent-agent", "qbittorrent-mcp"],
       "env": {
-        "QBITTORRENT_HOST": "<your-qbittorrent_host>",
+        "QBITTORRENT_URL": "http://localhost:8080",
         "QBITTORRENT_USERNAME": "<your-qbittorrent_username>"
       }
     }
@@ -55,7 +55,7 @@ Then either let the client launch it:
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
         "PORT": "8000",
-        "QBITTORRENT_HOST": "<your-qbittorrent_host>",
+        "QBITTORRENT_URL": "http://localhost:8080",
         "QBITTORRENT_USERNAME": "<your-qbittorrent_username>"
       }
     }
@@ -86,7 +86,7 @@ no ports to manage). Swap `docker` for `podman` for a daemonless runtime:
       "args": [
         "run", "-i", "--rm",
         "-e", "TRANSPORT=stdio",
-        "-e", "QBITTORRENT_HOST=<your-qbittorrent_host>",
+        "-e", "QBITTORRENT_URL=http://localhost:8080",
         "-e", "QBITTORRENT_USERNAME=<your-qbittorrent_username>",
         "knucklessg1/qbittorrent-agent:latest"
       ]
@@ -101,7 +101,7 @@ no ports to manage). Swap `docker` for `podman` for a daemonless runtime:
 docker run -d --name qbittorrent-mcp -p 8000:8000 \
   -e TRANSPORT=streamable-http \
   -e PORT=8000 \
-  -e QBITTORRENT_HOST="<your-qbittorrent_host>" \
+  -e QBITTORRENT_URL="http://localhost:8080" \
   -e QBITTORRENT_USERNAME="<your-qbittorrent_username>" \
   knucklessg1/qbittorrent-agent:latest
 # or, from a clone of this repo:
@@ -188,9 +188,7 @@ connection set:
 
 | Var | Default | Meaning |
 |---|---|---|
-| `QBITTORRENT_URL` | `http://localhost:8080` | qBittorrent WebUI base URL (overrides host/port) |
-| `QBITTORRENT_HOST` | `127.0.0.1` | WebUI host (used when `QBITTORRENT_URL` is unset) |
-| `QBITTORRENT_PORT` | `8080` | WebUI port (used when `QBITTORRENT_URL` is unset) |
+| `QBITTORRENT_URL` | `http://localhost:8080` | qBittorrent WebUI base URL |
 | `QBITTORRENT_USERNAME` | `admin` | WebUI user id |
 | `QBITTORRENT_PASSWORD` | `adminadmin` | WebUI password |
 | `QBITTORRENT_AGENT_VERIFY` | `True` | Verify TLS for the API client |

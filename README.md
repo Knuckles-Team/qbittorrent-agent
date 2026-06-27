@@ -103,6 +103,8 @@ This table is auto-generated from the live server — do not edit by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
 | `qbittorrent_app` | `APPTOOL` | Manage qbittorrent app operations. |
@@ -113,7 +115,106 @@ This table is auto-generated from the live server — do not edit by hand.
 | `qbittorrent_torrents` | `TORRENTSTOOL` | Manage qbittorrent torrents operations. |
 | `qbittorrent_transfer` | `TRANSFERTOOL` | Manage qbittorrent transfer operations. |
 
-_7 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>89 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `qbittorrent_add_peers` | `APITOOL` | Add peers. |
+| `qbittorrent_add_rss_feed` | `APITOOL` | Add RSS feed. |
+| `qbittorrent_add_rss_folder` | `APITOOL` | Add RSS folder. |
+| `qbittorrent_add_torrent` | `APITOOL` | Add new torrent. |
+| `qbittorrent_add_torrent_tags` | `APITOOL` | Add torrent tags. |
+| `qbittorrent_add_trackers` | `APITOOL` | Add trackers to torrent. |
+| `qbittorrent_ban_peers` | `APITOOL` | Ban peers. 'peers' is a string of peers separated by \| (host:port). |
+| `qbittorrent_bottom_priority` | `APITOOL` | Minimal torrent priority. |
+| `qbittorrent_create_category` | `APITOOL` | Add new category. |
+| `qbittorrent_create_tags` | `APITOOL` | Create tags. |
+| `qbittorrent_decrease_priority` | `APITOOL` | Decrease torrent priority. |
+| `qbittorrent_delete_tags` | `APITOOL` | Delete tags. |
+| `qbittorrent_delete_torrents` | `APITOOL` | Delete torrents. |
+| `qbittorrent_edit_category` | `APITOOL` | Edit category. |
+| `qbittorrent_edit_tracker` | `APITOOL` | Edit tracker. |
+| `qbittorrent_enable_search_plugin` | `APITOOL` | Enable/disable search plugin. |
+| `qbittorrent_get_api_version` | `APITOOL` | Get API version. |
+| `qbittorrent_get_build_info` | `APITOOL` | Get build info. |
+| `qbittorrent_get_categories` | `APITOOL` | Get all categories. |
+| `qbittorrent_get_default_save_path` | `APITOOL` | Get default save path. |
+| `qbittorrent_get_global_download_limit` | `APITOOL` | Get global download limit in bytes/second. |
+| `qbittorrent_get_global_upload_limit` | `APITOOL` | Get global upload limit in bytes/second. |
+| `qbittorrent_get_log` | `APITOOL` | Get main log. |
+| `qbittorrent_get_main_data` | `APITOOL` | Get main data. |
+| `qbittorrent_get_peer_log` | `APITOOL` | Get peer log. |
+| `qbittorrent_get_preferences` | `APITOOL` | Get application preferences. |
+| `qbittorrent_get_rss_items` | `APITOOL` | Get all RSS items. |
+| `qbittorrent_get_rss_matching_articles` | `APITOOL` | Get all articles matching a rule. |
+| `qbittorrent_get_rss_rules` | `APITOOL` | Get all auto-downloading rules. |
+| `qbittorrent_get_search_plugins` | `APITOOL` | Get search plugins. |
+| `qbittorrent_get_speed_limits_mode` | `APITOOL` | Get alternative speed limits state (1 if enabled, 0 otherwise). |
+| `qbittorrent_get_tags` | `APITOOL` | Get all tags. |
+| `qbittorrent_get_torrent_contents` | `APITOOL` | Get torrent contents. |
+| `qbittorrent_get_torrent_download_limit` | `APITOOL` | Get torrent download limit. |
+| `qbittorrent_get_torrent_peers_data` | `APITOOL` | Get torrent peers data. |
+| `qbittorrent_get_torrent_piece_hashes` | `APITOOL` | Get torrent pieces' hashes. |
+| `qbittorrent_get_torrent_piece_states` | `APITOOL` | Get torrent pieces' states. |
+| `qbittorrent_get_torrent_properties` | `APITOOL` | Get torrent generic properties. |
+| `qbittorrent_get_torrent_trackers` | `APITOOL` | Get torrent trackers. |
+| `qbittorrent_get_torrent_upload_limit` | `APITOOL` | Get torrent upload limit. |
+| `qbittorrent_get_torrent_webseeds` | `APITOOL` | Get torrent web seeds. |
+| `qbittorrent_get_torrents` | `APITOOL` | Get torrent list. |
+| `qbittorrent_get_transfer_info` | `APITOOL` | Get global transfer info. |
+| `qbittorrent_get_version` | `APITOOL` | Get application version. |
+| `qbittorrent_increase_priority` | `APITOOL` | Increase torrent priority. |
+| `qbittorrent_install_search_plugin` | `APITOOL` | Install search plugin. |
+| `qbittorrent_login` | `BASE_API_CLIENTTOOL` | Authenticate with qBittorrent and get SID cookie. |
+| `qbittorrent_logout` | `BASE_API_CLIENTTOOL` | Log out from qBittorrent. |
+| `qbittorrent_mark_rss_as_read` | `APITOOL` | Mark RSS as read. |
+| `qbittorrent_move_rss_item` | `APITOOL` | Move RSS item. |
+| `qbittorrent_pause_torrents` | `APITOOL` | Pause (stop) torrents. qBittorrent 5.x renamed the endpoint to torrents/stop. |
+| `qbittorrent_reannounce_torrents` | `APITOOL` | Reannounce torrents. |
+| `qbittorrent_recheck_torrents` | `APITOOL` | Recheck torrents. |
+| `qbittorrent_refresh_rss_item` | `APITOOL` | Refresh RSS item. |
+| `qbittorrent_remove_categories` | `APITOOL` | Remove categories. 'categories' is |
+| `qbittorrent_remove_rss_item` | `APITOOL` | Remove RSS item. |
+| `qbittorrent_remove_rss_rule` | `APITOOL` | Remove auto-downloading rule. |
+| `qbittorrent_remove_torrent_tags` | `APITOOL` | Remove torrent tags. |
+| `qbittorrent_remove_trackers` | `APITOOL` | Remove trackers. |
+| `qbittorrent_rename_file` | `APITOOL` | Rename file. |
+| `qbittorrent_rename_folder` | `APITOOL` | Rename folder. |
+| `qbittorrent_rename_rss_rule` | `APITOOL` | Rename auto-downloading rule. |
+| `qbittorrent_resume_torrents` | `APITOOL` | Resume (start) torrents. qBittorrent 5.x renamed the endpoint to torrents/start. |
+| `qbittorrent_search_delete` | `APITOOL` | Delete search. |
+| `qbittorrent_search_results` | `APITOOL` | Get search results. |
+| `qbittorrent_search_start` | `APITOOL` | Start search. |
+| `qbittorrent_search_status` | `APITOOL` | Get search status. |
+| `qbittorrent_search_stop` | `APITOOL` | Stop search. |
+| `qbittorrent_set_auto_management` | `APITOOL` | Set automatic torrent management. |
+| `qbittorrent_set_file_priority` | `APITOOL` | Set file priority. |
+| `qbittorrent_set_force_start` | `APITOOL` | Set force start. |
+| `qbittorrent_set_global_download_limit` | `APITOOL` | Set global download limit in bytes/second. |
+| `qbittorrent_set_global_upload_limit` | `APITOOL` | Set global upload limit in bytes/second. |
+| `qbittorrent_set_preferences` | `APITOOL` | Set application preferences. |
+| `qbittorrent_set_rss_rule` | `APITOOL` | Set auto-downloading rule. |
+| `qbittorrent_set_super_seeding` | `APITOOL` | Set super seeding. |
+| `qbittorrent_set_torrent_category` | `APITOOL` | Set torrent category. |
+| `qbittorrent_set_torrent_download_limit` | `APITOOL` | Set torrent download limit. |
+| `qbittorrent_set_torrent_location` | `APITOOL` | Set torrent location. |
+| `qbittorrent_set_torrent_name` | `APITOOL` | Set torrent name. |
+| `qbittorrent_set_torrent_share_limit` | `APITOOL` | Set torrent share limit. |
+| `qbittorrent_set_torrent_upload_limit` | `APITOOL` | Set torrent upload limit. |
+| `qbittorrent_shutdown_application` | `APITOOL` | Shutdown application. |
+| `qbittorrent_toggle_first_last_piece_priority` | `APITOOL` | Set first/last piece priority. |
+| `qbittorrent_toggle_sequential_download` | `APITOOL` | Toggle sequential download. |
+| `qbittorrent_toggle_speed_limits_mode` | `APITOOL` | Toggle alternative speed limits. |
+| `qbittorrent_top_priority` | `APITOOL` | Maximal torrent priority. |
+| `qbittorrent_uninstall_search_plugin` | `APITOOL` | Uninstall search plugin. |
+| `qbittorrent_update_search_plugins` | `APITOOL` | Update search plugins. |
+
+</details>
+
+_7 action-routed tool(s) (default) · 89 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
@@ -163,11 +264,9 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
         "qbittorrent-mcp"
       ],
       "env": {
-        "QBITTORRENT_HOST": "your_qbittorrent_host_here",
-        "QBITTORRENT_PORT": "your_qbittorrent_port_here",
+        "QBITTORRENT_URL": "http://localhost:8080",
         "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_API_KEY": "your_qbittorrent_api_key_here"
+        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here"
       }
     }
   }
@@ -191,11 +290,9 @@ Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
         "PORT": "8000",
-        "QBITTORRENT_HOST": "your_qbittorrent_host_here",
-        "QBITTORRENT_PORT": "your_qbittorrent_port_here",
+        "QBITTORRENT_URL": "http://localhost:8080",
         "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_API_KEY": "your_qbittorrent_api_key_here"
+        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here"
       }
     }
   }
@@ -222,11 +319,9 @@ docker run -d \
   -p 8000:8000 \
   -e TRANSPORT=streamable-http \
   -e PORT=8000 \
-  -e QBITTORRENT_HOST="your_value" \
-  -e QBITTORRENT_PORT="your_value" \
+  -e QBITTORRENT_URL="http://localhost:8080" \
   -e QBITTORRENT_USERNAME="your_value" \
   -e QBITTORRENT_PASSWORD="your_value" \
-  -e QBITTORRENT_API_KEY="your_value" \
   knucklessg1/qbittorrent-agent:mcp
 ```
 
@@ -263,11 +358,9 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export QBITTORRENT_HOST="your_value"
-export QBITTORRENT_PORT="your_value"
+export QBITTORRENT_URL="http://localhost:8080"
 export QBITTORRENT_USERNAME="your_value"
 export QBITTORRENT_PASSWORD="your_value"
-export QBITTORRENT_API_KEY="your_value"
 
 # Run the agent server
 qbittorrent-agent --provider openai --model-id gpt-4o
@@ -364,13 +457,11 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
-| `QBITTORRENT_HOST` | `127.0.0.1` |  |
-| `QBITTORRENT_PORT` | `8080` |  |
+| `QBITTORRENT_URL` | `http://localhost:8080` | Unified qBittorrent Web UI base URL. |
 | `QBITTORRENT_USERNAME` | `admin` |  |
 | `QBITTORRENT_PASSWORD` | `your_qbittorrent_password_here` |  |
-| `QBITTORRENT_API_KEY` | `your_qbittorrent_api_key_here` |  |
-| `QBITTORRENT_AGENT_VERIFY` | `True` | SSL verification for the API client (default: True) |
-| `QBITTORRENT_URL` | `http://localhost:8080` | Unified API base URL. If set, overrides QBITTORRENT_HOST and QBITTORRENT_PORT. |
+| `QBITTORRENT_SSL_VERIFY` | `True` | TLS verification for the API client (takes precedence over QBITTORRENT_AGENT_VERIFY) |
+| `QBITTORRENT_AGENT_VERIFY` | `True` | TLS verification fallback for the API client (default: True) |
 | `APPTOOL` | `True` |  |
 | `LOGTOOL` | `True` |  |
 | `SYNCTOOL` | `True` |  |
@@ -398,7 +489,7 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_25 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_23 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -406,12 +497,9 @@ The agent and MCP server can be fully configured using the following environment
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| **`QBITTORRENT_URL`** | String | `http://localhost:8080` | Unified qBittorrent Web UI base URL. If set, overrides `QBITTORRENT_HOST` / `QBITTORRENT_PORT`. |
-| **`QBITTORRENT_HOST`** | String | `127.0.0.1` | Hostname or IP address of the qBittorrent Web UI server. |
-| **`QBITTORRENT_PORT`** | Integer | `8080` | Port of the qBittorrent Web UI server. |
+| **`QBITTORRENT_URL`** | String | `http://localhost:8080` | Unified qBittorrent Web UI base URL. |
 | **`QBITTORRENT_USERNAME`** | String | `None` | Username for authentication. |
 | **`QBITTORRENT_PASSWORD`** | String | `None` | Password for authentication. |
-| **`QBITTORRENT_API_KEY`** | String | `None` | Optional API Key for credential-less authentication. |
 | **`QBITTORRENT_SSL_VERIFY`** | Boolean | `True` | TLS verification for the API client (takes precedence over `QBITTORRENT_AGENT_VERIFY`). |
 | **`QBITTORRENT_AGENT_VERIFY`** | Boolean | `True` | TLS verification fallback for the API client. |
 | **`APPTOOL`** | Boolean | `True` | Toggle to enable/disable the App tool module. |
