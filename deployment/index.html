@@ -1076,7 +1076,7 @@ matches where the server runs relative to your MCP client, then copy the matchin
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uvx&quot;</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--from&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;qbittorrent-agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;qbittorrent-mcp&quot;</span><span class="p">],</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_HOST&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;your-qbittorrent_host&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080&quot;</span><span class="p">,</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_USERNAME&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;your-qbittorrent_username&gt;&quot;</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">      </span><span class="p">}</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="p">}</span>
@@ -1098,7 +1098,7 @@ matches where the server runs relative to your MCP client, then copy the matchin
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">        </span><span class="nt">&quot;TRANSPORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;streamable-http&quot;</span><span class="p">,</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nt">&quot;HOST&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="nt">&quot;PORT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8000&quot;</span><span class="p">,</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_HOST&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;your-qbittorrent_host&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080&quot;</span><span class="p">,</span>
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="nt">&quot;QBITTORRENT_USERNAME&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;your-qbittorrent_username&gt;&quot;</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="p">}</span>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="p">}</span>
@@ -1122,7 +1122,7 @@ no ports to manage). Swap <code>docker</code> for <code>podman</code> for a daem
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">      </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">        </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-i&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--rm&quot;</span><span class="p">,</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">        </span><span class="s2">&quot;-e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;TRANSPORT=stdio&quot;</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="s2">&quot;-e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;QBITTORRENT_HOST=&lt;your-qbittorrent_host&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">        </span><span class="s2">&quot;-e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;QBITTORRENT_URL=http://localhost:8080&quot;</span><span class="p">,</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">        </span><span class="s2">&quot;-e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;QBITTORRENT_USERNAME=&lt;your-qbittorrent_username&gt;&quot;</span><span class="p">,</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">        </span><span class="s2">&quot;knucklessg1/qbittorrent-agent:latest&quot;</span>
 </span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">      </span><span class="p">]</span>
@@ -1134,7 +1134,7 @@ no ports to manage). Swap <code>docker</code> for <code>podman</code> for a daem
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>qbittorrent-mcp<span class="w"> </span>-p<span class="w"> </span><span class="m">8000</span>:8000<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>-e<span class="w"> </span><span class="nv">TRANSPORT</span><span class="o">=</span>streamable-http<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>-e<span class="w"> </span><span class="nv">PORT</span><span class="o">=</span><span class="m">8000</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>-e<span class="w"> </span><span class="nv">QBITTORRENT_HOST</span><span class="o">=</span><span class="s2">&quot;&lt;your-qbittorrent_host&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>-e<span class="w"> </span><span class="nv">QBITTORRENT_URL</span><span class="o">=</span><span class="s2">&quot;http://localhost:8080&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>-e<span class="w"> </span><span class="nv">QBITTORRENT_USERNAME</span><span class="o">=</span><span class="s2">&quot;&lt;your-qbittorrent_username&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>knucklessg1/qbittorrent-agent:latest
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># or, from a clone of this repo:</span>
@@ -1212,17 +1212,7 @@ connection set:</p>
 <tr>
 <td><code>QBITTORRENT_URL</code></td>
 <td><code>http://localhost:8080</code></td>
-<td>qBittorrent WebUI base URL (overrides host/port)</td>
-</tr>
-<tr>
-<td><code>QBITTORRENT_HOST</code></td>
-<td><code>127.0.0.1</code></td>
-<td>WebUI host (used when <code>QBITTORRENT_URL</code> is unset)</td>
-</tr>
-<tr>
-<td><code>QBITTORRENT_PORT</code></td>
-<td><code>8080</code></td>
-<td>WebUI port (used when <code>QBITTORRENT_URL</code> is unset)</td>
+<td>qBittorrent WebUI base URL</td>
 </tr>
 <tr>
 <td><code>QBITTORRENT_USERNAME</code></td>
