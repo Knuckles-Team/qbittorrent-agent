@@ -8,13 +8,17 @@
       ],
       "env": {
         "MCP_TOOL_MODE": "condensed",
-        "AGENT_DESCRIPTION": "<YOUR_AGENT_DESCRIPTION>",
-        "AGENT_SYSTEM_PROMPT": "<YOUR_AGENT_SYSTEM_PROMPT>",
-        "DEFAULT_AGENT_NAME": "<YOUR_DEFAULT_AGENT_NAME>",
-        "QBITTORRENT_AGENT_VERIFY": "<YOUR_QBITTORRENT_AGENT_VERIFY>",
-        "QBITTORRENT_PASSWORD": "<YOUR_QBITTORRENT_PASSWORD>",
-        "QBITTORRENT_URL": "<YOUR_QBITTORRENT_URL>",
-        "QBITTORRENT_USERNAME": "<YOUR_QBITTORRENT_USERNAME>"
+        "APPTOOL": "True",
+        "LOGTOOL": "True",
+        "QBITTORRENT_AGENT_VERIFY": "True",
+        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
+        "QBITTORRENT_URL": "http://localhost:8080",
+        "QBITTORRENT_USERNAME": "admin",
+        "RSSTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SYNCTOOL": "True",
+        "TORRENTSTOOL": "True",
+        "TRANSFERTOOL": "True"
       }
     }
   }

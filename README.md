@@ -242,21 +242,20 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ### MCP Configuration Examples
 
-> **Install the slim `[mcp]` extra.** All examples below install
-> `qbittorrent-agent[mcp]` — the MCP-server extra that pulls only the FastMCP /
-> FastAPI tooling (`agent-utilities[mcp]`). It deliberately **excludes** the heavy
-> agent runtime (the epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`,
-> `tree-sitter`), so `uvx`/container installs are dramatically smaller and faster.
-> Use the full `[agent]` extra only when you need the integrated Pydantic AI agent
-> (see [Installation](#installation)).
+<!-- MCP-CONFIG-EXAMPLES:START -->
 
-#### stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)
-Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
+> **Install the slim `[mcp]` extra.** All examples install `qbittorrent-agent[mcp]` — the
+> MCP-server extra that pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`).
+> It deliberately **excludes** the heavy agent runtime (`pydantic-ai`, the epistemic-graph
+> engine, `dspy`, `llama-index`), so `uvx` / container installs are far smaller. Use the
+> full `[agent]` extra only when you need the integrated Pydantic AI agent.
+
+#### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
+    "qbittorrent-mcp": {
       "command": "uvx",
       "args": [
         "--from",
@@ -264,48 +263,69 @@ Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
         "qbittorrent-mcp"
       ],
       "env": {
+        "MCP_TOOL_MODE": "condensed",
+        "APPTOOL": "True",
+        "LOGTOOL": "True",
+        "QBITTORRENT_AGENT_VERIFY": "True",
+        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
         "QBITTORRENT_URL": "http://localhost:8080",
-        "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here"
+        "QBITTORRENT_USERNAME": "admin",
+        "RSSTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SYNCTOOL": "True",
+        "TORRENTSTOOL": "True",
+        "TRANSFERTOOL": "True"
       }
     }
   }
 }
 ```
 
-#### Streamable-HTTP Transport (Recommended for production deployments)
-Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx` with explicit host and port definition:
+#### Streamable-HTTP Transport (networked / production)
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
+    "qbittorrent-mcp": {
       "command": "uvx",
       "args": [
         "--from",
         "qbittorrent-agent[mcp]",
-        "qbittorrent-mcp"
+        "qbittorrent-mcp",
+        "--transport",
+        "streamable-http",
+        "--port",
+        "8000"
       ],
       "env": {
         "TRANSPORT": "streamable-http",
         "HOST": "0.0.0.0",
         "PORT": "8000",
+        "MCP_TOOL_MODE": "condensed",
+        "APPTOOL": "True",
+        "LOGTOOL": "True",
+        "QBITTORRENT_AGENT_VERIFY": "True",
+        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
         "QBITTORRENT_URL": "http://localhost:8080",
-        "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here"
+        "QBITTORRENT_USERNAME": "admin",
+        "RSSTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SYNCTOOL": "True",
+        "TORRENTSTOOL": "True",
+        "TRANSFERTOOL": "True"
       }
     }
   }
 }
 ```
 
-Alternatively, connect to a pre-deployed remote or local Streamable-HTTP instance:
+Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
-      "url": "http://localhost:8000/qbittorrent-agent/mcp"
+    "qbittorrent-mcp": {
+      "url": "http://localhost:8000/qbittorrent-mcp/mcp"
     }
   }
 }
@@ -315,24 +335,28 @@ Deploying the Streamable-HTTP server via Docker:
 
 ```bash
 docker run -d \
-  --name qbittorrent-agent-mcp \
+  --name qbittorrent-mcp-mcp \
   -p 8000:8000 \
   -e TRANSPORT=streamable-http \
+  -e HOST=0.0.0.0 \
   -e PORT=8000 \
-  -e QBITTORRENT_URL="http://localhost:8080" \
-  -e QBITTORRENT_USERNAME="your_value" \
-  -e QBITTORRENT_PASSWORD="your_value" \
+  -e MCP_TOOL_MODE=condensed \
+  -e APPTOOL=True \
+  -e LOGTOOL=True \
+  -e QBITTORRENT_AGENT_VERIFY=True \
+  -e QBITTORRENT_PASSWORD=your_qbittorrent_password_here \
+  -e QBITTORRENT_URL=http://localhost:8080 \
+  -e QBITTORRENT_USERNAME=admin \
+  -e RSSTOOL=True \
+  -e SEARCHTOOL=True \
+  -e SYNCTOOL=True \
+  -e TORRENTSTOOL=True \
+  -e TRANSFERTOOL=True \
   knucklessg1/qbittorrent-agent:mcp
 ```
 
-> The `:mcp` tag is the **slim MCP-server image** (built from
-> `docker/Dockerfile --target mcp`, installing `qbittorrent-agent[mcp]`). The default
-> `:latest` tag is the **full agent image** (`--target agent`, `qbittorrent-agent[agent]`)
-> which also bundles the Pydantic AI agent and the epistemic-graph engine — use it
-> when you run `qbittorrent-agent` (the agent), not just the MCP server. See
-> [Container images](#container-images-mcp-vs-agent).
-
----
+_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
+<!-- MCP-CONFIG-EXAMPLES:END -->
 
 <!-- BEGIN GENERATED: additional-deployment-options -->
 ### Additional Deployment Options
