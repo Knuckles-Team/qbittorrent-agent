@@ -1,0 +1,103 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix : <http://knuckles.team/kg#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# qBittorrent torrent-management ontology — torrents, their announce trackers, and the
+# categories that organise them, plus the media content a completed torrent yields.
+# All classes and properties live in the shared `:` (kg#) namespace; only the
+# owl:Ontology node gets the per-package IRI. Backs the qbittorrent-agent MCP tool
+# surface (qbittorrent_torrents / qbittorrent_transfer / qbittorrent_rss / …).
+# :MediaAsset and :Person are REUSED from the shared hub base — never redefined here.
+
+:Torrent a owl:Class ;
+    rdfs:label "Torrent" ;
+    rdfs:comment "A BitTorrent transfer tracked by qBittorrent, identified by its info hash (qbittorrent_torrents get_torrent_list)." .
+
+:Tracker a owl:Class ;
+    rdfs:label "Tracker" ;
+    rdfs:comment "A BitTorrent tracker announce endpoint a torrent reports to (qbittorrent_torrents get_torrent_trackers)." .
+
+:TorrentCategory a owl:Class ;
+    rdfs:label "Torrent Category" ;
+    rdfs:comment "A user-defined category grouping torrents and pinning their save path (qbittorrent_torrents get_all_categories)." .
+
+# --- links (owl:ObjectProperty) ---
+
+:announcesTo a owl:ObjectProperty ;
+    rdfs:label "announces to" ;
+    rdfs:comment "Links a Torrent to a Tracker it announces to." ;
+    rdfs:domain :Torrent ;
+    rdfs:range :Tracker .
+
+:inCategory a owl:ObjectProperty ;
+    rdfs:label "in category" ;
+    rdfs:comment "Links a Torrent to the TorrentCategory it belongs to." ;
+    rdfs:domain :Torrent ;
+    rdfs:range :TorrentCategory .
+
+:producesAsset a owl:ObjectProperty ;
+    rdfs:label "produces asset" ;
+    rdfs:comment "Links a completed Torrent to the :MediaAsset (downloaded content) it yields." ;
+    rdfs:domain :Torrent ;
+    rdfs:range :MediaAsset .
+
+# --- fields (owl:DatatypeProperty) ---
+
+:infoHash a owl:DatatypeProperty ;
+    rdfs:label "info hash" ;
+    rdfs:comment "The BitTorrent info hash uniquely identifying a Torrent." ;
+    rdfs:domain :Torrent ;
+    rdfs:range xsd:string .
+
+:torrentState a owl:DatatypeProperty ;
+    rdfs:label "torrent state" ;
+    rdfs:comment "Lifecycle/transfer state of a Torrent (downloading, uploading, stalledUP, pausedDL, checkingDL, error, …)." ;
+    rdfs:domain :Torrent ;
+    rdfs:range xsd:string .
+
+:progress a owl:DatatypeProperty ;
+    rdfs:label "progress" ;
+    rdfs:comment "Download completion fraction of a Torrent (0.0–1.0)." ;
+    rdfs:domain :Torrent ;
+    rdfs:range xsd:float .
+
+:shareRatio a owl:DatatypeProperty ;
+    rdfs:label "share ratio" ;
+    rdfs:comment "Upload/download share ratio of a Torrent." ;
+    rdfs:domain :Torrent ;
+    rdfs:range xsd:float .
+
+:sizeBytes a owl:DatatypeProperty ;
+    rdfs:label "size bytes" ;
+    rdfs:comment "Total size of a Torrent's selected content, in bytes." ;
+    rdfs:domain :Torrent ;
+    rdfs:range xsd:long .
+
+:savePath a owl:DatatypeProperty ;
+    rdfs:label "save path" ;
+    rdfs:comment "Filesystem path where a Torrent or TorrentCategory stores its content." ;
+    rdfs:range xsd:string .
+
+:trackerUrl a owl:DatatypeProperty ;
+    rdfs:label "tracker url" ;
+    rdfs:comment "Announce URL of a Tracker." ;
+    rdfs:domain :Tracker ;
+    rdfs:range xsd:string .
+
+:trackerStatus a owl:DatatypeProperty ;
+    rdfs:label "tracker status" ;
+    rdfs:comment "Working status code of a Tracker (0 disabled, 1 not contacted, 2 working, 3 updating, 4 not working)." ;
+    rdfs:domain :Tracker ;
+    rdfs:range xsd:integer .
+
+<http://knuckles.team/kg/qbittorrent> a owl:Ontology ;
+    rdfs:label "qBittorrent Torrent Ontology" ;
+    rdfs:comment """qBittorrent torrent-management model — torrents, their announce
+    trackers, and the categories that organise them, plus the media content a
+    completed torrent produces — federated into the agent-utilities knowledge-graph
+    hub. Reuses the shared :MediaAsset and :Person classes.""" ;
+    owl:imports <http://knuckles.team/kg> .

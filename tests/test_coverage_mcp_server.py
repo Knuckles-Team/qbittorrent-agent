@@ -185,6 +185,15 @@ def test_mcp_server_coverage(mock_session):
                     except Exception as e:
                         print(f"Standard tool call failed: {e}")
 
+                    # Action-routed tools take an ``action`` kwarg; Wire-First
+                    # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
+                    # skip the action-based direct calls for those.
+                    has_action = hasattr(tool, "parameters") and "action" in (
+                        getattr(tool.parameters, "properties", {}) or {}
+                    )
+                    if not has_action:
+                        continue
+
                     # 2. Direct tool.fn call for every single valid action
                     actions = VALID_TOOL_ACTIONS.get(tool_name, [None])
                     for act in actions:

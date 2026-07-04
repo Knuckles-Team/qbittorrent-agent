@@ -586,6 +586,52 @@ def register_search_tools(mcp: FastMCP):
         raise ValueError(f"Unknown action: {action}")
 
 
+def register_ingest_tools(mcp: FastMCP):
+    @mcp.tool(tags={"ingest"})
+    async def qbittorrent_ingest_torrents(
+        params_json: str = Field(
+            default="{}",
+            description="JSON string of get_torrents filters (e.g. filter, category, tag, limit).",
+        ),
+        client=Depends(get_client),
+        ctx: Context | None = Field(
+            default=None, description="MCP context for progress reporting"
+        ),
+    ) -> Any:
+        """Natively ingest qBittorrent torrents into epistemic-graph as typed nodes.
+
+        Lists torrents via the qBittorrent API and pushes them (with their :Tracker +
+        :TorrentCategory nodes and :announcesTo / :inCategory links) into the knowledge
+        graph via the fast engine client. Best-effort: returns ``{"ingested": None}``
+        when no engine is reachable. CONCEPT:AU-KG.ingest.enterprise-source-extractor.
+        """
+        if ctx:
+            import inspect
+
+            res = ctx.info("Ingesting torrents into the knowledge graph...")
+            if inspect.isawaitable(res):
+                await res
+        import json as _json
+
+        from qbittorrent_agent.kg_ingest import ingest_torrents
+
+        try:
+            kwargs = _json.loads(params_json) if params_json else {}
+        except Exception as e:
+            return {"error": f"Invalid params_json: {e}"}
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+
+        resp = await run_blocking(client.get_torrents, **kwargs)
+        records = resp if isinstance(resp, list) else [resp]
+        torrents = [
+            r.model_dump() if hasattr(r, "model_dump") else r
+            for r in records
+            if r is not None
+        ]
+        result = ingest_torrents(torrents)
+        return {"listed": len(torrents), "ingested": result}
+
+
 def get_mcp_instance() -> tuple[Any, ...]:
     """Initialize and return the MCP instance."""
     load_config()
