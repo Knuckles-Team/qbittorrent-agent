@@ -7,7 +7,7 @@ from pydantic import BaseModel
 def test_qbittorrent_models_coverage():
     """Verify deserialization of all declarative Pydantic schemas in qbittorrent_models.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     from qbittorrent_agent import qbittorrent_models
 

@@ -10,7 +10,7 @@ from qbittorrent_agent.api_client import QbittorrentApi
 def test_qbittorrent_api_brute_force(mock_session):
     """Programmatically introspect and invoke all QbittorrentApi wrapper endpoints.
 
-    CONCEPT:ORCH-1.4 — Action Execution Pipeline
+    CONCEPT:AU-ORCH.adapter.kg-graph-materialization — Action Execution Pipeline
     """
     api_instance = QbittorrentApi(
         base_url="http://test", username="test", password="test"

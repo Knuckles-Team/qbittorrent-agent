@@ -14,7 +14,7 @@ _client = None
 def get_client():
     """Get or create a singleton API client instance.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     global _client
     if _client is None:

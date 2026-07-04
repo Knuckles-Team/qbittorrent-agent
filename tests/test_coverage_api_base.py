@@ -11,7 +11,7 @@ from qbittorrent_agent.auth import get_client
 def test_qbittorrent_api_errors(mock_session):
     """Verify standard base client HTTP error handling pathways.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     # Test verify=False logic
     api_instance_no_verify = QbittorrentApi(base_url="http://test", verify=False)
@@ -92,7 +92,7 @@ def test_qbittorrent_api_errors(mock_session):
 def test_qbittorrent_api_login_failures(mock_session):
     """Verify API client handling for various authentication and login errors.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     # 1. 403 IP banned
     response_403 = MagicMock()
@@ -133,7 +133,7 @@ def test_qbittorrent_api_login_failures(mock_session):
 def test_auth_get_client_error():
     """Verify singleton client initialization raises correct RuntimeErrors.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     with patch("qbittorrent_agent.auth._client", None):
         with patch(
@@ -156,7 +156,7 @@ def test_auth_get_client_error():
 def test_auth_get_client_success():
     """Verify successful client retrieval and singleton caching.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     with patch("qbittorrent_agent.auth._client", None):
         with patch("qbittorrent_agent.auth.QbittorrentApi"):

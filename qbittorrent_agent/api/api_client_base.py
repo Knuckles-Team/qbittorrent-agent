@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class BaseApiClient:
     """REST API wrapper for qBittorrent WebUI.
 
-    CONCEPT:ORCH-1.4 — Action Execution Pipeline
+    CONCEPT:AU-ORCH.adapter.kg-graph-materialization — Action Execution Pipeline
     """
 
     def __init__(

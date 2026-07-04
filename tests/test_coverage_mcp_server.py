@@ -114,7 +114,7 @@ VALID_TOOL_ACTIONS = {
 def test_mcp_server_coverage(mock_session):
     """Verify MCP tools invoke correctly with and without Context.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
 
     async def mock_on_request(self, context, call_next):
@@ -235,7 +235,7 @@ def test_mcp_server_coverage(mock_session):
 def test_mcp_server_run_options():
     """Verify different command line transport and run configurations.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     from qbittorrent_agent.mcp_server import mcp_server
 

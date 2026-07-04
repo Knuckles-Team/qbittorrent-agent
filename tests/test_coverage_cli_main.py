@@ -47,7 +47,7 @@ agent_utilities.create_agent_parser = MagicMock(return_value=mock_parser)
 def test_agent_server_coverage():
     """Verify agent server parses command line arguments and invokes backend server.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     from qbittorrent_agent.agent_server import agent_server
 
@@ -71,7 +71,7 @@ def test_agent_server_coverage():
 def test_init_coverage():
     """Verify package level safe import functionality.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     from qbittorrent_agent import _import_module_safely
 
@@ -82,7 +82,7 @@ def test_init_coverage():
 def test_package_dynamic_attributes():
     """Verify lazy-loading fallback proxies inside package initializers.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     import qbittorrent_agent
 
@@ -128,7 +128,7 @@ def test_package_dynamic_attributes():
 def test_main_execution():
     """Verify __main__ package entrypoint invokes backend initialization.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     import runpy
 
@@ -146,7 +146,7 @@ def test_main_execution():
 def test_agent_server_main_execution():
     """Verify agent_server direct execution runs setup routines.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     import runpy
 
@@ -162,7 +162,7 @@ def test_agent_server_main_execution():
 def test_mcp_server_main_execution():
     """Verify mcp_server direct run executes server loops.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     import runpy
 
@@ -175,7 +175,7 @@ def test_mcp_server_main_execution():
 def test_requests_dependency_warning_import_error():
     """Verify mcp_server safe import exception handling.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     original_import = builtins.__import__
 
