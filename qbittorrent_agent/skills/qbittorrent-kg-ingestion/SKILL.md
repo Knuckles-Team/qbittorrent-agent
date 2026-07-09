@@ -1,5 +1,6 @@
 ---
 name: qbittorrent-kg-ingestion
+skill_type: skill
 description: >-
   Natively ingest qBittorrent torrents into the epistemic-graph knowledge graph as
   typed :Torrent nodes (plus :Tracker and :TorrentCategory nodes with :announcesTo /

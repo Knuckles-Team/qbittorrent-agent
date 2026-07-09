@@ -1,5 +1,6 @@
 ---
 name: qbittorrent-torrent-lifecycle
+skill_type: skill
 description: >-
   Manage the qBittorrent torrent lifecycle via the qbittorrent-agent MCP server —
   add torrents from magnet/URL/.torrent, list and filter, pause/resume/recheck/

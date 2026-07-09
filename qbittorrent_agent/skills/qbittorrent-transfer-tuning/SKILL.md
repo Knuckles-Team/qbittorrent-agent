@@ -1,5 +1,6 @@
 ---
 name: qbittorrent-transfer-tuning
+skill_type: skill
 description: >-
   Tune qBittorrent throughput and seeding policy via the qbittorrent-agent MCP
   server — global and per-torrent download/upload speed limits, share limits
