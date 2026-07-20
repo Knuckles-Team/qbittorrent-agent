@@ -20,7 +20,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/qbittorrent-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/qbittorrent-agent)
 
-*Version: 0.28.0*
+*Version: 1.0.1*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > interfaces, and guidance for provisioning the qBittorrent backing service are
@@ -98,17 +98,126 @@ Detailed instructions on how to use the underlying API wrappers, extended schema
 This server utilizes dynamic Action-Routed tools to optimize token overhead and maximize IDE compatibility.
 
 ### Available MCP Tools
-| Tool Module | Toggle Env Var | Enabled by Default | Description & Nested Methods |
-|-------------|----------------|--------------------|------------------------------|
-| **App** | `APP_TOOL` | `True` | Manage qbittorrent app operations. Action-routed methods: `get_api_version`, `get_application_version`, `get_build_info`, `get_default_save_path`, `get_preferences`, `set_preferences`, `shutdown_application`. |
-| **Log** | `LOG_TOOL` | `True` | Manage qbittorrent log operations. Action-routed methods: `get_main_log`, `get_peer_log`. |
-| **Sync** | `SYNC_TOOL` | `True` | Manage qbittorrent sync operations. Action-routed methods: `get_main_data`, `get_torrent_peers_data`. |
-| **Transfer** | `TRANSFER_TOOL` | `True` | Manage qbittorrent transfer operations. Action-routed methods: `ban_peers`, `get_global_download_limit`, `get_global_transfer_info`, `get_global_upload_limit`, `get_speed_limits_mode`, `set_global_download_limit`, `set_global_upload_limit`, `toggle_speed_limits_mode`. |
-| **Torrents** | `TORRENTS_TOOL` | `True` | Manage qbittorrent torrents operations. Action-routed methods: `add_new_category`, `add_new_torrent`, `add_peers`, `add_torrent_tags`, `add_trackers_to_torrent`, `bottom_torrent_priority`, `create_tags`, `decrease_torrent_priority`, `delete_tags`, `delete_torrents`, `edit_category`, `edit_tracker`, `get_all_categories`, `get_all_tags`, `get_torrent_contents`, `get_torrent_download_limit`, `get_torrent_list`, `get_torrent_piece_hashes`, `get_torrent_piece_states`, `get_torrent_properties`, `get_torrent_trackers`, `get_torrent_upload_limit`, `get_torrent_webseeds`, `increase_torrent_priority`, `pause_torrents`, `reannounce_torrents`, `recheck_torrents`, `remove_categories`, `remove_torrent_tags`, `remove_trackers`, `rename_file`, `rename_folder`, `resume_torrents`, `set_auto_management`, `set_file_priority`, `set_force_start`, `set_super_seeding`, `set_torrent_category`, `set_torrent_download_limit`, `set_torrent_location`, `set_torrent_name`, `set_torrent_share_limit`, `set_torrent_upload_limit`, `toggle_first_last_piece_priority`, `toggle_sequential_download`, `top_torrent_priority`. |
-| **Rss** | `RSS_TOOL` | `True` | Manage qbittorrent rss operations. Action-routed methods: `add_rss_feed`, `add_rss_folder`, `get_all_rss_articles_matching_rule`, `get_all_rss_auto_downloading_rules`, `get_all_rss_items`, `mark_rss_as_read`, `move_rss_item`, `refresh_rss_item`, `remove_rss_auto_downloading_rule`, `remove_rss_item`, `rename_rss_auto_downloading_rule`, `set_rss_auto_downloading_rule`. |
-| **Search** | `SEARCH_TOOL` | `True` | Manage qbittorrent search operations. Action-routed methods: `delete_search`, `enable_search_plugin`, `get_search_plugins`, `get_search_results`, `get_search_status`, `install_search_plugin`, `start_search`, `stop_search`, `uninstall_search_plugin`, `update_search_plugins`. |
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
+This table is auto-generated from the live server — do not edit by hand.
+
+<!-- MCP-TOOLS-TABLE:START -->
+
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `qbittorrent_app` | `APPTOOL` | Manage qbittorrent app operations. |
+| `qbittorrent_log` | `LOGTOOL` | Manage qbittorrent log operations. |
+| `qbittorrent_rss` | `RSSTOOL` | Manage qbittorrent rss operations. |
+| `qbittorrent_search` | `SEARCHTOOL` | Manage qbittorrent search operations. |
+| `qbittorrent_sync` | `SYNCTOOL` | Manage qbittorrent sync operations. |
+| `qbittorrent_torrents` | `TORRENTSTOOL` | Manage qbittorrent torrents operations. |
+| `qbittorrent_transfer` | `TRANSFERTOOL` | Manage qbittorrent transfer operations. |
+
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>89 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `qbittorrent_add_peers` | `APITOOL` | Add peers. |
+| `qbittorrent_add_rss_feed` | `APITOOL` | Add RSS feed. |
+| `qbittorrent_add_rss_folder` | `APITOOL` | Add RSS folder. |
+| `qbittorrent_add_torrent` | `APITOOL` | Add new torrent. |
+| `qbittorrent_add_torrent_tags` | `APITOOL` | Add torrent tags. |
+| `qbittorrent_add_trackers` | `APITOOL` | Add trackers to torrent. |
+| `qbittorrent_ban_peers` | `APITOOL` | Ban peers. 'peers' is a string of peers separated by \| (host:port). |
+| `qbittorrent_bottom_priority` | `APITOOL` | Minimal torrent priority. |
+| `qbittorrent_create_category` | `APITOOL` | Add new category. |
+| `qbittorrent_create_tags` | `APITOOL` | Create tags. |
+| `qbittorrent_decrease_priority` | `APITOOL` | Decrease torrent priority. |
+| `qbittorrent_delete_tags` | `APITOOL` | Delete tags. |
+| `qbittorrent_delete_torrents` | `APITOOL` | Delete torrents. |
+| `qbittorrent_edit_category` | `APITOOL` | Edit category. |
+| `qbittorrent_edit_tracker` | `APITOOL` | Edit tracker. |
+| `qbittorrent_enable_search_plugin` | `APITOOL` | Enable/disable search plugin. |
+| `qbittorrent_get_api_version` | `APITOOL` | Get API version. |
+| `qbittorrent_get_build_info` | `APITOOL` | Get build info. |
+| `qbittorrent_get_categories` | `APITOOL` | Get all categories. |
+| `qbittorrent_get_default_save_path` | `APITOOL` | Get default save path. |
+| `qbittorrent_get_global_download_limit` | `APITOOL` | Get global download limit in bytes/second. |
+| `qbittorrent_get_global_upload_limit` | `APITOOL` | Get global upload limit in bytes/second. |
+| `qbittorrent_get_log` | `APITOOL` | Get main log. |
+| `qbittorrent_get_main_data` | `APITOOL` | Get main data. |
+| `qbittorrent_get_peer_log` | `APITOOL` | Get peer log. |
+| `qbittorrent_get_preferences` | `APITOOL` | Get application preferences. |
+| `qbittorrent_get_rss_items` | `APITOOL` | Get all RSS items. |
+| `qbittorrent_get_rss_matching_articles` | `APITOOL` | Get all articles matching a rule. |
+| `qbittorrent_get_rss_rules` | `APITOOL` | Get all auto-downloading rules. |
+| `qbittorrent_get_search_plugins` | `APITOOL` | Get search plugins. |
+| `qbittorrent_get_speed_limits_mode` | `APITOOL` | Get alternative speed limits state (1 if enabled, 0 otherwise). |
+| `qbittorrent_get_tags` | `APITOOL` | Get all tags. |
+| `qbittorrent_get_torrent_contents` | `APITOOL` | Get torrent contents. |
+| `qbittorrent_get_torrent_download_limit` | `APITOOL` | Get torrent download limit. |
+| `qbittorrent_get_torrent_peers_data` | `APITOOL` | Get torrent peers data. |
+| `qbittorrent_get_torrent_piece_hashes` | `APITOOL` | Get torrent pieces' hashes. |
+| `qbittorrent_get_torrent_piece_states` | `APITOOL` | Get torrent pieces' states. |
+| `qbittorrent_get_torrent_properties` | `APITOOL` | Get torrent generic properties. |
+| `qbittorrent_get_torrent_trackers` | `APITOOL` | Get torrent trackers. |
+| `qbittorrent_get_torrent_upload_limit` | `APITOOL` | Get torrent upload limit. |
+| `qbittorrent_get_torrent_webseeds` | `APITOOL` | Get torrent web seeds. |
+| `qbittorrent_get_torrents` | `APITOOL` | Get torrent list. |
+| `qbittorrent_get_transfer_info` | `APITOOL` | Get global transfer info. |
+| `qbittorrent_get_version` | `APITOOL` | Get application version. |
+| `qbittorrent_increase_priority` | `APITOOL` | Increase torrent priority. |
+| `qbittorrent_install_search_plugin` | `APITOOL` | Install search plugin. |
+| `qbittorrent_login` | `BASE_API_CLIENTTOOL` | Authenticate with qBittorrent and get SID cookie. |
+| `qbittorrent_logout` | `BASE_API_CLIENTTOOL` | Log out from qBittorrent. |
+| `qbittorrent_mark_rss_as_read` | `APITOOL` | Mark RSS as read. |
+| `qbittorrent_move_rss_item` | `APITOOL` | Move RSS item. |
+| `qbittorrent_pause_torrents` | `APITOOL` | Pause (stop) torrents. qBittorrent 5.x renamed the endpoint to torrents/stop. |
+| `qbittorrent_reannounce_torrents` | `APITOOL` | Reannounce torrents. |
+| `qbittorrent_recheck_torrents` | `APITOOL` | Recheck torrents. |
+| `qbittorrent_refresh_rss_item` | `APITOOL` | Refresh RSS item. |
+| `qbittorrent_remove_categories` | `APITOOL` | Remove categories. 'categories' is |
+| `qbittorrent_remove_rss_item` | `APITOOL` | Remove RSS item. |
+| `qbittorrent_remove_rss_rule` | `APITOOL` | Remove auto-downloading rule. |
+| `qbittorrent_remove_torrent_tags` | `APITOOL` | Remove torrent tags. |
+| `qbittorrent_remove_trackers` | `APITOOL` | Remove trackers. |
+| `qbittorrent_rename_file` | `APITOOL` | Rename file. |
+| `qbittorrent_rename_folder` | `APITOOL` | Rename folder. |
+| `qbittorrent_rename_rss_rule` | `APITOOL` | Rename auto-downloading rule. |
+| `qbittorrent_resume_torrents` | `APITOOL` | Resume (start) torrents. qBittorrent 5.x renamed the endpoint to torrents/start. |
+| `qbittorrent_search_delete` | `APITOOL` | Delete search. |
+| `qbittorrent_search_results` | `APITOOL` | Get search results. |
+| `qbittorrent_search_start` | `APITOOL` | Start search. |
+| `qbittorrent_search_status` | `APITOOL` | Get search status. |
+| `qbittorrent_search_stop` | `APITOOL` | Stop search. |
+| `qbittorrent_set_auto_management` | `APITOOL` | Set automatic torrent management. |
+| `qbittorrent_set_file_priority` | `APITOOL` | Set file priority. |
+| `qbittorrent_set_force_start` | `APITOOL` | Set force start. |
+| `qbittorrent_set_global_download_limit` | `APITOOL` | Set global download limit in bytes/second. |
+| `qbittorrent_set_global_upload_limit` | `APITOOL` | Set global upload limit in bytes/second. |
+| `qbittorrent_set_preferences` | `APITOOL` | Set application preferences. |
+| `qbittorrent_set_rss_rule` | `APITOOL` | Set auto-downloading rule. |
+| `qbittorrent_set_super_seeding` | `APITOOL` | Set super seeding. |
+| `qbittorrent_set_torrent_category` | `APITOOL` | Set torrent category. |
+| `qbittorrent_set_torrent_download_limit` | `APITOOL` | Set torrent download limit. |
+| `qbittorrent_set_torrent_location` | `APITOOL` | Set torrent location. |
+| `qbittorrent_set_torrent_name` | `APITOOL` | Set torrent name. |
+| `qbittorrent_set_torrent_share_limit` | `APITOOL` | Set torrent share limit. |
+| `qbittorrent_set_torrent_upload_limit` | `APITOOL` | Set torrent upload limit. |
+| `qbittorrent_shutdown_application` | `APITOOL` | Shutdown application. |
+| `qbittorrent_toggle_first_last_piece_priority` | `APITOOL` | Set first/last piece priority. |
+| `qbittorrent_toggle_sequential_download` | `APITOOL` | Toggle sequential download. |
+| `qbittorrent_toggle_speed_limits_mode` | `APITOOL` | Toggle alternative speed limits. |
+| `qbittorrent_top_priority` | `APITOOL` | Maximal torrent priority. |
+| `qbittorrent_uninstall_search_plugin` | `APITOOL` | Uninstall search plugin. |
+| `qbittorrent_update_search_plugins` | `APITOOL` | Update search plugins. |
+
+</details>
+
+_7 action-routed tool(s) (default) · 89 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
+
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/usage.md](docs/usage.md).
 
 ### Dynamic Tool Selection & Visibility
 
@@ -133,88 +242,134 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 ### MCP Configuration Examples
 
-#### stdio Transport (Recommended for local IDEs e.g., Cursor, Claude Desktop)
-Configure your IDE's `mcp.json` to launch the MCP server via `uvx`:
+<!-- MCP-CONFIG-EXAMPLES:START -->
+
+> **Install the connector-focused `[mcp]` extra.** Examples use `qbittorrent-agent[mcp]` to add
+> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
+> enables model orchestration.
+
+#### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
+    "qbittorrent-mcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "qbittorrent-agent",
+        "qbittorrent-agent[mcp]",
         "qbittorrent-mcp"
       ],
       "env": {
-        "QBITTORRENT_HOST": "your_qbittorrent_host_here",
-        "QBITTORRENT_PORT": "your_qbittorrent_port_here",
-        "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_API_KEY": "your_qbittorrent_api_key_here"
+        "MCP_TOOL_MODE": "intent",
+        "APPTOOL": "True",
+        "LOGTOOL": "True",
+        "RSSTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SYNCTOOL": "True",
+        "TORRENTSTOOL": "True",
+        "TRANSFERTOOL": "True"
       }
     }
   }
 }
 ```
 
-#### Streamable-HTTP Transport (Recommended for production deployments)
-Configure your client's `mcp.json` to launch the Streamable-HTTP server via `uvx` with explicit host and port definition:
+Runtime references require an alias-aware launcher such as GraphOS. Other
+launchers must omit those entries and inject the resolved values through their
+own runtime secret boundary.
+
+#### Streamable-HTTP Transport (networked / production)
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
+    "qbittorrent-mcp": {
       "command": "uvx",
       "args": [
         "--from",
-        "qbittorrent-agent",
-        "qbittorrent-mcp"
+        "qbittorrent-agent[mcp]",
+        "qbittorrent-mcp",
+        "--transport",
+        "streamable-http",
+        "--port",
+        "8000"
       ],
       "env": {
         "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
+        "HOST": "127.0.0.1",
         "PORT": "8000",
-        "QBITTORRENT_HOST": "your_qbittorrent_host_here",
-        "QBITTORRENT_PORT": "your_qbittorrent_port_here",
-        "QBITTORRENT_USERNAME": "your_qbittorrent_username_here",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_API_KEY": "your_qbittorrent_api_key_here"
+        "MCP_TOOL_MODE": "intent",
+        "APPTOOL": "True",
+        "LOGTOOL": "True",
+        "RSSTOOL": "True",
+        "SEARCHTOOL": "True",
+        "SYNCTOOL": "True",
+        "TORRENTSTOOL": "True",
+        "TRANSFERTOOL": "True"
       }
     }
   }
 }
 ```
 
-Alternatively, connect to a pre-deployed remote or local Streamable-HTTP instance:
+Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
 
 ```json
 {
   "mcpServers": {
-    "qbittorrent-agent": {
-      "url": "http://localhost:8000/qbittorrent-agent/mcp"
+    "qbittorrent-mcp": {
+      "url": "http://localhost:8000/qbittorrent-mcp/mcp"
     }
   }
 }
 ```
 
-Deploying the Streamable-HTTP server via Docker:
+Run a reviewed container image as a least-privilege stdio child (no
+listener or published port):
 
 ```bash
-docker run -d \
-  --name qbittorrent-agent-mcp \
-  -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e PORT=8000 \
-  -e QBITTORRENT_HOST="your_value" \
-  -e QBITTORRENT_PORT="your_value" \
-  -e QBITTORRENT_USERNAME="your_value" \
-  -e QBITTORRENT_PASSWORD="your_value" \
-  -e QBITTORRENT_API_KEY="your_value" \
-  knucklessg1/qbittorrent-agent:latest
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
+  -e MCP_TOOL_MODE=intent \
+  -e APPTOOL=True \
+  -e LOGTOOL=True \
+  -e RSSTOOL=True \
+  -e SEARCHTOOL=True \
+  -e SYNCTOOL=True \
+  -e TORRENTSTOOL=True \
+  -e TRANSFERTOOL=True \
+  registry.example.invalid/qbittorrent-agent@sha256:<digest> qbittorrent-mcp
 ```
 
----
+For containerized network HTTP, supply an authenticated TLS ingress (or
+direct server TLS), exact `MCP_ALLOWED_HOSTS`, and an exact trusted-proxy
+CIDR policy through the operator-owned deployment profile. The generator
+does not emit an unauthenticated non-loopback listener.
+
+_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
+<!-- MCP-CONFIG-EXAMPLES:END -->
+
+<!-- BEGIN GENERATED: additional-deployment-options -->
+### Additional Deployment Options
+
+`qbittorrent-agent` can run as a local stdio process or container, or behind a remote
+network boundary. The
+[Deployment guide](https://knuckles-team.github.io/qbittorrent-agent/deployment/) carries
+the detailed transport contract.
+
+- **Local container** — launch a reviewed immutable image as a least-privilege
+  stdio child with no listener or published port.
+- **Remote URL** — connect through an operator-supplied authenticated HTTPS
+  ingress. Keep its URL, outbound identity references, trust profile, and exact
+  `MCP_ALLOWED_HOSTS` in `AgentConfig`.
+<!-- END GENERATED: additional-deployment-options -->
 
 ## Agent
 
@@ -225,11 +380,9 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export QBITTORRENT_HOST="your_value"
-export QBITTORRENT_PORT="your_value"
+export QBITTORRENT_URL="<configured-endpoint>"
 export QBITTORRENT_USERNAME="your_value"
 export QBITTORRENT_PASSWORD="your_value"
-export QBITTORRENT_API_KEY="your_value"
 
 # Run the agent server
 qbittorrent-agent --provider openai --model-id gpt-4o
@@ -243,7 +396,7 @@ version: '3.8'
 
 services:
   qbittorrent-agent-mcp:
-    image: knucklessg1/qbittorrent-agent:latest
+    image: example/qbittorrent-agent:mcp
     container_name: qbittorrent-agent-mcp
     hostname: qbittorrent-agent-mcp
     restart: always
@@ -269,7 +422,7 @@ services:
         max-file: "3"
 
   qbittorrent-agent-agent:
-    image: knucklessg1/qbittorrent-agent:latest
+    image: example/qbittorrent-agent@sha256:<digest>
     container_name: qbittorrent-agent-agent
     hostname: qbittorrent-agent-agent
     restart: always
@@ -303,21 +456,74 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/deployment.md](docs/deployment.md).
 
 ---
 
 ## Environment Variables
 
+<!-- ENV-VARS-TABLE:START -->
+
+#### Package environment variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `HOST` | `0.0.0.0` |  |
+| `PORT` | `8000` |  |
+| `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
+| `ENABLE_OTEL` | `True` |  |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
+| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
+| `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
+| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
+| `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
+| `QBITTORRENT_URL` | Required | Unified qBittorrent Web UI base URL. |
+| `QBITTORRENT_USERNAME` | Required |  |
+| `QBITTORRENT_PASSWORD` | Required |  |
+| `TLS_PROFILE` | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
+| `TLS_PROFILES_REF` | — | Runtime secret reference for the TLS profile catalog. |
+| `APPTOOL` | `True` |  |
+| `LOGTOOL` | `True` |  |
+| `SYNCTOOL` | `True` |  |
+| `TRANSFERTOOL` | `True` |  |
+| `TORRENTSTOOL` | `True` |  |
+| `RSSTOOL` | `True` |  |
+| `SEARCHTOOL` | `True` |  |
+
+#### Inherited agent-utilities variables (apply to every connector)
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
+| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
+| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
+| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
+| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `DEBUG` | `False` | Verbose logging |
+| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
+| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
+| `PROVIDER` | `openai` | LLM provider for the agent |
+| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
+
+_23 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+<!-- ENV-VARS-TABLE:END -->
+
+
 The agent and MCP server can be fully configured using the following environment variables:
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| **`QBITTORRENT_HOST`** | String | `None` | **Required**. Hostname or IP address of the qBittorrent Web UI server. |
-| **`QBITTORRENT_PORT`** | Integer | `8080` | Port of the qBittorrent Web UI server. |
+| **`QBITTORRENT_URL`** | String | Required | Unified qBittorrent Web UI base URL. |
 | **`QBITTORRENT_USERNAME`** | String | `None` | Username for authentication. |
 | **`QBITTORRENT_PASSWORD`** | String | `None` | Password for authentication. |
-| **`QBITTORRENT_API_KEY`** | String | `None` | Optional API Key for credential-less authentication. |
+| **`TLS_PROFILE`** | String | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
+| **`TLS_PROFILES_REF`** | Secret reference | — | Runtime reference for the TLS profile catalog. |
 | **`APPTOOL`** | Boolean | `True` | Toggle to enable/disable the App tool module. |
 | **`LOGTOOL`** | Boolean | `True` | Toggle to enable/disable the Log tool module. |
 | **`SYNCTOOL`** | Boolean | `True` | Toggle to enable/disable the Sync tool module. |
@@ -328,9 +534,22 @@ The agent and MCP server can be fully configured using the following environment
 | **`TRANSPORT`** | String | `stdio` | Server transport protocol (`stdio`, `sse`, or `streamable-http`). |
 | **`HOST`** | String | `127.0.0.1` | The network interface/IP to bind the server to. |
 | **`PORT`** | Integer | `8000` | The port to run the server on when using HTTP-based transports. |
-| **`AUTH_TYPE`** | String | `none` | Security authentication mode (`none`, `oidc`). |
-| **`POLICY_MODE`** | String | `none` | Eunomia policy enforcement mode (`none`, `embedded`, `remote`). |
-| **`LOGFIRE_TOKEN`** | String | `None` | Optional telemetry token to export metrics/logs to Logfire. |
+| **`MCP_TOOL_MODE`** | String | `condensed` | Tool surface: `condensed`, `verbose`, or `both`. |
+| **`MCP_ENABLED_TOOLS`** / **`MCP_DISABLED_TOOLS`** | String | `None` | Comma-separated tool allow/deny list. |
+| **`MCP_ENABLED_TAGS`** / **`MCP_DISABLED_TAGS`** | String | `None` | Comma-separated tag allow/deny list. |
+| **`DEBUG`** | Boolean | `False` | Verbose logging. |
+| **`PYTHONUNBUFFERED`** | Integer | `1` | Unbuffered stdout (recommended in containers). |
+| **`ENABLE_OTEL`** | Boolean | `True` | Enable OpenTelemetry export. |
+| **`OTEL_EXPORTER_OTLP_ENDPOINT`** | String | `None` | OTLP collector endpoint. |
+| **`OTEL_EXPORTER_OTLP_PUBLIC_KEY`** / **`OTEL_EXPORTER_OTLP_SECRET_KEY`** | String | `None` | OTLP auth keys. |
+| **`OTEL_EXPORTER_OTLP_PROTOCOL`** | String | `None` | OTLP protocol (e.g. `http/protobuf`). |
+| **`EUNOMIA_TYPE`** | String | `none` | Authorization mode: `none`, `embedded`, `remote`. |
+| **`EUNOMIA_POLICY_FILE`** | String | `mcp_policies.json` | Embedded Eunomia policy file. |
+| **`EUNOMIA_REMOTE_URL`** | String | `None` | Remote Eunomia server URL. |
+| **`MCP_URL`** | String | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to (full `[agent]` runtime only). |
+| **`PROVIDER`** | String | `openai` | LLM provider (full `[agent]` runtime only). |
+| **`MODEL_ID`** | String | `gpt-4o` | Model id (full `[agent]` runtime only). |
+| **`ENABLE_WEB_UI`** | Boolean | `True` | Serve the AG-UI web interface (full `[agent]` runtime only). |
 
 ---
 
@@ -354,24 +573,61 @@ Built directly upon the enterprise-ready [`agent-utilities`](https://github.com/
 
 ## Installation
 
-Install the Python package locally:
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `qbittorrent-agent[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | You only run the **MCP server** (smallest install / image) |
+| `qbittorrent-agent[agent]` | Agent runtime (`agent-utilities[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | You run the **integrated agent** |
+| `qbittorrent-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
-# Using uv (highly recommended)
-uv pip install qbittorrent-agent[all]
+# Connector-focused MCP server (includes the shared graph engine)
+uv pip install "qbittorrent-agent[mcp]"
 
-# Using standard pip
-python -m pip install qbittorrent-agent[all]
+# Agent runtime (adds model orchestration to the shared graph engine)
+uv pip install "qbittorrent-agent[agent]"
+
+# Everything (development)
+uv pip install "qbittorrent-agent[all]"      # or: python -m pip install "qbittorrent-agent[all]"
 ```
+
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `example/qbittorrent-agent:mcp` | `--target mcp` | `qbittorrent-agent[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `qbittorrent-mcp` |
+| `example/qbittorrent-agent@sha256:<digest>` | `--target agent` (default) | `qbittorrent-agent[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `qbittorrent-agent` |
+
+```bash
+docker build --target mcp   -t example/qbittorrent-agent:mcp    docker/   # connector-focused MCP server
+docker build --target agent -t example/qbittorrent-agent:agent-local docker/   # agent runtime
+```
+
+`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
+Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+the server connector-focused; `[agent]` additionally enables model orchestration. Local
+deployments can use the bundled engine. For production or shared state, run
+**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
 
 ---
 
 ## Repository Owners
 
-<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=Knucklessg1&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
 
-![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
-![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
 
 ---
 
@@ -382,3 +638,42 @@ Contributions are welcome! Please ensure code quality by executing local checks 
 - Lint code using `ruff check .`
 - Validate type-safety with `mypy .`
 - Execute test suites using `pytest`
+
+
+<!-- BEGIN agent-utilities-deployment (generated; do not edit between markers) -->
+
+## Deploy with `agent-utilities-deployment`
+
+Provision this package with the consolidated **`agent-utilities-deployment`**
+workflow. It selects an installed-package, editable-source, or immutable-container
+path; records only runtime secret and TLS-profile references in `AgentConfig`; and
+runs doctor, registration, policy, observability, and rollback gates. Ask your agent
+to **"deploy `qbittorrent-agent` with agent-utilities-deployment"**.
+
+| Install mode | Command |
+|------|---------|
+| Installed package | `uv tool install "qbittorrent-agent[mcp]"`, then run `qbittorrent-mcp` |
+| Editable source | `uv pip install -e ".[agent]"`, then run `qbittorrent-mcp` |
+| Immutable container | deploy `registry.example.invalid/qbittorrent-agent@sha256:<digest>` through the operator-selected orchestrator |
+
+The repository embeds no deployment profile, credential value, certificate path, or
+environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
+configured secret provider.
+
+<!-- END agent-utilities-deployment -->
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+This package ships a compact canonical skill surface with specialist procedures
+kept as referenced workflows. The current MCP tools, skill metadata,
+`connector_manifest.yml`, ontology, mappings, shapes, fixtures, migrations,
+tool-schema fingerprints, and certification metadata form one versioned
+capability contract. Validate them together; do not rely on stale tool names or
+historical per-task skill wrappers.
+
+Runtime endpoints, credentials, certificate trust, tenant identity, retention,
+and observability policy are deployment inputs and are never packaged values.
+See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
+network transport, connector ingestion, GraphOS delegation, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->

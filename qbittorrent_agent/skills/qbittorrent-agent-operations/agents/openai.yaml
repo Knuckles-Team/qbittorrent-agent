@@ -1,0 +1,4 @@
+interface:
+  display_name: "Qbittorrent Agent Operations"
+  short_description: "Help with Qbittorrent Agent Operations tasks"
+  default_prompt: "Use $qbittorrent-agent-operations to complete a governed provider workflow."

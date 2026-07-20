@@ -57,5 +57,5 @@ Skipped informational: 5
   - Priority: P3-Low | Effort: Medium
 - [ ] [P] **T027** [Environment Variables] Undocumented env vars: APPTOOL, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, LO
   - Priority: P3-Low | Effort: Medium
-- [ ] [P] **T028** [Environment Variables] 2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL
+- [ ] [P] **T028** [Environment Variables] 2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL
   - Priority: P3-Low | Effort: Medium

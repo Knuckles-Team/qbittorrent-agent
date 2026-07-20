@@ -28,7 +28,7 @@
 - [ ] **FR-025**: 1 tests have no assertions
 - [ ] **FR-026**: Only 24% of env vars documented in README.md
 - [ ] **FR-027**: Undocumented env vars: ALLOWED_CLIENT_REDIRECT_URIS, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_REMOTE_URL, EUNOMIA_TYPE, OAUTH_BASE_URL, OAUTH_UPSTREAM_AUTH_ENDPOINT, OAUTH_UPSTREAM_CLIENT_ID, OAUTH_UPSTREAM_CLIENT_SECRET, OAUTH_UPSTREAM_TOKEN_ENDPOINT
-- [ ] **FR-028**: 2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL
+- [ ] **FR-028**: 2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL
 
 ## User Stories / Acceptance Criteria
 - [ ] As a **developer**, I want to **address Project Analysis findings (grade: C, score: 74)**, so that **improve project project analysis from C to at least B (80+)**.

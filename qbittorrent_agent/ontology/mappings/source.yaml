@@ -1,0 +1,20 @@
+schema_version: '1'
+connector: qbittorrent-agent
+ontology_source: qbittorrent
+sync:
+- preset: qbittorrent-torrents
+  server: qbittorrent-agent
+  tool: qbittorrent_torrents
+  action: get_torrent_list
+  records_path: ''
+  id_field: hash
+  title_field: name
+  text_field: name
+  updated_field: added_on
+  doc_type: torrent
+  tool_schema_sha256: bd094598a34de2905c09950dd592b562ee460888bab51e1d8ffc402a447844cc
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization

@@ -3,6 +3,8 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from agent_utilities.mcp.action_dispatch import resolve_action
+from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -36,22 +38,36 @@ def register_app_tools(mcp: FastMCP):
         try:
             kwargs = json.loads(params_json)
         except Exception as e:
-            return {"error": f"Invalid params_json: {e}"}
+            return {"error": "Operation failed"}
 
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
+        valid_actions = (
+            "get_application_version",
+            "get_api_version",
+            "get_build_info",
+            "shutdown_application",
+            "get_preferences",
+            "set_preferences",
+            "get_default_save_path",
+        )
+        resolved = resolve_action(action, valid_actions, service="qbittorrent-agent")
+        if isinstance(resolved, dict):
+            return resolved
+        action = resolved
+
         if action == "get_application_version":
-            return client.get_version(**kwargs)
+            return await run_blocking(client.get_version, **kwargs)
         if action == "get_api_version":
-            return client.get_api_version(**kwargs)
+            return await run_blocking(client.get_api_version, **kwargs)
         if action == "get_build_info":
-            return client.get_build_info(**kwargs)
+            return await run_blocking(client.get_build_info, **kwargs)
         if action == "shutdown_application":
-            return client.shutdown_application(**kwargs)
+            return await run_blocking(client.shutdown_application, **kwargs)
         if action == "get_preferences":
-            return client.get_preferences(**kwargs)
+            return await run_blocking(client.get_preferences, **kwargs)
         if action == "set_preferences":
-            return client.set_preferences(**kwargs)
+            return await run_blocking(client.set_preferences, **kwargs)
         if action == "get_default_save_path":
-            return client.get_default_save_path(**kwargs)
+            return await run_blocking(client.get_default_save_path, **kwargs)
         raise ValueError(f"Unknown action: {action}")

@@ -352,8 +352,8 @@
   },
   {
     "id": "T028",
-    "title": "[Environment Variables] 2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL",
-    "description": "2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL",
+    "title": "[Environment Variables] 2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL",
+    "description": "2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL",
     "domain": "Environment Variables",
     "priority": "P2-Medium",
     "effort": "Medium",

@@ -61,7 +61,7 @@ Skipped informational: 5
   - Priority: P2-Medium | Effort: Medium
 - [ ] [P] **T029** [Environment Variables] Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_END
   - Priority: P4-Enhancement | Effort: Medium
-- [ ] [P] **T030** [Environment Variables] 2 Python env vars not in .env.example: QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL
+- [ ] [P] **T030** [Environment Variables] 2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL
   - Priority: P4-Enhancement | Effort: Medium
 - [ ] [P] **T031** [analyze_xdg_kg] Analysis error: No module named 'agent_utilities.knowledge_graph'
   - Priority: P1-High | Effort: Medium

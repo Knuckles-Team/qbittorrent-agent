@@ -39,7 +39,6 @@ api = QbittorrentApi(
     base_url="http://your-qbittorrent:8080",
     username="admin",
     password="your_password",
-    verify=True,
 )
 
 # Reads

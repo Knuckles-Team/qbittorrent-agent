@@ -45,8 +45,8 @@
 - **FR-026**: No @pytest.mark.parametrize usage — consider data-driven tests
 - **FR-027**: 4 tests have no assertions
 - **FR-028**: 1 tests exceed 100 lines — likely doing too much per test
-- **FR-029**: Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, QBITTORRENT_AGENT_VERIFY, QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL
-- **FR-030**: 2 Python env vars not in .env.example: QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL
+- **FR-029**: Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, TLS_PROFILES_REF, QBITTORRENT_URL
+- **FR-030**: 2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL
 - **FR-031**: Analysis error: No module named 'agent_utilities.knowledge_graph'
 
 ## Success Criteria

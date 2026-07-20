@@ -178,7 +178,7 @@
     },
     {
       "id": "FR-028",
-      "description": "2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL",
+      "description": "2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL",
       "testable": true
     }
   ],

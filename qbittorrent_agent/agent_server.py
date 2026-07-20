@@ -12,7 +12,7 @@ from agent_utilities import (
     load_identity,
 )
 
-__version__ = "0.28.0"
+__version__ = "1.0.1"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,7 +43,7 @@ DEFAULT_AGENT_SYSTEM_PROMPT = os.getenv(
 def agent_server():
     """Start the agent server and schedule resources.
 
-    CONCEPT:OS-5.2 — Resource Scheduling
+    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
     """
     warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
     warnings.filterwarnings("ignore", category=DeprecationWarning, module="fastmcp")

@@ -1,15 +1,16 @@
 import inspect
 from typing import Any
 from unittest.mock import MagicMock, patch
-import pytest
+
 import requests
+
 from qbittorrent_agent.api_client import QbittorrentApi
 
 
 def test_qbittorrent_api_brute_force(mock_session):
     """Programmatically introspect and invoke all QbittorrentApi wrapper endpoints.
 
-    CONCEPT:ORCH-1.4 — Action Execution Pipeline
+    CONCEPT:AU-ORCH.adapter.kg-graph-materialization — Action Execution Pipeline
     """
     api_instance = QbittorrentApi(
         base_url="http://test", username="test", password="test"
@@ -74,4 +75,4 @@ def test_qbittorrent_api_brute_force(mock_session):
             # but allow handled/intended exceptions to catch actual implementation bugs
             if isinstance(e, AttributeError) and "headers" in str(e):
                 raise e
-            print(f"Handled method call for {name}: {e}")
+            print(f"Operation failed: {type(e).__name__}")

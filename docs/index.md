@@ -52,9 +52,9 @@ qbittorrent-mcp                  # stdio MCP server (default transport)
 Connect it to a qBittorrent instance:
 
 ```bash
-export QBITTORRENT_URL=http://your-qbittorrent:8080
-export QBITTORRENT_USERNAME=admin
-export QBITTORRENT_PASSWORD=your_password
+export QBITTORRENT_URL=<configured-endpoint>
+export QBITTORRENT_USERNAME=<configured-principal>
+export QBITTORRENT_PASSWORD=<runtime-secret>
 qbittorrent-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
 

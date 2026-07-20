@@ -1,13 +1,13 @@
 import inspect
 from typing import Any
+
 from pydantic import BaseModel
-import pytest
 
 
 def test_qbittorrent_models_coverage():
     """Verify deserialization of all declarative Pydantic schemas in qbittorrent_models.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     from qbittorrent_agent import qbittorrent_models
 
@@ -34,5 +34,5 @@ def test_qbittorrent_models_coverage():
                 inst = obj(**kwargs)
                 assert isinstance(inst, obj)
             except Exception as e:
-                print(f"Failed instantiating {name}: {e}")
+                print(f"Operation failed: {type(e).__name__}")
                 raise e

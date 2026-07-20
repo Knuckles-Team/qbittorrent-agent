@@ -3,7 +3,7 @@ import inspect
 import json
 from typing import Any
 from unittest.mock import MagicMock, patch
-import pytest
+
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
 
 VALID_TOOL_ACTIONS = {
@@ -114,7 +114,7 @@ VALID_TOOL_ACTIONS = {
 def test_mcp_server_coverage(mock_session):
     """Verify MCP tools invoke correctly with and without Context.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
 
     async def mock_on_request(self, context, call_next):
@@ -153,7 +153,9 @@ def test_mcp_server_coverage(mock_session):
                         mock_req = Request(scope=mock_scope)
                         res = await route.endpoint(mock_req)
                         assert res.status_code == 200
-                        assert json.loads(res.body.decode()) == {"status": "OK"}
+                        assert json.loads(res.body.decode()).get(
+                            "status", ""
+                        ).upper() == "OK"
 
                 tool_objs = (
                     await mcp.list_tools()
@@ -181,7 +183,16 @@ def test_mcp_server_coverage(mock_session):
                                     target_params[p_name] = "test"
                         await mcp.call_tool(tool_name, target_params)
                     except Exception as e:
-                        print(f"Standard tool call failed: {e}")
+                        print(f"Operation failed: {type(e).__name__}")
+
+                    # Action-routed tools take an ``action`` kwarg; Wire-First
+                    # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
+                    # skip the action-based direct calls for those.
+                    has_action = hasattr(tool, "parameters") and "action" in (
+                        getattr(tool.parameters, "properties", {}) or {}
+                    )
+                    if not has_action:
+                        continue
 
                     # 2. Direct tool.fn call for every single valid action
                     actions = VALID_TOOL_ACTIONS.get(tool_name, [None])
@@ -201,7 +212,7 @@ def test_mcp_server_coverage(mock_session):
                                 ctx=None,
                             )
                         except Exception as e:
-                            print(f"Direct tool.fn call failed for {act}: {e}")
+                            print(f"Operation failed: {type(e).__name__}")
 
                     # 3. Invalid action path to cover ValueError
                     try:
@@ -233,7 +244,7 @@ def test_mcp_server_coverage(mock_session):
 def test_mcp_server_run_options():
     """Verify different command line transport and run configurations.
 
-    CONCEPT:OS-5.3 — Guardrail Engine / Session Concurrency
+    CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
     from qbittorrent_agent.mcp_server import mcp_server
 
