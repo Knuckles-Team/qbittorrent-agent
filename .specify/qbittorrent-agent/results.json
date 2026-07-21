@@ -1,6 +1,6 @@
 {
   "project": "qbittorrent-agent",
-  "path": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent",
+  "path": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent",
   "domain_results": [
     {
       "domain": "Project Analysis",
@@ -26,7 +26,7 @@
         {
           "criterion": "externalized_prompts",
           "points": 0,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent",
           "reasoning": "No prompts/ directory found. Prompts may be hardcoded in source."
         },
         {
@@ -44,25 +44,25 @@
         {
           "criterion": "agents_md",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/AGENTS.md (3913 bytes)",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/AGENTS.md (3913 bytes)",
           "reasoning": "AGENTS.md exists with comprehensive content"
         },
         {
           "criterion": "pre_commit_hooks",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/.pre-commit-config.yaml",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/.pre-commit-config.yaml",
           "reasoning": "Pre-commit configuration found for automated code quality checks"
         },
         {
           "criterion": "gitignore",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/.gitignore",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/.gitignore",
           "reasoning": ".gitignore exists to prevent committing build artifacts and secrets"
         },
         {
           "criterion": "env_template",
           "points": 10,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/.env.example",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/.env.example",
           "reasoning": "Environment template exists for onboarding and secret management"
         },
         {
@@ -91,7 +91,7 @@
         {
           "criterion": "dependency_freshness",
           "points": 100,
-          "evidence": "source=/home/apps/workspace/agent-packages/agents/qbittorrent-agent/pyproject.toml total=5 major=0 minor=0 patch=0 not_installed=0",
+          "evidence": "source=${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/pyproject.toml total=5 major=0 minor=0 patch=0 not_installed=0",
           "reasoning": "Audited 5 deps (5 installed, 0 constraint-only). 0 major, 0 minor, 0 patch updates."
         }
       ],
@@ -182,7 +182,7 @@
           "length": 119,
           "complexity": 50,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
         },
         {
           "name": "qbittorrent_torrents",
@@ -190,7 +190,7 @@
           "length": 117,
           "complexity": 50,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
         },
         {
           "name": "test_mcp_server_coverage",
@@ -198,7 +198,7 @@
           "length": 113,
           "complexity": 21,
           "nesting_depth": 8,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
         },
         {
           "name": "run_tools",
@@ -206,7 +206,7 @@
           "length": 95,
           "complexity": 21,
           "nesting_depth": 6,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
         },
         {
           "name": "main",
@@ -214,7 +214,7 @@
           "length": 99,
           "complexity": 19,
           "nesting_depth": 4,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/scripts/verify_api_integration.py"
         }
       ],
       "top_long": [
@@ -224,7 +224,7 @@
           "length": 119,
           "complexity": 50,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
         },
         {
           "name": "qbittorrent_torrents",
@@ -232,7 +232,7 @@
           "length": 117,
           "complexity": 50,
           "nesting_depth": 2,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py"
         },
         {
           "name": "test_mcp_server_coverage",
@@ -240,7 +240,7 @@
           "length": 113,
           "complexity": 21,
           "nesting_depth": 8,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
         },
         {
           "name": "main",
@@ -248,7 +248,7 @@
           "length": 99,
           "complexity": 19,
           "nesting_depth": 4,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/scripts/verify_api_integration.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/scripts/verify_api_integration.py"
         },
         {
           "name": "run_tools",
@@ -256,7 +256,7 @@
           "length": 95,
           "complexity": 21,
           "nesting_depth": 6,
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py"
         }
       ],
       "structural_issues": [],
@@ -315,7 +315,7 @@
       "tests": [
         {
           "name": "test_qbittorrent_models_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 70,
           "length": 28,
           "intent": "unit",
@@ -325,7 +325,7 @@
         },
         {
           "name": "test_qbittorrent_api_brute_force",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 100,
           "length": 63,
           "intent": "unit",
@@ -335,7 +335,7 @@
         },
         {
           "name": "test_mcp_server_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 270,
           "length": 113,
           "intent": "unit",
@@ -345,7 +345,7 @@
         },
         {
           "name": "test_qbittorrent_api_errors",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 385,
           "length": 76,
           "intent": "unit",
@@ -355,7 +355,7 @@
         },
         {
           "name": "test_qbittorrent_api_login_failures",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 463,
           "length": 36,
           "intent": "unit",
@@ -365,7 +365,7 @@
         },
         {
           "name": "test_agent_server_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 501,
           "length": 18,
           "intent": "unit",
@@ -375,7 +375,7 @@
         },
         {
           "name": "test_init_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 521,
           "length": 5,
           "intent": "unit",
@@ -385,7 +385,7 @@
         },
         {
           "name": "test_package_dynamic_attributes",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 528,
           "length": 38,
           "intent": "unit",
@@ -395,7 +395,7 @@
         },
         {
           "name": "test_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 568,
           "length": 13,
           "intent": "unit",
@@ -405,7 +405,7 @@
         },
         {
           "name": "test_agent_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 583,
           "length": 11,
           "intent": "unit",
@@ -415,7 +415,7 @@
         },
         {
           "name": "test_mcp_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 596,
           "length": 8,
           "intent": "unit",
@@ -425,7 +425,7 @@
         },
         {
           "name": "test_mcp_server_run_options",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 606,
           "length": 36,
           "intent": "unit",
@@ -435,7 +435,7 @@
         },
         {
           "name": "test_auth_get_client_error",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 644,
           "length": 15,
           "intent": "unit",
@@ -445,7 +445,7 @@
         },
         {
           "name": "test_auth_get_client_success",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 661,
           "length": 7,
           "intent": "unit",
@@ -455,7 +455,7 @@
         },
         {
           "name": "test_requests_dependency_warning_import_error",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 670,
           "length": 17,
           "intent": "unit",
@@ -465,7 +465,7 @@
         },
         {
           "name": "test_concept_parity",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_concept_parity.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_concept_parity.py",
           "line": 58,
           "length": 30,
           "intent": "unit",
@@ -475,7 +475,7 @@
         },
         {
           "name": "test_server_startup",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_startup.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_startup.py",
           "line": 1,
           "length": 12,
           "intent": "unit",
@@ -485,7 +485,7 @@
         },
         {
           "name": "test_mcp_instance_creation",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
           "line": 6,
           "length": 5,
           "intent": "unit",
@@ -495,7 +495,7 @@
         },
         {
           "name": "test_import_qbittorrent_agent",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
           "line": 13,
           "length": 3,
           "intent": "unit",
@@ -771,7 +771,7 @@
             "detail": "1 modules exceed 500 lines (god modules)",
             "items": [
               {
-                "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+                "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
                 "lines": 686
               }
             ]
@@ -783,7 +783,7 @@
             "items": [
               {
                 "class": "Api",
-                "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/api/api_client_torrents.py",
+                "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/api/api_client_torrents.py",
                 "method_count": 46
               }
             ]
@@ -934,218 +934,218 @@
       "tests_missing_markers": [
         {
           "test_name": "test_qbittorrent_models_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 70
         },
         {
           "test_name": "test_qbittorrent_api_brute_force",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 100
         },
         {
           "test_name": "test_mcp_server_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 270
         },
         {
           "test_name": "test_qbittorrent_api_errors",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 385
         },
         {
           "test_name": "test_qbittorrent_api_login_failures",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 463
         },
         {
           "test_name": "test_agent_server_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 501
         },
         {
           "test_name": "test_init_coverage",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 521
         },
         {
           "test_name": "test_package_dynamic_attributes",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 528
         },
         {
           "test_name": "test_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 568
         },
         {
           "test_name": "test_agent_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 583
         },
         {
           "test_name": "test_mcp_server_main_execution",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 596
         },
         {
           "test_name": "test_mcp_server_run_options",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 606
         },
         {
           "test_name": "test_auth_get_client_error",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 644
         },
         {
           "test_name": "test_auth_get_client_success",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 661
         },
         {
           "test_name": "test_requests_dependency_warning_import_error",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_qbittorrent_agent_brute_force_coverage.py",
           "line": 670
         },
         {
           "test_name": "test_concept_parity",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_concept_parity.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_concept_parity.py",
           "line": 58
         },
         {
           "test_name": "test_server_startup",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_startup.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_startup.py",
           "line": 1
         },
         {
           "test_name": "test_mcp_instance_creation",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
           "line": 6
         },
         {
           "test_name": "test_import_qbittorrent_agent",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/tests/test_init.py",
           "line": 13
         }
       ],
       "functions_missing_docstrings": [
         {
           "function": "register_app_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 41,
           "length": 41
         },
         {
           "function": "register_log_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 84,
           "length": 31
         },
         {
           "function": "register_sync_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 117,
           "length": 31
         },
         {
           "function": "register_transfer_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 150,
           "length": 43
         },
         {
           "function": "register_torrents_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 195,
           "length": 119
         },
         {
           "function": "register_rss_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 316,
           "length": 51
         },
         {
           "function": "register_search_tools",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 369,
           "length": 47
         },
         {
           "function": "get_mcp_instance",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 418,
           "length": 38
         },
         {
           "function": "mcp_server",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 458,
           "length": 16
         },
         {
           "function": "qbittorrent_app",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 43,
           "length": 39
         },
         {
           "function": "qbittorrent_log",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 86,
           "length": 29
         },
         {
           "function": "qbittorrent_sync",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 119,
           "length": 29
         },
         {
           "function": "qbittorrent_transfer",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 152,
           "length": 41
         },
         {
           "function": "qbittorrent_torrents",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 197,
           "length": 117
         },
         {
           "function": "qbittorrent_rss",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 318,
           "length": 49
         },
         {
           "function": "qbittorrent_search",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/mcp_server.py",
           "line": 371,
           "length": 45
         },
         {
           "function": "get_client",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/auth.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/auth.py",
           "line": 15,
           "length": 28
         },
         {
           "function": "agent_server",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/agent_server.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/agent_server.py",
           "line": 43,
           "length": 34
         },
         {
           "function": "__getattr__",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/__init__.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/__init__.py",
           "line": 46,
           "length": 26
         },
         {
           "function": "__init__",
-          "file": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/api/api_client_base.py",
+          "file": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/qbittorrent_agent/api/api_client_base.py",
           "line": 19,
           "length": 18
         }
@@ -1379,7 +1379,7 @@
           "language": "python",
           "framework": "pytest",
           "command": [
-            "/home/apps/workspace/.venv/bin/python",
+            "${WORKSPACE_ROOT}/.venv/bin/python",
             "-m",
             "pytest",
             "--tb=line",
@@ -1449,7 +1449,7 @@
         {
           "criterion": "bumpversion_exists",
           "points": 20,
-          "evidence": "/home/apps/workspace/agent-packages/agents/qbittorrent-agent/.bumpversion.cfg",
+          "evidence": "${WORKSPACE_ROOT}/agent-packages/agents/qbittorrent-agent/.bumpversion.cfg",
           "reasoning": ".bumpversion.cfg found"
         },
         {

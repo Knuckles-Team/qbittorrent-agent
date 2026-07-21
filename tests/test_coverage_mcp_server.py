@@ -183,7 +183,16 @@ def test_mcp_server_coverage(mock_session):
                                     target_params[p_name] = "test"
                         await mcp.call_tool(tool_name, target_params)
                     except Exception as e:
-                        print(f"Standard tool call failed: {e}")
+                        print(f"Operation failed: {type(e).__name__}")
+
+                    # Action-routed tools take an ``action`` kwarg; Wire-First
+                    # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
+                    # skip the action-based direct calls for those.
+                    has_action = hasattr(tool, "parameters") and "action" in (
+                        getattr(tool.parameters, "properties", {}) or {}
+                    )
+                    if not has_action:
+                        continue
 
                     # Action-routed tools take an ``action`` kwarg; Wire-First
                     # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
@@ -212,7 +221,7 @@ def test_mcp_server_coverage(mock_session):
                                 ctx=None,
                             )
                         except Exception as e:
-                            print(f"Direct tool.fn call failed for {act}: {e}")
+                            print(f"Operation failed: {type(e).__name__}")
 
                     # 3. Invalid action path to cover ValueError
                     try:

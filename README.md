@@ -217,7 +217,7 @@ This table is auto-generated from the live server — do not edit by hand.
 _7 action-routed tool(s) (default) · 89 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/mcp.md](docs/mcp.md).
+Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/usage.md](docs/usage.md).
 
 ### Dynamic Tool Selection & Visibility
 
@@ -244,11 +244,10 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 <!-- MCP-CONFIG-EXAMPLES:START -->
 
-> **Install the slim `[mcp]` extra.** All examples install `qbittorrent-agent[mcp]` — the
-> MCP-server extra that pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`).
-> It deliberately **excludes** the heavy agent runtime (`pydantic-ai`, the epistemic-graph
-> engine, `dspy`, `llama-index`), so `uvx` / container installs are far smaller. Use the
-> full `[agent]` extra only when you need the integrated Pydantic AI agent.
+> **Install the connector-focused `[mcp]` extra.** Examples use `qbittorrent-agent[mcp]` to add
+> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> still carries `epistemic-graph[full]`. The `[agent]` extra additionally
+> enables model orchestration.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
@@ -263,13 +262,9 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
         "qbittorrent-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "condensed",
+        "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
         "LOGTOOL": "True",
-        "QBITTORRENT_AGENT_VERIFY": "True",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_URL": "http://localhost:8080",
-        "QBITTORRENT_USERNAME": "admin",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
         "SYNCTOOL": "True",
@@ -280,6 +275,10 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
   }
 }
 ```
+
+Runtime references require an alias-aware launcher such as GraphOS. Other
+launchers must omit those entries and inject the resolved values through their
+own runtime secret boundary.
 
 #### Streamable-HTTP Transport (networked / production)
 
@@ -299,15 +298,11 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
       ],
       "env": {
         "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
+        "HOST": "127.0.0.1",
         "PORT": "8000",
-        "MCP_TOOL_MODE": "condensed",
+        "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
         "LOGTOOL": "True",
-        "QBITTORRENT_AGENT_VERIFY": "True",
-        "QBITTORRENT_PASSWORD": "your_qbittorrent_password_here",
-        "QBITTORRENT_URL": "http://localhost:8080",
-        "QBITTORRENT_USERNAME": "admin",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
         "SYNCTOOL": "True",
@@ -331,29 +326,32 @@ Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
 }
 ```
 
-Deploying the Streamable-HTTP server via Docker:
+Run a reviewed container image as a least-privilege stdio child (no
+listener or published port):
 
 ```bash
-docker run -d \
-  --name qbittorrent-mcp-mcp \
-  -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e HOST=0.0.0.0 \
-  -e PORT=8000 \
-  -e MCP_TOOL_MODE=condensed \
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
+  -e MCP_TOOL_MODE=intent \
   -e APPTOOL=True \
   -e LOGTOOL=True \
-  -e QBITTORRENT_AGENT_VERIFY=True \
-  -e QBITTORRENT_PASSWORD=your_qbittorrent_password_here \
-  -e QBITTORRENT_URL=http://localhost:8080 \
-  -e QBITTORRENT_USERNAME=admin \
   -e RSSTOOL=True \
   -e SEARCHTOOL=True \
   -e SYNCTOOL=True \
   -e TORRENTSTOOL=True \
   -e TRANSFERTOOL=True \
-  knucklessg1/qbittorrent-agent:mcp
+  registry.example.invalid/qbittorrent-agent@sha256:<digest> qbittorrent-mcp
 ```
+
+For containerized network HTTP, supply an authenticated TLS ingress (or
+direct server TLS), exact `MCP_ALLOWED_HOSTS`, and an exact trusted-proxy
+CIDR policy through the operator-owned deployment profile. The generator
+does not emit an unauthenticated non-loopback listener.
 
 _Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
 <!-- MCP-CONFIG-EXAMPLES:END -->
@@ -361,16 +359,19 @@ _Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) 
 <!-- BEGIN GENERATED: additional-deployment-options -->
 ### Additional Deployment Options
 
-`qbittorrent-agent` can also run as a **local container** (Docker / Podman / `uv`) or be
-consumed from a **remote deployment**. The
-[Deployment guide](https://knuckles-team.github.io/qbittorrent-agent/deployment/) has full, copy-paste
-`mcp_config.json` for all four transports — **stdio**, **streamable-http**,
-**local container / uv**, and **remote URL**:
+`qbittorrent-agent` can run as a local stdio process or container, or behind a remote
+network boundary. The
+[Deployment guide](https://knuckles-team.github.io/qbittorrent-agent/deployment/) has full,
+copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable-http**,
+**local container**, and **remote URL**:
 
-- **Local container / uv** — launch the server from `mcp_config.json` via `uvx`,
-  `docker run`, or `podman run`, or point at a local streamable-http container by `url`.
-- **Remote URL** — connect to a server deployed behind Caddy at
-  `http://qbittorrent-mcp.arpa/mcp` using the `"url"` key.
+- **Local container** — launch a reviewed immutable image as a least-privilege
+  stdio child with no listener or published port (`uvx`, `docker run`, or `podman run`),
+  or point at a local streamable-http container by `url`.
+- **Remote URL** — connect through an operator-supplied authenticated HTTPS
+  ingress (for example, a server deployed behind Caddy at
+  `http://qbittorrent-mcp.arpa/mcp`) using the `"url"` key. Keep its URL, outbound
+  identity references, trust profile, and exact `MCP_ALLOWED_HOSTS` in `AgentConfig`.
 <!-- END GENERATED: additional-deployment-options -->
 
 ## Agent
@@ -382,7 +383,7 @@ To start the interactive command-line agent:
 
 ```bash
 # Set credentials
-export QBITTORRENT_URL="http://localhost:8080"
+export QBITTORRENT_URL="<configured-endpoint>"
 export QBITTORRENT_USERNAME="your_value"
 export QBITTORRENT_PASSWORD="your_value"
 
@@ -398,7 +399,19 @@ version: '3.8'
 
 services:
   qbittorrent-agent-mcp:
-    image: knucklessg1/qbittorrent-agent:mcp
+    init: true
+    user: "10001:10001"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${AGENT_CONTAINER_MEMORY_LIMIT:-4g}
+    cpus: ${AGENT_CONTAINER_CPU_LIMIT:-2.0}
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    image: ${QBITTORRENT_AGENT_MCP_IMAGE:?set-QBITTORRENT_AGENT_MCP_IMAGE-to-image@sha256-digest}
     container_name: qbittorrent-agent-mcp
     hostname: qbittorrent-agent-mcp
     restart: always
@@ -410,7 +423,7 @@ services:
       - PORT=8000
       - TRANSPORT=streamable-http
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
@@ -424,7 +437,19 @@ services:
         max-file: "3"
 
   qbittorrent-agent-agent:
-    image: knucklessg1/qbittorrent-agent:latest
+    init: true
+    user: "10001:10001"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${AGENT_CONTAINER_MEMORY_LIMIT:-4g}
+    cpus: ${AGENT_CONTAINER_CPU_LIMIT:-2.0}
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    image: ${QBITTORRENT_AGENT_AGENT_IMAGE:?set-QBITTORRENT_AGENT_AGENT_IMAGE-to-image@sha256-digest}
     container_name: qbittorrent-agent-agent
     hostname: qbittorrent-agent-agent
     restart: always
@@ -443,7 +468,7 @@ services:
       - ENABLE_WEB_UI=True
       - ENABLE_OTEL=True
     ports:
-      - "9004:9004"
+      - "127.0.0.1:9004:9004"
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:9004/health')"]
       interval: 30s
@@ -458,7 +483,7 @@ services:
 
 ```
 
-Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/agent.md](docs/agent.md).
+Detailed graph node architecture explanations, custom skill configurations, and agentic trace guides are available in [docs/deployment.md](docs/deployment.md).
 
 ---
 
@@ -481,11 +506,11 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
-| `QBITTORRENT_URL` | `http://localhost:8080` | Unified qBittorrent Web UI base URL. |
-| `QBITTORRENT_USERNAME` | `admin` |  |
-| `QBITTORRENT_PASSWORD` | `your_qbittorrent_password_here` |  |
-| `QBITTORRENT_SSL_VERIFY` | `True` | TLS verification for the API client (takes precedence over QBITTORRENT_AGENT_VERIFY) |
-| `QBITTORRENT_AGENT_VERIFY` | `True` | TLS verification fallback for the API client (default: True) |
+| `QBITTORRENT_URL` | Required | Unified qBittorrent Web UI base URL. |
+| `QBITTORRENT_USERNAME` | Required |  |
+| `QBITTORRENT_PASSWORD` | Required |  |
+| `TLS_PROFILE` | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
+| `TLS_PROFILES_REF` | — | Runtime secret reference for the TLS profile catalog. |
 | `APPTOOL` | `True` |  |
 | `LOGTOOL` | `True` |  |
 | `SYNCTOOL` | `True` |  |
@@ -521,11 +546,11 @@ The agent and MCP server can be fully configured using the following environment
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| **`QBITTORRENT_URL`** | String | `http://localhost:8080` | Unified qBittorrent Web UI base URL. |
+| **`QBITTORRENT_URL`** | String | Required | Unified qBittorrent Web UI base URL. |
 | **`QBITTORRENT_USERNAME`** | String | `None` | Username for authentication. |
 | **`QBITTORRENT_PASSWORD`** | String | `None` | Password for authentication. |
-| **`QBITTORRENT_SSL_VERIFY`** | Boolean | `True` | TLS verification for the API client (takes precedence over `QBITTORRENT_AGENT_VERIFY`). |
-| **`QBITTORRENT_AGENT_VERIFY`** | Boolean | `True` | TLS verification fallback for the API client. |
+| **`TLS_PROFILE`** | String | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
+| **`TLS_PROFILES_REF`** | Secret reference | — | Runtime reference for the TLS profile catalog. |
 | **`APPTOOL`** | Boolean | `True` | Toggle to enable/disable the App tool module. |
 | **`LOGTOOL`** | Boolean | `True` | Toggle to enable/disable the Log tool module. |
 | **`SYNCTOOL`** | Boolean | `True` | Toggle to enable/disable the Sync tool module. |
@@ -579,15 +604,15 @@ Pick the extra that matches what you want to run:
 
 | Extra | Installs | Use when |
 |-------|----------|----------|
-| `qbittorrent-agent[mcp]` | Slim MCP server only (`agent-utilities[mcp]` — FastMCP/FastAPI) | You only run the **MCP server** (smallest install / image) |
-| `qbittorrent-agent[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `qbittorrent-agent[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | You only run the **MCP server** (smallest install / image) |
+| `qbittorrent-agent[agent]` | Agent runtime (`agent-utilities[agent,logfire]` — model orchestration + `epistemic-graph[full]`) | You run the **integrated agent** |
 | `qbittorrent-agent[all]` | Everything (`mcp` + `agent` + `logfire`) | Development / both surfaces |
 
 ```bash
-# MCP server only (recommended for tool hosting — slim deps)
+# Connector-focused MCP server (includes the shared graph engine)
 uv pip install "qbittorrent-agent[mcp]"
 
-# Full agent runtime (Pydantic AI + epistemic-graph engine)
+# Agent runtime (adds model orchestration to the shared graph engine)
 uv pip install "qbittorrent-agent[agent]"
 
 # Everything (development)
@@ -600,35 +625,36 @@ One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
-| `knucklessg1/qbittorrent-agent:mcp` | `--target mcp` | `qbittorrent-agent[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `qbittorrent-mcp` |
-| `knucklessg1/qbittorrent-agent:latest` | `--target agent` (default) | `qbittorrent-agent[agent]` — **full** agent runtime + epistemic-graph engine | `qbittorrent-agent` |
+| `example/qbittorrent-agent:mcp` | `--target mcp` | `qbittorrent-agent[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `qbittorrent-mcp` |
+| `example/qbittorrent-agent@sha256:<digest>` | `--target agent` (default) | `qbittorrent-agent[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `qbittorrent-agent` |
 
 ```bash
-docker build --target mcp   -t knucklessg1/qbittorrent-agent:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/qbittorrent-agent:latest docker/   # full agent
+docker build --target mcp   -t example/qbittorrent-agent:mcp    docker/   # connector-focused MCP server
+docker build --target agent -t example/qbittorrent-agent:agent-local docker/   # agent runtime
 ```
 
-`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
-agent (`:latest`) with a co-located `:mcp` sidecar.
+`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
 
 ### Knowledge-graph database (`epistemic-graph`)
 
-The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
-transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
-across multiple agents — run **epistemic-graph as its own database container** and point the
-agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
-config, and the full database architecture (with diagrams) are documented in the
+Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
+Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+the server connector-focused; `[agent]` additionally enables model orchestration. Local
+deployments can use the bundled engine. For production or shared state, run
+**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
 [epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
-The slim `[mcp]` server does **not** require the database.
 
 ---
 
 ## Repository Owners
 
-<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=Knucklessg1&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
 
-![GitHub followers](https://img.shields.io/github/followers/Knucklessg1)
-![GitHub User's stars](https://img.shields.io/github/stars/Knucklessg1)
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
 
 ---
 
@@ -655,9 +681,25 @@ to just this package. Ask your agent to **"deploy `qbittorrent-agent` with agent
 |------|---------|
 | Bare-metal, prod (PyPI) | `uvx qbittorrent-mcp` · or `uv tool install qbittorrent-agent` |
 | Bare-metal, dev (editable) | `uv pip install -e ".[all]"` · or `pip install -e ".[all]"` |
-| Container, prod | deploy `knucklessg1/qbittorrent-agent:latest` via docker-compose / swarm / podman / podman-compose / kubernetes |
+| Container, prod | deploy the pinned `${QBITTORRENT_AGENT_AGENT_IMAGE}` digest (see `docker/agent.compose.yml`) via docker-compose / podman-compose / kubernetes |
 | Container, dev (editable) | deploy `docker/compose.dev.yml` (source-mounted at `/src`; edits live on restart) |
 
 Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
 
 <!-- END agent-os-genesis-deploy -->
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+This package ships a compact canonical skill surface with specialist procedures
+kept as referenced workflows. The current MCP tools, skill metadata,
+`connector_manifest.yml`, ontology, mappings, shapes, fixtures, migrations,
+tool-schema fingerprints, and certification metadata form one versioned
+capability contract. Validate them together; do not rely on stale tool names or
+historical per-task skill wrappers.
+
+Runtime endpoints, credentials, certificate trust, tenant identity, retention,
+and observability policy are deployment inputs and are never packaged values.
+See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
+network transport, connector ingestion, GraphOS delegation, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->

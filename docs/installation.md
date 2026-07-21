@@ -48,17 +48,17 @@ uv run qbittorrent-mcp
 
 ## Prebuilt Docker image
 
-A multi-stage, slim image is published on every release (entrypoint
+A multi-stage runtime image is published on every release (entrypoint
 `qbittorrent-mcp`):
 
 ```bash
-docker pull knucklessg1/qbittorrent-agent:latest
+docker pull example/qbittorrent-agent@sha256:<digest>
 
 docker run --rm -i \
-  -e QBITTORRENT_URL=http://your-qbittorrent:8080 \
-  -e QBITTORRENT_USERNAME=admin \
-  -e QBITTORRENT_PASSWORD=your_password \
-  knucklessg1/qbittorrent-agent:latest        # stdio transport (default)
+  -e QBITTORRENT_URL=<configured-endpoint> \
+  -e QBITTORRENT_USERNAME=<configured-principal> \
+  -e QBITTORRENT_PASSWORD=<runtime-secret> \
+  example/qbittorrent-agent@sha256:<digest>        # stdio transport (default)
 ```
 
 For an HTTP server with a published port, and to run the companion A2A agent, see

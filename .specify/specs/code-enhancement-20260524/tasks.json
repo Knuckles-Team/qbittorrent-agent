@@ -366,7 +366,7 @@
   {
     "id": "T029",
     "title": "[Environment Variables] Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_END",
-    "description": "Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, QBITTORRENT_AGENT_VERIFY, QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL",
+    "description": "Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, TLS_PROFILES_REF, QBITTORRENT_URL",
     "domain": "Environment Variables",
     "priority": "P4-Enhancement",
     "effort": "Medium",
@@ -378,8 +378,8 @@
   },
   {
     "id": "T030",
-    "title": "[Environment Variables] 2 Python env vars not in .env.example: QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL",
-    "description": "2 Python env vars not in .env.example: QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL",
+    "title": "[Environment Variables] 2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL",
+    "description": "2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL",
     "domain": "Environment Variables",
     "priority": "P4-Enhancement",
     "effort": "Medium",

@@ -13,9 +13,15 @@ def test_qbittorrent_api_errors(mock_session):
 
     CONCEPT:AU-OS.governance.reactive-multi-axis-budget — Guardrail Engine / Session Concurrency
     """
-    # Test verify=False logic
-    api_instance_no_verify = QbittorrentApi(base_url="http://test", verify=False)
-    assert api_instance_no_verify.session.verify is False
+    profile = MagicMock()
+    profile.configure_requests_session.return_value = mock_session
+    api_instance = QbittorrentApi(
+        base_url="https://service.invalid",
+        username="user",
+        password="secret",
+        tls_profile=profile,
+    )
+    profile.configure_requests_session.assert_called_once()
 
     # Trigger 400 error (we return text or json) for both GET and POST
     response_400 = MagicMock()
@@ -24,11 +30,11 @@ def test_qbittorrent_api_errors(mock_session):
     response_400.json.side_effect = ValueError("Not JSON")
     mock_session.get.return_value = response_400
     mock_session.post.return_value = response_400
-    res = api_instance_no_verify.get_version()
+    res = api_instance.get_version()
     assert res == "Error detail"
 
     # Trigger 400 error for POST specifically (covers _post ValueError)
-    res_post = api_instance_no_verify.shutdown_application()
+    res_post = api_instance.shutdown_application()
     assert res_post == "Error detail"
 
     # Trigger 400 error where text property access throws an exception
@@ -39,7 +45,7 @@ def test_qbittorrent_api_errors(mock_session):
     )
     mock_session.get.return_value = response_400_throw
     try:
-        api_instance_no_verify.get_version()
+        api_instance.get_version()
     except Exception:
         pass
 
@@ -49,10 +55,10 @@ def test_qbittorrent_api_errors(mock_session):
     response_empty.text = ""
     response_empty.json.side_effect = ValueError
     mock_session.get.return_value = response_empty
-    api_instance_no_verify.session.cookies = requests.utils.cookiejar_from_dict(
+    api_instance.session.cookies = requests.utils.cookiejar_from_dict(
         {"SID": "test_sid"}
     )
-    res = api_instance_no_verify.get_version()
+    res = api_instance.get_version()
     assert res == ""
 
     # Trigger non-JSON content decode error
@@ -62,7 +68,7 @@ def test_qbittorrent_api_errors(mock_session):
     response_non_json.json.side_effect = ValueError
     response_non_json.headers = {"Content-Type": "text/html"}
     mock_session.get.return_value = response_non_json
-    res = api_instance_no_verify.get_version()
+    res = api_instance.get_version()
     assert res == "invalid json payload"
 
     # Trigger 401 UnauthorizedError
@@ -71,7 +77,7 @@ def test_qbittorrent_api_errors(mock_session):
     mock_session.get.return_value = response_401
     mock_session.post.return_value = response_401
     with pytest.raises(UnauthorizedError):
-        api_instance_no_verify.get_version()
+        api_instance.get_version()
 
     # Trigger 403 UnauthorizedError
     response_403 = MagicMock()
@@ -79,14 +85,14 @@ def test_qbittorrent_api_errors(mock_session):
     mock_session.get.return_value = response_403
     mock_session.post.return_value = response_403
     with pytest.raises(UnauthorizedError):
-        api_instance_no_verify.get_version()
+        api_instance.get_version()
 
     # Trigger 404 logger warning
     response_404 = MagicMock()
     response_404.status_code = 404
     response_404.url = "http://test/404"
     mock_session.get.return_value = response_404
-    api_instance_no_verify.get_version()
+    api_instance.get_version()
 
 
 def test_qbittorrent_api_login_failures(mock_session):
@@ -109,7 +115,7 @@ def test_qbittorrent_api_login_failures(mock_session):
     mock_session.post.return_value = response_500
     with pytest.raises(AuthError) as exc_info:
         QbittorrentApi(base_url="http://test")
-    assert "Login failed with status code 500" in str(exc_info.value)
+    assert "Login failed with HTTP 500" in str(exc_info.value)
 
     # 3. Connection error
     mock_session.post.side_effect = requests.exceptions.RequestException(
@@ -130,6 +136,14 @@ def test_qbittorrent_api_login_failures(mock_session):
     assert "no session cookie set" in str(exc_info.value)
 
 
+@patch.dict(
+    "os.environ",
+    {
+        "QBITTORRENT_URL": "https://service.invalid",
+        "QBITTORRENT_USERNAME": "user",
+        "QBITTORRENT_PASSWORD": "secret",
+    },
+)
 def test_auth_get_client_error():
     """Verify singleton client initialization raises correct RuntimeErrors.
 
@@ -153,6 +167,14 @@ def test_auth_get_client_error():
             assert "AUTHENTICATION ERROR" in str(exc_info.value)
 
 
+@patch.dict(
+    "os.environ",
+    {
+        "QBITTORRENT_URL": "https://service.invalid",
+        "QBITTORRENT_USERNAME": "user",
+        "QBITTORRENT_PASSWORD": "secret",
+    },
+)
 def test_auth_get_client_success():
     """Verify successful client retrieval and singleton caching.
 

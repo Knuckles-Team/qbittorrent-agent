@@ -40,8 +40,8 @@
 - **FR-024**: 4 tests have no assertions
 - **FR-025**: 1 tests exceed 100 lines — likely doing too much per test
 - **FR-026**: Partial env var documentation: 41% coverage
-- **FR-027**: Undocumented env vars: APPTOOL, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, LOGTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL, RSSTOOL, SEARCHTOOL
-- **FR-028**: 2 Python env vars not in .env.example: QBITTORRENT_AGENT_VERIFY, QBITTORRENT_URL
+- **FR-027**: Undocumented env vars: APPTOOL, AUTH_TYPE, EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, LOGTOOL, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, QBITTORRENT_URL, RSSTOOL, SEARCHTOOL
+- **FR-028**: 2 Python env vars not in .env.example: TLS_PROFILE, QBITTORRENT_URL
 
 ## Success Criteria
 

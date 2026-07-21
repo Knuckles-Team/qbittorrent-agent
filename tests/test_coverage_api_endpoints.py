@@ -75,4 +75,4 @@ def test_qbittorrent_api_brute_force(mock_session):
             # but allow handled/intended exceptions to catch actual implementation bugs
             if isinstance(e, AttributeError) and "headers" in str(e):
                 raise e
-            print(f"Handled method call for {name}: {e}")
+            print(f"Operation failed: {type(e).__name__}")

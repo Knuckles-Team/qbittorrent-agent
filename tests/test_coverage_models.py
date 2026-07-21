@@ -34,5 +34,5 @@ def test_qbittorrent_models_coverage():
                 inst = obj(**kwargs)
                 assert isinstance(inst, obj)
             except Exception as e:
-                print(f"Failed instantiating {name}: {e}")
+                print(f"Operation failed: {type(e).__name__}")
                 raise e

@@ -11,7 +11,7 @@
 # All classes and properties live in the shared `:` (kg#) namespace; only the
 # owl:Ontology node gets the per-package IRI. Backs the qbittorrent-agent MCP tool
 # surface (qbittorrent_torrents / qbittorrent_transfer / qbittorrent_rss / …).
-# :MediaAsset and :Person are REUSED from the shared hub base — never redefined here.
+# :AssetOccurrence and :Person are REUSED from the shared hub base — never redefined here.
 
 :Torrent a owl:Class ;
     rdfs:label "Torrent" ;
@@ -41,9 +41,9 @@
 
 :producesAsset a owl:ObjectProperty ;
     rdfs:label "produces asset" ;
-    rdfs:comment "Links a completed Torrent to the :MediaAsset (downloaded content) it yields." ;
+    rdfs:comment "Links a completed Torrent to the :AssetOccurrence (downloaded content) it yields." ;
     rdfs:domain :Torrent ;
-    rdfs:range :MediaAsset .
+    rdfs:range :AssetOccurrence .
 
 # --- fields (owl:DatatypeProperty) ---
 
@@ -99,5 +99,5 @@
     rdfs:comment """qBittorrent torrent-management model — torrents, their announce
     trackers, and the categories that organise them, plus the media content a
     completed torrent produces — federated into the agent-utilities knowledge-graph
-    hub. Reuses the shared :MediaAsset and :Person classes.""" ;
+    hub. Reuses the shared :AssetOccurrence and :Person classes.""" ;
     owl:imports <http://knuckles.team/kg> .

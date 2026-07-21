@@ -1,15 +1,16 @@
 import logging
-import os
 from typing import Any
 
 import requests
-import urllib3
 from agent_utilities.core.exceptions import (
     AuthError,
     UnauthorizedError,
 )
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logger = logging.getLogger(__name__)
 
 
@@ -21,18 +22,17 @@ class BaseApiClient:
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8080",
+        base_url: str,
         username: str | None = None,
         password: str | None = None,
-        verify: bool = True,
+        tls_profile: ResolvedTLSProfile | None = None,
     ):
         self.base_url = base_url.rstrip("/")
         self.api_url = f"{self.base_url}/api/v2"
-        self.username = username or os.getenv("QBITTORRENT_USERNAME", "admin")
-        self.password = password or os.getenv("QBITTORRENT_PASSWORD", "adminadmin")
-        self.verify = verify
-        self.session = requests.Session()
-        self.session.verify = self.verify
+        self.username = username
+        self.password = password
+        self.tls_profile = tls_profile or resolve_configured_tls_profile("qbittorrent")
+        self.session = self.tls_profile.configure_requests_session(requests.Session())
         self._authenticated = False
         self.headers = {"Referer": self.base_url}
 
@@ -53,9 +53,7 @@ class BaseApiClient:
                 cookie_names = list(self.session.cookies.keys())
                 if any(n == "SID" or n.startswith("QBT_SID") for n in cookie_names):
                     self._authenticated = True
-                    logger.info(
-                        f"Successfully logged in to qBittorrent at {self.base_url}"
-                    )
+                    logger.info("Successfully logged in to qBittorrent")
                 else:
                     raise AuthError(
                         "Login response received but no session cookie set "
@@ -66,11 +64,14 @@ class BaseApiClient:
                     "User's IP is banned for too many failed login attempts."
                 )
             else:
-                raise AuthError(
-                    f"Login failed with status code {response.status_code}: {response.text}"
-                )
+                raise AuthError(f"Login failed with HTTP {response.status_code}")
         except requests.exceptions.RequestException as e:
-            raise AuthError(f"Connection error during login: {str(e)}") from e
+            raise AuthError(f"Connection error during login: {type(e).__name__}") from e
+
+    def close(self) -> None:
+        """Release transport resources and runtime-only TLS material."""
+        self.session.close()
+        self.tls_profile.cleanup()
 
     def logout(self):
         """Log out from qBittorrent."""
@@ -106,6 +107,9 @@ class BaseApiClient:
                 "Forbidden: You don't have permission to access this resource."
             )
         elif response.status_code == 404:
-            logger.warning(f"Resource not found: {response.url}")
+            logger.warning("qBittorrent resource lookup failed")
         elif response.status_code >= 400:
-            logger.error(f"API Error {response.status_code}: {response.text}")
+            logger.error(
+                "qBittorrent API request failed: status_code=%s",
+                response.status_code,
+            )

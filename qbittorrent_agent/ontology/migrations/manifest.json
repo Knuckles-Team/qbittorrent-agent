@@ -1,0 +1,6 @@
+{
+  "connector": "qbittorrent-agent",
+  "current_ontology_source": "qbittorrent",
+  "migrations": [],
+  "schema_version": "1"
+}

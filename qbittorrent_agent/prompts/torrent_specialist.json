@@ -24,7 +24,7 @@
       "throughput": ["read global + per-torrent transfer info", "set download/upload limits", "set share (ratio/seeding-time) limits", "toggle alternate speed limits"],
       "trackers": ["read trackers + their status", "add/edit/remove trackers", "reannounce to recover an unregistered torrent"],
       "automation": ["manage RSS feeds + auto-downloading rules", "run plugin-backed search and add results"],
-      "kg": ["map torrents->:Torrent, trackers->:Tracker, categories->:TorrentCategory", "resolve :announcesTo / :inCategory links", "link a completed torrent to the :MediaAsset it produced"]
+      "kg": ["map torrents->:Torrent, trackers->:Tracker, categories->:TorrentCategory", "resolve :announcesTo / :inCategory links", "link a completed torrent to the :AssetOccurrence it produced"]
     },
     "workflow": [
       "resolve the target torrent hash (get_torrent_list with filter/category/tag)",

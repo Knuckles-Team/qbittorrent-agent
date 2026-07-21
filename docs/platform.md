@@ -22,7 +22,7 @@ downloads:
 # docker/qbittorrent.compose.yml
 services:
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent@sha256:<digest>
     container_name: qbittorrent
     hostname: qbittorrent
     restart: unless-stopped
@@ -54,10 +54,11 @@ docker compose -f docker/qbittorrent.compose.yml logs | grep -i password
 ## Connect qbittorrent-agent
 
 ```bash
-export QBITTORRENT_URL=http://localhost:8080
-export QBITTORRENT_USERNAME=admin
+export QBITTORRENT_URL=<configured-endpoint>
+export QBITTORRENT_USERNAME=<configured-principal>
 export QBITTORRENT_PASSWORD=<the-password-from-the-logs>
-export QBITTORRENT_AGENT_VERIFY=False        # plain HTTP on the homelab
+export TLS_PROFILE=private-pki
+export TLS_PROFILES_REF=secret://runtime/tls-profiles
 
 qbittorrent-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 ```
@@ -71,7 +72,7 @@ server reaches the WebUI by container name:
 # docker/stack.compose.yml
 services:
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent@sha256:<digest>
     hostname: qbittorrent
     environment:
       - PUID=1000
@@ -83,13 +84,14 @@ services:
       - qbittorrent_downloads:/downloads
 
   qbittorrent-agent-mcp:
-    image: knucklessg1/qbittorrent-agent:latest
+    image: example/qbittorrent-agent@sha256:<digest>
     depends_on: [qbittorrent]
     environment:
-      - QBITTORRENT_URL=http://qbittorrent:8080
-      - QBITTORRENT_USERNAME=admin
-      - QBITTORRENT_PASSWORD=your_password
-      - QBITTORRENT_AGENT_VERIFY=False
+      - QBITTORRENT_URL=${QBITTORRENT_URL:?required}
+      - QBITTORRENT_USERNAME=${QBITTORRENT_USERNAME:?required}
+      - QBITTORRENT_PASSWORD=${QBITTORRENT_PASSWORD:?required}
+      - TLS_PROFILE=private-pki
+      - TLS_PROFILES_REF=secret://runtime/tls-profiles
       - TRANSPORT=streamable-http
       - HOST=0.0.0.0
       - PORT=8000

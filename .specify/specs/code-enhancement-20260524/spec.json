@@ -198,12 +198,12 @@
     },
     {
       "id": "FR-029",
-      "description": "Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, QBITTORRENT_AGENT_VERIFY, QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL",
+      "description": "Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, TLS_PROFILES_REF, QBITTORRENT_URL",
       "testable": true
     },
     {
       "id": "FR-030",
-      "description": "2 Python env vars not in .env.example: QBITTORRENT_SSL_VERIFY, QBITTORRENT_URL",
+      "description": "2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL",
       "testable": true
     },
     {
