@@ -3,7 +3,7 @@ connector: qbittorrent-agent
 ontology_source: qbittorrent
 sync:
 - preset: qbittorrent-torrents
-  server: qbittorrent-agent
+  server: qbittorrent-mcp
   tool: qbittorrent_torrents
   action: get_torrent_list
   records_path: ''

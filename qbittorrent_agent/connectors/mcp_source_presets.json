@@ -1,7 +1,7 @@
 {
   "_comment": "Tier-1 mcp_tool source presets for qbittorrent-agent (AU-KG.ingest.mcp-tool-connector). Syncs qBittorrent torrents into the KG as typed :Torrent documents via the qbittorrent-agent MCP server. Contributed presets win over the central MCP_TOOL_PRESETS. The native qbittorrent_ingest_torrents tool is the richer typed-node path; this preset is the declarative document-sync fallback.",
   "qbittorrent-torrents": {
-    "server": "qbittorrent-agent",
+    "server": "qbittorrent-mcp",
     "tool": "qbittorrent_torrents",
     "action": "get_torrent_list",
     "records_path": "",
