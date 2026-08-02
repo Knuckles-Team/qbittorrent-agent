@@ -1,0 +1,50 @@
+# Merge-queue gate declaration for `qbittorrent-agent` (a Python agent
+# package: qBittorrent API client + FastMCP server + A2A agent, no .venv/no
+# editable install visible to the queue runner).
+#
+# Bootstrapped 2026-08-02 (lane queue-declarations-0802) -- this repo already
+# had a live queue store (candidates enqueued, sat undrained forever) with no
+# `.mergequeue.yaml`; the queue refuses a repo that declares no gates rather
+# than inventing them or defaulting to none.
+#
+# No packaging-local interpreter here (no .venv): confirmed the SYSTEM
+# `python3` collects and runs this repo's whole suite correctly when cwd is
+# the repo root, so the interpreter is pinned explicitly rather than
+# inventing a venv/toolchain that isn't there.
+
+base: main
+batch_size: 8
+
+environment_signature: ["python3", "-c", "import sys, sysconfig; print(sys.version, sysconfig.get_paths()['purelib'])"]
+
+gates:
+  # ── the whole unit suite (32 tests, ~7s) ─────────────────────────────────
+  # compare: pytest-ids -- an ID-level differential: a failing id is permitted
+  # ONLY when that EXACT id already fails on the base ref. main is not assumed
+  # absolutely green anywhere in this fleet; judging by exit code alone would
+  # refuse every candidate the moment one unrelated test goes red on base.
+  - name: pytest
+    command: ["python3", "-m", "pytest", "-q", "tests"]
+    tier: fast
+    timeout: 120
+    baseline_timeout: 120
+    compare: pytest-ids
+
+  - name: ruff-check
+    command: ["python3", "-m", "ruff", "check", "--output-format", "concise", "."]
+    tier: fast
+    timeout: 60
+    compare: lines
+    when_changed: ["*.py", "**/*.py"]
+
+  - name: ruff-format
+    command: ["python3", "-m", "ruff", "format", "--check", "."]
+    tier: fast
+    timeout: 60
+    compare: lines
+    when_changed: ["*.py", "**/*.py"]
+
+# No purely-derived files tracked in this repo, so no generated_files/regenerate
+# section.
+generated_files: []
+regenerate: []
