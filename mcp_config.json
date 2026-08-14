@@ -7,12 +7,9 @@
         "qbittorrent-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "condensed",
+        "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
         "LOGTOOL": "True",
-        "QBITTORRENT_PASSWORD": "",
-        "QBITTORRENT_URL": "",
-        "QBITTORRENT_USERNAME": "",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
         "SYNCTOOL": "True",
