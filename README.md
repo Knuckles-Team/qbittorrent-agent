@@ -20,7 +20,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/qbittorrent-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/qbittorrent-agent)
 
-*Version: 2.0.0*
+*Version: 2.1.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > interfaces, and guidance for provisioning the qBittorrent backing service are
@@ -103,11 +103,12 @@ This table is auto-generated from the live server — do not edit by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
-#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+#### Condensed action-routed tools (`MCP_TOOL_MODE=condensed`)
 
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
 | `qbittorrent_app` | `APPTOOL` | Manage qbittorrent app operations. |
+| `qbittorrent_ingest_torrents` | `INGESTTOOL` | Natively ingest qBittorrent torrents into epistemic-graph as typed nodes. |
 | `qbittorrent_log` | `LOGTOOL` | Manage qbittorrent log operations. |
 | `qbittorrent_rss` | `RSSTOOL` | Manage qbittorrent rss operations. |
 | `qbittorrent_search` | `SEARCHTOOL` | Manage qbittorrent search operations. |
@@ -118,7 +119,7 @@ This table is auto-generated from the live server — do not edit by hand.
 #### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
 
 <details>
-<summary>89 per-operation tools — one per public API method (click to expand)</summary>
+<summary>87 per-operation tools — one per public API method (click to expand)</summary>
 
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
@@ -168,8 +169,6 @@ This table is auto-generated from the live server — do not edit by hand.
 | `qbittorrent_get_version` | `APITOOL` | Get application version. |
 | `qbittorrent_increase_priority` | `APITOOL` | Increase torrent priority. |
 | `qbittorrent_install_search_plugin` | `APITOOL` | Install search plugin. |
-| `qbittorrent_login` | `BASE_API_CLIENTTOOL` | Authenticate with qBittorrent and get SID cookie. |
-| `qbittorrent_logout` | `BASE_API_CLIENTTOOL` | Log out from qBittorrent. |
 | `qbittorrent_mark_rss_as_read` | `APITOOL` | Mark RSS as read. |
 | `qbittorrent_move_rss_item` | `APITOOL` | Move RSS item. |
 | `qbittorrent_pause_torrents` | `APITOOL` | Pause (stop) torrents. qBittorrent 5.x renamed the endpoint to torrents/stop. |
@@ -214,7 +213,7 @@ This table is auto-generated from the live server — do not edit by hand.
 
 </details>
 
-_7 action-routed tool(s) (default) · 89 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
+_8 action-routed tool(s) · 87 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/usage.md](docs/usage.md).
@@ -246,7 +245,7 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `qbittorrent-agent[mcp]` to add
 > FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
-> still carries `epistemic-graph[full]`. The `[agent]` extra additionally
+> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
 > enables model orchestration.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
@@ -500,17 +499,18 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
 | `ENABLE_OTEL` | `True` |  |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
-| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | secret-injected |  |
+| `OTEL_EXPORTER_OTLP_SECRET_KEY` | secret-injected |  |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
-| `QBITTORRENT_URL` | Required | Unified qBittorrent Web UI base URL. |
-| `QBITTORRENT_USERNAME` | Required |  |
-| `QBITTORRENT_PASSWORD` | Required |  |
-| `TLS_PROFILE` | — | Named `AgentConfig` transport-security profile; verification is mandatory. |
-| `TLS_PROFILES_REF` | — | Runtime secret reference for the TLS profile catalog. |
+| `QBITTORRENT_URL` | — | Unified qBittorrent Web UI base URL. |
+| `QBITTORRENT_USERNAME` | — |  |
+| `QBITTORRENT_PASSWORD` | secret-injected |  |
+| `QBITTORRENT_TLS_PROFILE` | `private-pki` | TLS verification is mandatory (no boolean downgrade). Select a named runtime profile from AgentConfig; falls back to the global TLS_PROFILE if unset. |
+| `TLS_PROFILE` | `private-pki` |  |
+| `TLS_PROFILES_REF` | `secret://runtime/tls-profiles` |  |
 | `APPTOOL` | `True` |  |
 | `LOGTOOL` | `True` |  |
 | `SYNCTOOL` | `True` |  |
@@ -523,14 +523,16 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 
 | Variable | Example | Description |
 |----------|---------|-------------|
-| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_TOOL_MODE` | `intent` | Tool surface: `intent` \| `condensed` \| `verbose` \| `both` |
 | `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
 | `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
 | `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
 | `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
-| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP child auth: `oidc-client-credentials` \| `basic` \| `none` |
 | `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
-| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `OIDC_CLIENT_SECRET_REF` | `secret://identity/oidc-client-secret` | Runtime secret reference for the OIDC service account |
+| `MCP_BASIC_AUTH_USERNAME` | — | HTTP Basic username (`MCP_CLIENT_AUTH=basic`) |
+| `MCP_BASIC_AUTH_PASSWORD_REF` | `secret://identity/mcp-basic-password` | Runtime secret reference for HTTP Basic auth (`MCP_CLIENT_AUTH=basic`) |
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
@@ -538,7 +540,7 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_23 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_24 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
