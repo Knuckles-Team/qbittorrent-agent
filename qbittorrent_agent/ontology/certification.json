@@ -1,8 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "a2a.json": "68a2f3db8792e80eb2f8fda514cb0e4714c09e8ae09e3019f417ff9deab8ed85",
-    "connector_manifest.yml": "8e26cb7d4814143decbfe93d6a2ab2a253329fc7a0ebe0488051378fe5891381",
+    "connector_manifest.yml": "a86fb3feb6e7942c9e5750bcb528da35735c00025f1ae61972a5bf21747c98e5",
     "qbittorrent_agent/connectors/mcp_source_presets.json": "5b8d7a241e69b0440e47cd2cc9f25e5cc29844ba5b632c3a163b0f162a54b7a0",
     "qbittorrent_agent/connectors/tool_schema_fingerprints.json": "2668f11d0619ae5721c3e4ae3a746e51356898c47ffff9f4c3e67aa70a7f711e",
     "qbittorrent_agent/ontology/fixtures/records.json": "b0e63822f4761a605c4e9b61a3a2f76561a21dd3475b63945892ed069ec38e65",
@@ -19,19 +18,19 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.1.0,<3",
+    "agent_utilities": ">=2.4.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.23.0,<3"
+    "epistemic_graph": ">=2.26.0,<3"
   },
   "connector": "qbittorrent-agent",
   "kind": "ConnectorSourceAttestation",
   "live_certified": false,
   "mode": "offline-source",
   "schema_version": "2",
-  "signature": "cgUpU1VM4cNF8QVCNQO6F8DQtkQQmJqnfy-MOA7QjX4_5PMtFhfvhA9JWuY3uvJpIkabxf92BtZQ_JKDA8dyCQ",
-  "signature_algorithm": "ed25519",
-  "signer": "ontology-manifest-generator",
-  "signing_public_key": "QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY",
+  "signature": null,
+  "signature_algorithm": "none",
+  "signer": "UNSIGNED-PREVIEW",
+  "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-07-31T04:00:00Z"
+  "validated_at": "2026-08-21T04:30:39Z"
 }
