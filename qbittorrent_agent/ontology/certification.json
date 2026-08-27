@@ -1,7 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "a86fb3feb6e7942c9e5750bcb528da35735c00025f1ae61972a5bf21747c98e5",
+    "connector_manifest.yml": "cc6b98610623a7b2cdd4a04554419736d2b9d5050932248a1c821519e404c053",
     "qbittorrent_agent/connectors/mcp_source_presets.json": "5b8d7a241e69b0440e47cd2cc9f25e5cc29844ba5b632c3a163b0f162a54b7a0",
     "qbittorrent_agent/connectors/tool_schema_fingerprints.json": "2668f11d0619ae5721c3e4ae3a746e51356898c47ffff9f4c3e67aa70a7f711e",
     "qbittorrent_agent/ontology/fixtures/records.json": "b0e63822f4761a605c4e9b61a3a2f76561a21dd3475b63945892ed069ec38e65",
@@ -18,9 +18,9 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.4.0,<3",
+    "agent_utilities": ">=2.5.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.26.0,<3"
+    "epistemic_graph": ">=2.27.0,<3"
   },
   "connector": "qbittorrent-agent",
   "kind": "ConnectorSourceAttestation",
@@ -32,5 +32,5 @@
   "signer": "UNSIGNED-PREVIEW",
   "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-08-21T04:30:39Z"
+  "validated_at": "2026-08-26T13:42:55Z"
 }
