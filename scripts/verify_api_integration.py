@@ -30,6 +30,28 @@ BASELINES = {
 }
 
 
+def _is_api_or_client_class(node):
+    """Whether a ClassDef looks like the agent's main API/Client class."""
+    class_name = node.name.lower()
+    return "api" in class_name or "client" in class_name or node.name == "Api"
+
+
+def _is_public_api_method(item):
+    """Whether a class-body def is a public, non-constructor API method."""
+    return not item.name.startswith("_") and item.name != "authenticate"
+
+
+def _extract_public_methods(class_node):
+    """Collect ``{name: {"line":..., "class":...}}`` for one class's public methods."""
+    methods = {}
+    for item in class_node.body:
+        if isinstance(
+            item, (ast.FunctionDef, ast.AsyncFunctionDef)
+        ) and _is_public_api_method(item):
+            methods[item.name] = {"line": item.lineno, "class": class_node.name}
+    return methods
+
+
 def parse_api_client(filepath):
     """
     Parses api_client.py to find the main API/Client class and its public methods.
@@ -40,21 +62,8 @@ def parse_api_client(filepath):
 
     methods = {}
     for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            # Focus on Api or Client classes
-            class_name = node.name.lower()
-            if "api" in class_name or "client" in class_name or node.name == "Api":
-                for item in node.body:
-                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        # Filter out private methods and constructor
-                        if (
-                            not item.name.startswith("_")
-                            and item.name != "authenticate"
-                        ):
-                            methods[item.name] = {
-                                "line": item.lineno,
-                                "class": node.name,
-                            }
+        if isinstance(node, ast.ClassDef) and _is_api_or_client_class(node):
+            methods.update(_extract_public_methods(node))
     return methods
 
 
@@ -91,6 +100,26 @@ class MethodCallVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
+_TOOL_NAME_PREFIXES = ("github_", "gitlab_", "adguard_", "atlassian_")
+
+
+def _has_tool_decorator(node):
+    """Whether a function def carries an ``@x.tool`` / ``@x.tool(...)`` decorator."""
+    for dec in node.decorator_list:
+        if isinstance(dec, ast.Call):
+            func = dec.func
+            if isinstance(func, ast.Attribute) and func.attr == "tool":
+                return True
+        elif isinstance(dec, ast.Attribute) and dec.attr == "tool":
+            return True
+    return False
+
+
+def _is_registered_tool(node):
+    """Whether a function def is a registered MCP tool (by decorator or name prefix)."""
+    return _has_tool_decorator(node) or node.name.startswith(_TOOL_NAME_PREFIXES)
+
+
 def parse_mcp_server(filepath, api_methods):
     """
     Parses mcp_server.py to extract registered tools and identify which
@@ -103,33 +132,18 @@ def parse_mcp_server(filepath, api_methods):
     all_mapped_methods = set()
 
     for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            # Check if this function is a tool (e.g. decorated with mcp.tool)
-            is_tool = False
-            for dec in node.decorator_list:
-                if isinstance(dec, ast.Call):
-                    func = dec.func
-                    if isinstance(func, ast.Attribute) and func.attr == "tool":
-                        is_tool = True
-                elif isinstance(dec, ast.Attribute) and dec.attr == "tool":
-                    is_tool = True
-
-            if (
-                is_tool
-                or node.name.startswith("github_")
-                or node.name.startswith("gitlab_")
-                or node.name.startswith("adguard_")
-                or node.name.startswith("atlassian_")
-            ):
-                visitor = MethodCallVisitor()
-                visitor.visit(node)
-                # Find which of the visited methods are in our api_methods list
-                mapped = visitor.called_methods.intersection(api_methods.keys())
-                tool_mappings[node.name] = {
-                    "methods": list(mapped),
-                    "actions": list(visitor.action_literals),
-                }
-                all_mapped_methods.update(mapped)
+        if isinstance(
+            node, (ast.FunctionDef, ast.AsyncFunctionDef)
+        ) and _is_registered_tool(node):
+            visitor = MethodCallVisitor()
+            visitor.visit(node)
+            # Find which of the visited methods are in our api_methods list
+            mapped = visitor.called_methods.intersection(api_methods.keys())
+            tool_mappings[node.name] = {
+                "methods": list(mapped),
+                "actions": list(visitor.action_literals),
+            }
+            all_mapped_methods.update(mapped)
 
     return tool_mappings, all_mapped_methods
 
@@ -174,64 +188,67 @@ def verify_agent(agent_dir):
     }
 
 
-def main():
-    args = sys.argv[1:]
+def _print_local_report_header(agent_name, res, baseline):
+    print(f"=== API-to-MCP Integration Parity Check for: {agent_name} ===")
+    print(f"- API client methods: {res['total_methods']}")
+    print(f"- Integrated methods: {res['covered_methods']}")
+    print(f"- Current Coverage  : {res['coverage']:.1f}%")
+    print(f"- Target Baseline   : {baseline:.1f}%")
 
-    # --- Local Mode (Single Agent Validation) ---
-    if "--local" in args or "--pre-commit" in args:
-        cwd = os.getcwd()
-        res = verify_agent(cwd)
-        if not res:
-            # If no client or server found in this dir, pass silently (e.g. non-python files, doc edits)
-            print(
-                "Skipping integration parity verification: No mcp_server.py/api_client.py found in current directory."
-            )
-            sys.exit(0)
 
-        agent_name = res["agent_name"]
-        coverage = res["coverage"]
-        baseline = BASELINES.get(agent_name, 0.0)
+def _print_local_failure(coverage, baseline, unmapped):
+    print(
+        f"\n❌ FAILED: Integration coverage ({coverage:.1f}%) has DEGRADED below the required baseline of {baseline:.1f}%!"
+    )
+    print(
+        "Please ensure any new or refactored API client methods are properly integrated into MCP server tools."
+    )
+    if unmapped:
+        print("\nUnmapped API methods:")
+        for m in unmapped:
+            print(f"  - {m}")
 
-        print(f"=== API-to-MCP Integration Parity Check for: {agent_name} ===")
-        print(f"- API client methods: {res['total_methods']}")
-        print(f"- Integrated methods: {res['covered_methods']}")
-        print(f"- Current Coverage  : {coverage:.1f}%")
-        print(f"- Target Baseline   : {baseline:.1f}%")
 
-        # Allow small floating point tolerance (0.05%)
-        if coverage < (baseline - 0.05):
-            print(
-                f"\n❌ FAILED: Integration coverage ({coverage:.1f}%) has DEGRADED below the required baseline of {baseline:.1f}%!"
-            )
-            print(
-                "Please ensure any new or refactored API client methods are properly integrated into MCP server tools."
-            )
-            if res["unmapped"]:
-                print("\nUnmapped API methods:")
-                for m in res["unmapped"]:
-                    print(f"  - {m}")
-            sys.exit(1)
-        else:
-            print(
-                "\n✅ PASSED: Integration coverage meets or exceeds the required baseline!"
-            )
-            sys.exit(0)
+def _run_local_mode():
+    """Validate the current directory alone and exit 0 (pass/skip) or 1 (fail)."""
+    cwd = os.getcwd()
+    res = verify_agent(cwd)
+    if not res:
+        # If no client or server found in this dir, pass silently (e.g. non-python files, doc edits)
+        print(
+            "Skipping integration parity verification: No mcp_server.py/api_client.py found in current directory."
+        )
+        sys.exit(0)
 
-    # --- Default Mode (Workspace-wide Scan) ---
-    agents_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    agent_name = res["agent_name"]
+    coverage = res["coverage"]
+    baseline = BASELINES.get(agent_name, 0.0)
+    _print_local_report_header(agent_name, res, baseline)
+
+    # Allow small floating point tolerance (0.05%)
+    if coverage < (baseline - 0.05):
+        _print_local_failure(coverage, baseline, res["unmapped"])
+        sys.exit(1)
+
+    print("\n✅ PASSED: Integration coverage meets or exceeds the required baseline!")
+    sys.exit(0)
+
+
+def _discover_agent_dirs(agents_dir):
+    """List top-level and one-level-nested candidate agent directories."""
     agent_dirs = [
         d for d in glob.glob(os.path.join(agents_dir, "*")) if os.path.isdir(d)
     ]
-
-    # Also support nested subdirectories if any
     nested_dirs = [
         d for d in glob.glob(os.path.join(agents_dir, "*", "*")) if os.path.isdir(d)
     ]
-    all_agent_dirs = sorted(list(set(agent_dirs + nested_dirs)))
+    return sorted(set(agent_dirs + nested_dirs))
 
+
+def _scan_agent_dirs(agent_dirs):
+    """Run verify_agent over every candidate dir, skipping dot/venv/egg-info paths."""
     results = []
-    for agent_dir in all_agent_dirs:
-        # Avoid directories starting with dot or venv
+    for agent_dir in agent_dirs:
         if (
             os.path.basename(agent_dir).startswith(".")
             or "venv" in agent_dir
@@ -244,8 +261,25 @@ def main():
                 results.append(res)
         except Exception as e:
             print(f"Operation failed: {type(e).__name__}", file=sys.stderr)
+    return results
 
-    # Print a beautiful report
+
+def _print_workspace_gap_entry(r, agents_dir):
+    if r["coverage"] < 100.0:
+        print(f"### ⚠️ {r['agent_name']} ({r['coverage']:.1f}% Integration)")
+        print(f"- **API Client**: `{os.path.relpath(r['api_client'], agents_dir)}`")
+        print(f"- **MCP Server**: `{os.path.relpath(r['mcp_server'], agents_dir)}`")
+        print("- **Unmapped API Methods**:")
+        for m in r["unmapped"]:
+            print(f"  - `{m}`")
+        print()
+    else:
+        print(f"### ✅ {r['agent_name']} (100% Integration)")
+        print(f"- All {r['total_methods']} methods successfully mapped to MCP tools.")
+        print()
+
+
+def _print_workspace_report(agents_dir, results):
     print("# API to MCP Integration Parity Report")
     print(f"Scan Directory: `{agents_dir}`\n")
     print("| Agent Name | API Methods | Covered Methods | Coverage % | Status |")
@@ -259,20 +293,27 @@ def main():
 
     print("\n## Detailed Parity Gaps\n")
     for r in results:
-        if r["coverage"] < 100.0:
-            print(f"### ⚠️ {r['agent_name']} ({r['coverage']:.1f}% Integration)")
-            print(f"- **API Client**: `{os.path.relpath(r['api_client'], agents_dir)}`")
-            print(f"- **MCP Server**: `{os.path.relpath(r['mcp_server'], agents_dir)}`")
-            print("- **Unmapped API Methods**:")
-            for m in r["unmapped"]:
-                print(f"  - `{m}`")
-            print()
-        else:
-            print(f"### ✅ {r['agent_name']} (100% Integration)")
-            print(
-                f"- All {r['total_methods']} methods successfully mapped to MCP tools."
-            )
-            print()
+        _print_workspace_gap_entry(r, agents_dir)
+
+
+def _run_workspace_scan():
+    """Scan every agent dir in the workspace and print the parity report."""
+    agents_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    all_agent_dirs = _discover_agent_dirs(agents_dir)
+    results = _scan_agent_dirs(all_agent_dirs)
+    _print_workspace_report(agents_dir, results)
+
+
+def main():
+    args = sys.argv[1:]
+
+    # --- Local Mode (Single Agent Validation) ---
+    if "--local" in args or "--pre-commit" in args:
+        _run_local_mode()
+        return
+
+    # --- Default Mode (Workspace-wide Scan) ---
+    _run_workspace_scan()
 
 
 if __name__ == "__main__":
