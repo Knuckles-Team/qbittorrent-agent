@@ -114,46 +114,83 @@ def ingest_torrents(
         if not thash:
             continue
         tid = f"qbittorrent:Torrent:{thash}"
-        entities.append(
-            {
-                "id": tid,
-                "node_type": "Torrent",
-                "name": tor.get("name"),
-                "infoHash": thash,
-                "torrentState": tor.get("state"),
-                "progress": tor.get("progress"),
-                "shareRatio": tor.get("ratio"),
-                "sizeBytes": tor.get("size"),
-                "savePath": tor.get("save_path"),
-                "tags": tor.get("tags") or None,
-                "added_on": tor.get("added_on"),
-                "completion_on": tor.get("completion_on"),
-                "externalToolId": str(thash),
-            }
+        entities.append(_build_torrent_entity(tor, thash, tid))
+
+        tracker_entity, tracker_rel = _torrent_tracker_link(tor, tid, seen_trackers)
+        if tracker_entity is not None:
+            entities.append(tracker_entity)
+        if tracker_rel is not None:
+            relationships.append(tracker_rel)
+
+        category_entity, category_rel = _torrent_category_link(
+            tor, tid, seen_categories
         )
-
-        tracker_url = (tor.get("tracker") or "").strip()
-        if tracker_url:
-            tkid = f"qbittorrent:Tracker:{tracker_url}"
-            if tkid not in seen_trackers:
-                seen_trackers.add(tkid)
-                entities.append(
-                    {"id": tkid, "node_type": "Tracker", "trackerUrl": tracker_url}
-                )
-            relationships.append(
-                {"source": tid, "target": tkid, "relationship": "announcesTo"}
-            )
-
-        category = (tor.get("category") or "").strip()
-        if category:
-            catid = f"qbittorrent:TorrentCategory:{category}"
-            if catid not in seen_categories:
-                seen_categories.add(catid)
-                entities.append(
-                    {"id": catid, "node_type": "TorrentCategory", "name": category}
-                )
-            relationships.append(
-                {"source": tid, "target": catid, "relationship": "inCategory"}
-            )
+        if category_entity is not None:
+            entities.append(category_entity)
+        if category_rel is not None:
+            relationships.append(category_rel)
 
     return ingest_entities(entities, relationships, client=client, graph=graph)
+
+
+def _build_torrent_entity(
+    tor: dict[str, Any], thash: str, tid: str
+) -> dict[str, Any]:
+    """Map one qBittorrent torrent record to a ``:Torrent`` entity dict."""
+    return {
+        "id": tid,
+        "node_type": "Torrent",
+        "name": tor.get("name"),
+        "infoHash": thash,
+        "torrentState": tor.get("state"),
+        "progress": tor.get("progress"),
+        "shareRatio": tor.get("ratio"),
+        "sizeBytes": tor.get("size"),
+        "savePath": tor.get("save_path"),
+        "tags": tor.get("tags") or None,
+        "added_on": tor.get("added_on"),
+        "completion_on": tor.get("completion_on"),
+        "externalToolId": str(thash),
+    }
+
+
+def _torrent_tracker_link(
+    tor: dict[str, Any], tid: str, seen_trackers: set[str]
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Build the (deduped) ``:Tracker`` entity and ``:announcesTo`` relationship.
+
+    Returns ``(entity, relationship)`` where ``entity`` is ``None`` when this
+    tracker was already emitted for a prior torrent in the same batch, and
+    both are ``None`` when the torrent has no tracker URL.
+    """
+    tracker_url = (tor.get("tracker") or "").strip()
+    if not tracker_url:
+        return None, None
+    tkid = f"qbittorrent:Tracker:{tracker_url}"
+    entity = None
+    if tkid not in seen_trackers:
+        seen_trackers.add(tkid)
+        entity = {"id": tkid, "node_type": "Tracker", "trackerUrl": tracker_url}
+    relationship = {"source": tid, "target": tkid, "relationship": "announcesTo"}
+    return entity, relationship
+
+
+def _torrent_category_link(
+    tor: dict[str, Any], tid: str, seen_categories: set[str]
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Build the (deduped) ``:TorrentCategory`` entity and ``:inCategory`` relationship.
+
+    Returns ``(entity, relationship)`` where ``entity`` is ``None`` when this
+    category was already emitted for a prior torrent in the same batch, and
+    both are ``None`` when the torrent has no category.
+    """
+    category = (tor.get("category") or "").strip()
+    if not category:
+        return None, None
+    catid = f"qbittorrent:TorrentCategory:{category}"
+    entity = None
+    if catid not in seen_categories:
+        seen_categories.add(catid)
+        entity = {"id": catid, "node_type": "TorrentCategory", "name": category}
+    relationship = {"source": tid, "target": catid, "relationship": "inCategory"}
+    return entity, relationship
