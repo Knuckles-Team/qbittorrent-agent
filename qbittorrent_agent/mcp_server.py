@@ -49,6 +49,49 @@ logger = get_logger(name="qbittorrent-agent")
 logger.setLevel(logging.INFO)
 
 
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _app_get_application_version(client, **kwargs):
+    return await run_blocking(client.get_version, **kwargs)
+
+
+async def _app_get_api_version(client, **kwargs):
+    return await run_blocking(client.get_api_version, **kwargs)
+
+
+async def _app_get_build_info(client, **kwargs):
+    return await run_blocking(client.get_build_info, **kwargs)
+
+
+async def _app_shutdown_application(client, **kwargs):
+    return await run_blocking(client.shutdown_application, **kwargs)
+
+
+async def _app_get_preferences(client, **kwargs):
+    return await run_blocking(client.get_preferences, **kwargs)
+
+
+async def _app_set_preferences(client, **kwargs):
+    return await run_blocking(client.set_preferences, **kwargs)
+
+
+async def _app_get_default_save_path(client, **kwargs):
+    return await run_blocking(client.get_default_save_path, **kwargs)
+
+
+_APP_ACTION_HANDLERS: dict[str, Any] = {
+    "get_application_version": _app_get_application_version,
+    "get_api_version": _app_get_api_version,
+    "get_build_info": _app_get_build_info,
+    "shutdown_application": _app_shutdown_application,
+    "get_preferences": _app_get_preferences,
+    "set_preferences": _app_set_preferences,
+    "get_default_save_path": _app_get_default_save_path,
+}
+
+
 def register_app_tools(mcp: FastMCP):
     @mcp.tool(tags={"app"})
     async def qbittorrent_app(
@@ -93,20 +136,9 @@ def register_app_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "get_application_version":
-            return await run_blocking(client.get_version, **kwargs)
-        if action == "get_api_version":
-            return await run_blocking(client.get_api_version, **kwargs)
-        if action == "get_build_info":
-            return await run_blocking(client.get_build_info, **kwargs)
-        if action == "shutdown_application":
-            return await run_blocking(client.shutdown_application, **kwargs)
-        if action == "get_preferences":
-            return await run_blocking(client.get_preferences, **kwargs)
-        if action == "set_preferences":
-            return await run_blocking(client.set_preferences, **kwargs)
-        if action == "get_default_save_path":
-            return await run_blocking(client.get_default_save_path, **kwargs)
+        handler = _APP_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -196,6 +228,54 @@ def register_sync_tools(mcp: FastMCP):
         raise ValueError(f"Unknown action: {action}")
 
 
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _transfer_get_global_transfer_info(client, **kwargs):
+    return await run_blocking(client.get_transfer_info, **kwargs)
+
+
+async def _transfer_get_speed_limits_mode(client, **kwargs):
+    return await run_blocking(client.get_speed_limits_mode, **kwargs)
+
+
+async def _transfer_toggle_speed_limits_mode(client, **kwargs):
+    return await run_blocking(client.toggle_speed_limits_mode, **kwargs)
+
+
+async def _transfer_get_global_download_limit(client, **kwargs):
+    return await run_blocking(client.get_global_download_limit, **kwargs)
+
+
+async def _transfer_set_global_download_limit(client, **kwargs):
+    return await run_blocking(client.set_global_download_limit, **kwargs)
+
+
+async def _transfer_get_global_upload_limit(client, **kwargs):
+    return await run_blocking(client.get_global_upload_limit, **kwargs)
+
+
+async def _transfer_set_global_upload_limit(client, **kwargs):
+    return await run_blocking(client.set_global_upload_limit, **kwargs)
+
+
+async def _transfer_ban_peers(client, **kwargs):
+    return await run_blocking(client.ban_peers, **kwargs)
+
+
+_TRANSFER_ACTION_HANDLERS: dict[str, Any] = {
+    "get_global_transfer_info": _transfer_get_global_transfer_info,
+    "get_speed_limits_mode": _transfer_get_speed_limits_mode,
+    "toggle_speed_limits_mode": _transfer_toggle_speed_limits_mode,
+    "get_global_download_limit": _transfer_get_global_download_limit,
+    "set_global_download_limit": _transfer_set_global_download_limit,
+    "get_global_upload_limit": _transfer_get_global_upload_limit,
+    "set_global_upload_limit": _transfer_set_global_upload_limit,
+    "ban_peers": _transfer_ban_peers,
+}
+
+
 def register_transfer_tools(mcp: FastMCP):
     @mcp.tool(tags={"transfer"})
     async def qbittorrent_transfer(
@@ -241,22 +321,9 @@ def register_transfer_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "get_global_transfer_info":
-            return await run_blocking(client.get_transfer_info, **kwargs)
-        if action == "get_speed_limits_mode":
-            return await run_blocking(client.get_speed_limits_mode, **kwargs)
-        if action == "toggle_speed_limits_mode":
-            return await run_blocking(client.toggle_speed_limits_mode, **kwargs)
-        if action == "get_global_download_limit":
-            return await run_blocking(client.get_global_download_limit, **kwargs)
-        if action == "set_global_download_limit":
-            return await run_blocking(client.set_global_download_limit, **kwargs)
-        if action == "get_global_upload_limit":
-            return await run_blocking(client.get_global_upload_limit, **kwargs)
-        if action == "set_global_upload_limit":
-            return await run_blocking(client.set_global_upload_limit, **kwargs)
-        if action == "ban_peers":
-            return await run_blocking(client.ban_peers, **kwargs)
+        handler = _TRANSFER_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")
 
 
@@ -587,6 +654,74 @@ def register_torrents_tools(mcp: FastMCP):
         raise ValueError(f"Unknown action: {action}")
 
 
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _rss_add_rss_folder(client, **kwargs):
+    return await run_blocking(client.add_rss_folder, **kwargs)
+
+
+async def _rss_add_rss_feed(client, **kwargs):
+    return await run_blocking(client.add_rss_feed, **kwargs)
+
+
+async def _rss_remove_rss_item(client, **kwargs):
+    return await run_blocking(client.remove_rss_item, **kwargs)
+
+
+async def _rss_move_rss_item(client, **kwargs):
+    return await run_blocking(client.move_rss_item, **kwargs)
+
+
+async def _rss_get_all_rss_items(client, **kwargs):
+    return await run_blocking(client.get_rss_items, **kwargs)
+
+
+async def _rss_mark_rss_as_read(client, **kwargs):
+    return await run_blocking(client.mark_rss_as_read, **kwargs)
+
+
+async def _rss_refresh_rss_item(client, **kwargs):
+    return await run_blocking(client.refresh_rss_item, **kwargs)
+
+
+async def _rss_set_rss_auto_downloading_rule(client, **kwargs):
+    return await run_blocking(client.set_rss_rule, **kwargs)
+
+
+async def _rss_rename_rss_auto_downloading_rule(client, **kwargs):
+    return await run_blocking(client.rename_rss_rule, **kwargs)
+
+
+async def _rss_remove_rss_auto_downloading_rule(client, **kwargs):
+    return await run_blocking(client.remove_rss_rule, **kwargs)
+
+
+async def _rss_get_all_rss_auto_downloading_rules(client, **kwargs):
+    return await run_blocking(client.get_rss_rules, **kwargs)
+
+
+async def _rss_get_all_rss_articles_matching_rule(client, **kwargs):
+    return await run_blocking(client.get_rss_matching_articles, **kwargs)
+
+
+_RSS_ACTION_HANDLERS: dict[str, Any] = {
+    "add_rss_folder": _rss_add_rss_folder,
+    "add_rss_feed": _rss_add_rss_feed,
+    "remove_rss_item": _rss_remove_rss_item,
+    "move_rss_item": _rss_move_rss_item,
+    "get_all_rss_items": _rss_get_all_rss_items,
+    "mark_rss_as_read": _rss_mark_rss_as_read,
+    "refresh_rss_item": _rss_refresh_rss_item,
+    "set_rss_auto_downloading_rule": _rss_set_rss_auto_downloading_rule,
+    "rename_rss_auto_downloading_rule": _rss_rename_rss_auto_downloading_rule,
+    "remove_rss_auto_downloading_rule": _rss_remove_rss_auto_downloading_rule,
+    "get_all_rss_auto_downloading_rules": _rss_get_all_rss_auto_downloading_rules,
+    "get_all_rss_articles_matching_rule": _rss_get_all_rss_articles_matching_rule,
+}
+
+
 def register_rss_tools(mcp: FastMCP):
     @mcp.tool(tags={"rss"})
     async def qbittorrent_rss(
@@ -636,31 +771,68 @@ def register_rss_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "add_rss_folder":
-            return await run_blocking(client.add_rss_folder, **kwargs)
-        if action == "add_rss_feed":
-            return await run_blocking(client.add_rss_feed, **kwargs)
-        if action == "remove_rss_item":
-            return await run_blocking(client.remove_rss_item, **kwargs)
-        if action == "move_rss_item":
-            return await run_blocking(client.move_rss_item, **kwargs)
-        if action == "get_all_rss_items":
-            return await run_blocking(client.get_rss_items, **kwargs)
-        if action == "mark_rss_as_read":
-            return await run_blocking(client.mark_rss_as_read, **kwargs)
-        if action == "refresh_rss_item":
-            return await run_blocking(client.refresh_rss_item, **kwargs)
-        if action == "set_rss_auto_downloading_rule":
-            return await run_blocking(client.set_rss_rule, **kwargs)
-        if action == "rename_rss_auto_downloading_rule":
-            return await run_blocking(client.rename_rss_rule, **kwargs)
-        if action == "remove_rss_auto_downloading_rule":
-            return await run_blocking(client.remove_rss_rule, **kwargs)
-        if action == "get_all_rss_auto_downloading_rules":
-            return await run_blocking(client.get_rss_rules, **kwargs)
-        if action == "get_all_rss_articles_matching_rule":
-            return await run_blocking(client.get_rss_matching_articles, **kwargs)
+        handler = _RSS_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")
+
+
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _search_start_search(client, **kwargs):
+    return await run_blocking(client.search_start, **kwargs)
+
+
+async def _search_stop_search(client, **kwargs):
+    return await run_blocking(client.search_stop, **kwargs)
+
+
+async def _search_get_search_status(client, **kwargs):
+    return await run_blocking(client.search_status, **kwargs)
+
+
+async def _search_get_search_results(client, **kwargs):
+    return await run_blocking(client.search_results, **kwargs)
+
+
+async def _search_delete_search(client, **kwargs):
+    return await run_blocking(client.search_delete, **kwargs)
+
+
+async def _search_get_search_plugins(client, **kwargs):
+    return await run_blocking(client.get_search_plugins, **kwargs)
+
+
+async def _search_install_search_plugin(client, **kwargs):
+    return await run_blocking(client.install_search_plugin, **kwargs)
+
+
+async def _search_uninstall_search_plugin(client, **kwargs):
+    return await run_blocking(client.uninstall_search_plugin, **kwargs)
+
+
+async def _search_enable_search_plugin(client, **kwargs):
+    return await run_blocking(client.enable_search_plugin, **kwargs)
+
+
+async def _search_update_search_plugins(client, **kwargs):
+    return await run_blocking(client.update_search_plugins, **kwargs)
+
+
+_SEARCH_ACTION_HANDLERS: dict[str, Any] = {
+    "start_search": _search_start_search,
+    "stop_search": _search_stop_search,
+    "get_search_status": _search_get_search_status,
+    "get_search_results": _search_get_search_results,
+    "delete_search": _search_delete_search,
+    "get_search_plugins": _search_get_search_plugins,
+    "install_search_plugin": _search_install_search_plugin,
+    "uninstall_search_plugin": _search_uninstall_search_plugin,
+    "enable_search_plugin": _search_enable_search_plugin,
+    "update_search_plugins": _search_update_search_plugins,
+}
 
 
 def register_search_tools(mcp: FastMCP):
@@ -710,27 +882,24 @@ def register_search_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "start_search":
-            return await run_blocking(client.search_start, **kwargs)
-        if action == "stop_search":
-            return await run_blocking(client.search_stop, **kwargs)
-        if action == "get_search_status":
-            return await run_blocking(client.search_status, **kwargs)
-        if action == "get_search_results":
-            return await run_blocking(client.search_results, **kwargs)
-        if action == "delete_search":
-            return await run_blocking(client.search_delete, **kwargs)
-        if action == "get_search_plugins":
-            return await run_blocking(client.get_search_plugins, **kwargs)
-        if action == "install_search_plugin":
-            return await run_blocking(client.install_search_plugin, **kwargs)
-        if action == "uninstall_search_plugin":
-            return await run_blocking(client.uninstall_search_plugin, **kwargs)
-        if action == "enable_search_plugin":
-            return await run_blocking(client.enable_search_plugin, **kwargs)
-        if action == "update_search_plugins":
-            return await run_blocking(client.update_search_plugins, **kwargs)
+        handler = _SEARCH_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")
+
+
+def _normalize_torrent_records(resp: Any) -> list[Any]:
+    """Coerce a ``get_torrents`` response into a flat list of plain dict records.
+
+    Wraps a single non-list response into a one-item list, drops ``None``
+    entries, and converts any pydantic model instances to plain dicts.
+    """
+    records = resp if isinstance(resp, list) else [resp]
+    return [
+        r.model_dump() if hasattr(r, "model_dump") else r
+        for r in records
+        if r is not None
+    ]
 
 
 def register_ingest_tools(mcp: FastMCP):
@@ -769,12 +938,7 @@ def register_ingest_tools(mcp: FastMCP):
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
 
         resp = await run_blocking(client.get_torrents, **kwargs)
-        records = resp if isinstance(resp, list) else [resp]
-        torrents = [
-            r.model_dump() if hasattr(r, "model_dump") else r
-            for r in records
-            if r is not None
-        ]
+        torrents = _normalize_torrent_records(resp)
         result = ingest_torrents(torrents)
         return {"listed": len(torrents), "ingested": result}
 

@@ -3,6 +3,8 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from typing import Any
+
 from agent_utilities.mcp.action_dispatch import resolve_action
 from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
@@ -10,6 +12,64 @@ from fastmcp.dependencies import Depends
 from pydantic import Field
 
 from qbittorrent_agent.auth import get_client
+
+
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _search_start_search(client, **kwargs):
+    return await run_blocking(client.search_start, **kwargs)
+
+
+async def _search_stop_search(client, **kwargs):
+    return await run_blocking(client.search_stop, **kwargs)
+
+
+async def _search_get_search_status(client, **kwargs):
+    return await run_blocking(client.search_status, **kwargs)
+
+
+async def _search_get_search_results(client, **kwargs):
+    return await run_blocking(client.search_results, **kwargs)
+
+
+async def _search_delete_search(client, **kwargs):
+    return await run_blocking(client.search_delete, **kwargs)
+
+
+async def _search_get_search_plugins(client, **kwargs):
+    return await run_blocking(client.get_search_plugins, **kwargs)
+
+
+async def _search_install_search_plugin(client, **kwargs):
+    return await run_blocking(client.install_search_plugin, **kwargs)
+
+
+async def _search_uninstall_search_plugin(client, **kwargs):
+    return await run_blocking(client.uninstall_search_plugin, **kwargs)
+
+
+async def _search_enable_search_plugin(client, **kwargs):
+    return await run_blocking(client.enable_search_plugin, **kwargs)
+
+
+async def _search_update_search_plugins(client, **kwargs):
+    return await run_blocking(client.update_search_plugins, **kwargs)
+
+
+_SEARCH_ACTION_HANDLERS: dict[str, Any] = {
+    "start_search": _search_start_search,
+    "stop_search": _search_stop_search,
+    "get_search_status": _search_get_search_status,
+    "get_search_results": _search_get_search_results,
+    "delete_search": _search_delete_search,
+    "get_search_plugins": _search_get_search_plugins,
+    "install_search_plugin": _search_install_search_plugin,
+    "uninstall_search_plugin": _search_uninstall_search_plugin,
+    "enable_search_plugin": _search_enable_search_plugin,
+    "update_search_plugins": _search_update_search_plugins,
+}
 
 
 def register_search_tools(mcp: FastMCP):
@@ -59,24 +119,7 @@ def register_search_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "start_search":
-            return await run_blocking(client.search_start, **kwargs)
-        if action == "stop_search":
-            return await run_blocking(client.search_stop, **kwargs)
-        if action == "get_search_status":
-            return await run_blocking(client.search_status, **kwargs)
-        if action == "get_search_results":
-            return await run_blocking(client.search_results, **kwargs)
-        if action == "delete_search":
-            return await run_blocking(client.search_delete, **kwargs)
-        if action == "get_search_plugins":
-            return await run_blocking(client.get_search_plugins, **kwargs)
-        if action == "install_search_plugin":
-            return await run_blocking(client.install_search_plugin, **kwargs)
-        if action == "uninstall_search_plugin":
-            return await run_blocking(client.uninstall_search_plugin, **kwargs)
-        if action == "enable_search_plugin":
-            return await run_blocking(client.enable_search_plugin, **kwargs)
-        if action == "update_search_plugins":
-            return await run_blocking(client.update_search_plugins, **kwargs)
+        handler = _SEARCH_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")

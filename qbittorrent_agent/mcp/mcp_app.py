@@ -3,6 +3,8 @@
 Auto-generated from mcp_server.py during ecosystem standardization.
 """
 
+from typing import Any
+
 from agent_utilities.mcp.action_dispatch import resolve_action
 from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
@@ -10,6 +12,49 @@ from fastmcp.dependencies import Depends
 from pydantic import Field
 
 from qbittorrent_agent.auth import get_client
+
+
+# One tiny extracted handler per action -- each preserves the exact
+# client-method call and kwargs passthrough the if/elif chain used to
+# perform inline. Kept module-level (not nested) so each has CCN 1 and
+# is independently addressable/testable.
+async def _app_get_application_version(client, **kwargs):
+    return await run_blocking(client.get_version, **kwargs)
+
+
+async def _app_get_api_version(client, **kwargs):
+    return await run_blocking(client.get_api_version, **kwargs)
+
+
+async def _app_get_build_info(client, **kwargs):
+    return await run_blocking(client.get_build_info, **kwargs)
+
+
+async def _app_shutdown_application(client, **kwargs):
+    return await run_blocking(client.shutdown_application, **kwargs)
+
+
+async def _app_get_preferences(client, **kwargs):
+    return await run_blocking(client.get_preferences, **kwargs)
+
+
+async def _app_set_preferences(client, **kwargs):
+    return await run_blocking(client.set_preferences, **kwargs)
+
+
+async def _app_get_default_save_path(client, **kwargs):
+    return await run_blocking(client.get_default_save_path, **kwargs)
+
+
+_APP_ACTION_HANDLERS: dict[str, Any] = {
+    "get_application_version": _app_get_application_version,
+    "get_api_version": _app_get_api_version,
+    "get_build_info": _app_get_build_info,
+    "shutdown_application": _app_shutdown_application,
+    "get_preferences": _app_get_preferences,
+    "set_preferences": _app_set_preferences,
+    "get_default_save_path": _app_get_default_save_path,
+}
 
 
 def register_app_tools(mcp: FastMCP):
@@ -56,18 +101,7 @@ def register_app_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "get_application_version":
-            return await run_blocking(client.get_version, **kwargs)
-        if action == "get_api_version":
-            return await run_blocking(client.get_api_version, **kwargs)
-        if action == "get_build_info":
-            return await run_blocking(client.get_build_info, **kwargs)
-        if action == "shutdown_application":
-            return await run_blocking(client.shutdown_application, **kwargs)
-        if action == "get_preferences":
-            return await run_blocking(client.get_preferences, **kwargs)
-        if action == "set_preferences":
-            return await run_blocking(client.set_preferences, **kwargs)
-        if action == "get_default_save_path":
-            return await run_blocking(client.get_default_save_path, **kwargs)
+        handler = _APP_ACTION_HANDLERS.get(action)
+        if handler is not None:
+            return await handler(client, **kwargs)
         raise ValueError(f"Unknown action: {action}")
