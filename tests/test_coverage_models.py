@@ -13,26 +13,35 @@ def test_qbittorrent_models_coverage():
 
     for name, obj in inspect.getmembers(qbittorrent_models, inspect.isclass):
         if issubclass(obj, BaseModel) and obj is not BaseModel:
-            kwargs: dict[str, Any] = {}
-            for field_name, field in obj.model_fields.items():
-                if field.is_required():
-                    anno = field.annotation
-                    anno_str = str(anno)
-                    if "list" in anno_str or "List" in anno_str:
-                        kwargs[field_name] = []
-                    elif "dict" in anno_str or "Dict" in anno_str:
-                        kwargs[field_name] = {}
-                    elif "int" in anno_str:
-                        kwargs[field_name] = 1
-                    elif "float" in anno_str:
-                        kwargs[field_name] = 1.0
-                    elif "bool" in anno_str:
-                        kwargs[field_name] = True
-                    else:
-                        kwargs[field_name] = "test"
+            kwargs = _synthesize_model_kwargs(obj)
             try:
                 inst = obj(**kwargs)
                 assert isinstance(inst, obj)
             except Exception as e:
                 print(f"Operation failed: {type(e).__name__}")
                 raise e
+
+
+def _default_value_for_field(field: Any) -> Any:
+    """Synthesize a plausible value for a required pydantic field, by annotation text."""
+    anno_str = str(field.annotation)
+    if "list" in anno_str or "List" in anno_str:
+        return []
+    if "dict" in anno_str or "Dict" in anno_str:
+        return {}
+    if "int" in anno_str:
+        return 1
+    if "float" in anno_str:
+        return 1.0
+    if "bool" in anno_str:
+        return True
+    return "test"
+
+
+def _synthesize_model_kwargs(obj: type[BaseModel]) -> dict[str, Any]:
+    """Build kwargs covering every required field of a pydantic BaseModel subclass."""
+    kwargs: dict[str, Any] = {}
+    for field_name, field in obj.model_fields.items():
+        if field.is_required():
+            kwargs[field_name] = _default_value_for_field(field)
+    return kwargs

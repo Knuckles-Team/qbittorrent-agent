@@ -111,6 +111,144 @@ VALID_TOOL_ACTIONS = {
 }
 
 
+def _mcp_routes(mcp) -> list:
+    """Locate the additional HTTP routes registered on an MCP server instance."""
+    if hasattr(mcp, "_additional_http_routes"):
+        return mcp._additional_http_routes
+    if hasattr(mcp, "routes"):
+        return mcp.routes
+    if hasattr(mcp, "_app") and hasattr(mcp._app, "routes"):
+        return mcp._app.routes
+    return []
+
+
+async def _assert_health_route_ok(route) -> None:
+    """Invoke a ``/health`` route's endpoint and assert a 200/OK response."""
+    from starlette.datastructures import Headers
+    from starlette.requests import Request
+
+    mock_scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/health",
+        "headers": Headers().raw,
+    }
+    mock_req = Request(scope=mock_scope)
+    res = await route.endpoint(mock_req)
+    assert res.status_code == 200
+    assert json.loads(res.body.decode()).get("status", "").upper() == "OK"
+
+
+async def _exercise_health_route(mcp) -> None:
+    """Find and exercise the server's custom ``/health`` route, if present."""
+    for route in _mcp_routes(mcp):
+        if hasattr(route, "path") and route.path == "/health":
+            await _assert_health_route_ok(route)
+
+
+def _build_tool_call_params(tool, tool_name: str) -> dict[str, Any]:
+    """Synthesize a params dict for a standard ``mcp.call_tool`` invocation."""
+    target_params: dict[str, Any] = {}
+    if hasattr(tool, "parameters") and hasattr(tool.parameters, "properties"):
+        for p_name in tool.parameters.properties.keys():
+            if p_name == "action":
+                target_params["action"] = VALID_TOOL_ACTIONS.get(tool_name, [""])[0]
+            elif p_name == "params_json":
+                target_params["params_json"] = "{}"
+            else:
+                target_params[p_name] = "test"
+    return target_params
+
+
+async def _exercise_standard_call(mcp, tool) -> None:
+    """1. Standard call_tool using the first valid action."""
+    tool_name = tool.name
+    try:
+        target_params = _build_tool_call_params(tool, tool_name)
+        await mcp.call_tool(tool_name, target_params)
+    except Exception as e:
+        print(f"Operation failed: {type(e).__name__}")
+
+
+def _tool_has_action_param(tool) -> bool:
+    """Whether a tool is action-routed (vs. a Wire-First ingestion tool)."""
+    return hasattr(tool, "parameters") and "action" in (
+        getattr(tool.parameters, "properties", {}) or {}
+    )
+
+
+async def _exercise_valid_actions(tool, mock_api, actions: list) -> None:
+    """2. Direct tool.fn call for every single valid action, with/without Context."""
+    for act in actions:
+        try:
+            await tool.fn(
+                action=act, params_json="{}", client=mock_api, ctx=MagicMock()
+            )
+            await tool.fn(action=act, params_json="{}", client=mock_api, ctx=None)
+        except Exception as e:
+            print(f"Operation failed: {type(e).__name__}")
+
+
+async def _exercise_invalid_action(tool, mock_api) -> None:
+    """3. Invalid action path to cover ValueError."""
+    try:
+        await tool.fn(
+            action="invalid_action_xyz",
+            params_json="{}",
+            client=mock_api,
+            ctx=MagicMock(),
+        )
+    except ValueError:
+        pass
+
+
+async def _exercise_invalid_json(tool, mock_api, actions: list) -> None:
+    """4. Invalid json in params_json."""
+    try:
+        await tool.fn(
+            action=actions[0],
+            params_json="invalid_json",
+            client=mock_api,
+            ctx=MagicMock(),
+        )
+    except Exception:
+        pass
+
+
+async def _exercise_action_routed_tool(tool, mock_api) -> None:
+    """Exercise every action-routed branch for one tool: valid, invalid, malformed."""
+    actions = VALID_TOOL_ACTIONS.get(tool.name, [None])
+    await _exercise_valid_actions(tool, mock_api, actions)
+    await _exercise_invalid_action(tool, mock_api)
+    await _exercise_invalid_json(tool, mock_api, actions)
+
+
+async def _exercise_tool(mcp, tool, mock_api) -> None:
+    """Exercise one MCP tool: the standard call, then its action paths if routed."""
+    print(f"Testing MCP tool: {tool.name}")
+    await _exercise_standard_call(mcp, tool)
+
+    # Action-routed tools take an ``action`` kwarg; Wire-First ingestion tools
+    # (e.g. qbittorrent_ingest_torrents) do not -- skip the action-based
+    # direct calls for those.
+    if not _tool_has_action_param(tool):
+        return
+    await _exercise_action_routed_tool(tool, mock_api)
+
+
+async def run_tools(mcp, mock_api) -> None:
+    """Exercise the server's health route and every registered MCP tool."""
+    await _exercise_health_route(mcp)
+
+    tool_objs = (
+        await mcp.list_tools()
+        if inspect.iscoroutinefunction(mcp.list_tools)
+        else mcp.list_tools()
+    )
+    for tool in tool_objs:
+        await _exercise_tool(mcp, tool, mock_api)
+
+
 def test_mcp_server_coverage(mock_session):
     """Verify MCP tools invoke correctly with and without Context.
 
@@ -129,124 +267,8 @@ def test_mcp_server_coverage(mock_session):
             mcp_data = get_mcp_instance()
             mcp = mcp_data[0] if isinstance(mcp_data, tuple) else mcp_data
 
-            async def run_tools():
-                # Test custom health route
-                routes = []
-                if hasattr(mcp, "_additional_http_routes"):
-                    routes = mcp._additional_http_routes
-                elif hasattr(mcp, "routes"):
-                    routes = mcp.routes
-                elif hasattr(mcp, "_app") and hasattr(mcp._app, "routes"):
-                    routes = mcp._app.routes
-
-                for route in routes:
-                    if hasattr(route, "path") and route.path == "/health":
-                        from starlette.datastructures import Headers
-                        from starlette.requests import Request
-
-                        mock_scope = {
-                            "type": "http",
-                            "method": "GET",
-                            "path": "/health",
-                            "headers": Headers().raw,
-                        }
-                        mock_req = Request(scope=mock_scope)
-                        res = await route.endpoint(mock_req)
-                        assert res.status_code == 200
-                        assert json.loads(res.body.decode()).get(
-                            "status", ""
-                        ).upper() == "OK"
-
-                tool_objs = (
-                    await mcp.list_tools()
-                    if inspect.iscoroutinefunction(mcp.list_tools)
-                    else mcp.list_tools()
-                )
-                for tool in tool_objs:
-                    tool_name = tool.name
-                    print(f"Testing MCP tool: {tool_name}")
-
-                    # 1. Standard call_tool using the first valid action
-                    try:
-                        target_params: dict[str, Any] = {}
-                        if hasattr(tool, "parameters") and hasattr(
-                            tool.parameters, "properties"
-                        ):
-                            for p_name in tool.parameters.properties.keys():
-                                if p_name == "action":
-                                    target_params["action"] = VALID_TOOL_ACTIONS.get(
-                                        tool_name, [""]
-                                    )[0]
-                                elif p_name == "params_json":
-                                    target_params["params_json"] = "{}"
-                                else:
-                                    target_params[p_name] = "test"
-                        await mcp.call_tool(tool_name, target_params)
-                    except Exception as e:
-                        print(f"Operation failed: {type(e).__name__}")
-
-                    # Action-routed tools take an ``action`` kwarg; Wire-First
-                    # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
-                    # skip the action-based direct calls for those.
-                    has_action = hasattr(tool, "parameters") and "action" in (
-                        getattr(tool.parameters, "properties", {}) or {}
-                    )
-                    if not has_action:
-                        continue
-
-                    # Action-routed tools take an ``action`` kwarg; Wire-First
-                    # ingestion tools (e.g. qbittorrent_ingest_torrents) do not —
-                    # skip the action-based direct calls for those.
-                    has_action = hasattr(tool, "parameters") and "action" in (
-                        getattr(tool.parameters, "properties", {}) or {}
-                    )
-                    if not has_action:
-                        continue
-
-                    # 2. Direct tool.fn call for every single valid action
-                    actions = VALID_TOOL_ACTIONS.get(tool_name, [None])
-                    for act in actions:
-                        try:
-                            # With and without Context
-                            await tool.fn(
-                                action=act,
-                                params_json="{}",
-                                client=mock_api,
-                                ctx=MagicMock(),
-                            )
-                            await tool.fn(
-                                action=act,
-                                params_json="{}",
-                                client=mock_api,
-                                ctx=None,
-                            )
-                        except Exception as e:
-                            print(f"Operation failed: {type(e).__name__}")
-
-                    # 3. Invalid action path to cover ValueError
-                    try:
-                        await tool.fn(
-                            action="invalid_action_xyz",
-                            params_json="{}",
-                            client=mock_api,
-                            ctx=MagicMock(),
-                        )
-                    except ValueError:
-                        pass
-
-                    # 4. Invalid json in params_json
-                    try:
-                        await tool.fn(
-                            action=actions[0],
-                            params_json="invalid_json",
-                            client=mock_api,
-                            ctx=MagicMock(),
-                        )
-                    except Exception:
-                        pass
-
             loop = asyncio.new_event_loop()
-            loop.run_until_complete(run_tools())
+            loop.run_until_complete(run_tools(mcp, mock_api))
             loop.close()
 
 
