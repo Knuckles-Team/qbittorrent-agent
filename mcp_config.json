@@ -9,6 +9,7 @@
       "env": {
         "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
+        "INGESTTOOL": "True",
         "LOGTOOL": "True",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
