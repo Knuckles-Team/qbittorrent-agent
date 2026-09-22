@@ -1,8 +1,8 @@
 {
-  "algorithm": "agent-utilities:mcp-tool-schema-compat:v1",
+  "algorithm": "agent-connector-sdk:mcp-tool-contract-compat:v2",
   "connector": "qbittorrent-agent",
   "schema_version": "1",
   "tools": {
-    "qbittorrent_torrents": "bd094598a34de2905c09950dd592b562ee460888bab51e1d8ffc402a447844cc"
+    "qbittorrent_torrents": "562789e20ecc165b99c1674bbc6e00d9df0d63065d236dea10b78bbd2b843855"
   }
 }

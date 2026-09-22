@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
 import logging
 import sys
-from typing import Any
+from typing import Any, Literal
 
 from agent_utilities.core.config import load_config
 from agent_utilities.mcp.action_dispatch import resolve_action
@@ -568,7 +568,54 @@ _TORRENTS_ACTION_HANDLERS: dict[str, Any] = {
 def register_torrents_tools(mcp: FastMCP):
     @mcp.tool(tags={"torrents"})
     async def qbittorrent_torrents(
-        action: str = Field(
+        action: Literal[
+            "add_new_category",
+            "add_new_torrent",
+            "add_peers",
+            "add_torrent_tags",
+            "add_trackers_to_torrent",
+            "bottom_torrent_priority",
+            "create_tags",
+            "decrease_torrent_priority",
+            "delete_tags",
+            "delete_torrents",
+            "edit_category",
+            "edit_tracker",
+            "get_all_categories",
+            "get_all_tags",
+            "get_torrent_contents",
+            "get_torrent_download_limit",
+            "get_torrent_list",
+            "get_torrent_piece_hashes",
+            "get_torrent_piece_states",
+            "get_torrent_properties",
+            "get_torrent_trackers",
+            "get_torrent_upload_limit",
+            "get_torrent_webseeds",
+            "increase_torrent_priority",
+            "pause_torrents",
+            "reannounce_torrents",
+            "recheck_torrents",
+            "remove_categories",
+            "remove_torrent_tags",
+            "remove_trackers",
+            "rename_file",
+            "rename_folder",
+            "resume_torrents",
+            "set_auto_management",
+            "set_file_priority",
+            "set_force_start",
+            "set_super_seeding",
+            "set_torrent_category",
+            "set_torrent_download_limit",
+            "set_torrent_location",
+            "set_torrent_name",
+            "set_torrent_share_limit",
+            "set_torrent_upload_limit",
+            "toggle_first_last_piece_priority",
+            "toggle_sequential_download",
+            "top_torrent_priority",
+        ] = Field(
             description="Action to perform. Must be one of: 'get_torrent_list', 'get_torrent_properties', 'get_torrent_trackers', 'get_torrent_webseeds', 'get_torrent_contents', 'get_torrent_piece_states', 'get_torrent_piece_hashes', 'pause_torrents', 'resume_torrents', 'delete_torrents', 'recheck_torrents', 'reannounce_torrents', 'edit_tracker', 'remove_trackers', 'add_peers', 'add_new_torrent', 'add_trackers_to_torrent', 'increase_torrent_priority', 'decrease_torrent_priority', 'top_torrent_priority', 'bottom_torrent_priority', 'set_file_priority', 'get_torrent_download_limit', 'set_torrent_download_limit', 'set_torrent_share_limit', 'get_torrent_upload_limit', 'set_torrent_upload_limit', 'set_torrent_location', 'set_torrent_name', 'set_torrent_category', 'get_all_categories', 'add_new_category', 'edit_category', 'remove_categories', 'add_torrent_tags', 'remove_torrent_tags', 'get_all_tags', 'create_tags', 'delete_tags', 'set_auto_management', 'toggle_sequential_download', 'toggle_first_last_piece_priority', 'set_force_start', 'set_super_seeding', 'rename_file', 'rename_folder'"
         ),
         params_json: str = Field(

@@ -98,7 +98,7 @@ sync:
   updated_field: added_on
   pagination: null
   doc_type: torrent
-  tool_schema_sha256: bd094598a34de2905c09950dd592b562ee460888bab51e1d8ffc402a447844cc
+  tool_schema_sha256: 562789e20ecc165b99c1674bbc6e00d9df0d63065d236dea10b78bbd2b843855
   raw:
     server: qbittorrent-mcp
     tool: qbittorrent_torrents
