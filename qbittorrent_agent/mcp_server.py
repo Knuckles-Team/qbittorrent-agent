@@ -566,7 +566,18 @@ _TORRENTS_ACTION_HANDLERS: dict[str, Any] = {
 
 
 def register_torrents_tools(mcp: FastMCP):
-    @mcp.tool(tags={"torrents"})
+    @mcp.tool(
+        tags={"torrents"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": True,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def qbittorrent_torrents(
         action: Literal[
             "add_new_category",
