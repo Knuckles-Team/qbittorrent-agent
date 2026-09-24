@@ -166,54 +166,6 @@ docker compose -f docker/mcp.compose.yml up -d
 docker compose -f docker/mcp.compose.yml logs -f
 ```
 
-## A2A agent server
-
-`qbittorrent-agent` also ships a Pydantic-AI **A2A agent** (console script
-`qbittorrent-agent`). It connects to the MCP server over `MCP_URL`, auto-discovers the
-tool surface from `mcp_config.json`, and serves an A2A / AG-UI endpoint on its own
-port:
-
-```bash
-export MCP_URL=http://qbittorrent-agent-mcp:8000/mcp
-qbittorrent-agent --provider openai --model-id gpt-4o --host 0.0.0.0 --port 9004
-```
-
-The repo ships [`docker/agent.compose.yml`](https://github.com/Knuckles-Team/qbittorrent-agent/blob/main/docker/agent.compose.yml),
-which deploys the MCP server and the agent together — the agent waits on the MCP
-service and is wired to it by container name:
-
-```yaml
-services:
-  qbittorrent-agent-mcp:
-    image: example/qbittorrent-agent@sha256:<digest>
-    hostname: qbittorrent-agent-mcp
-    env_file: [../.env]
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8000
-      - TRANSPORT=streamable-http
-    ports: ["8000:8000"]
-
-  qbittorrent-agent-agent:
-    image: example/qbittorrent-agent@sha256:<digest>
-    depends_on: [qbittorrent-agent-mcp]
-    command: ["qbittorrent-agent"]
-    env_file: [../.env]
-    environment:
-      - HOST=0.0.0.0
-      - PORT=9004
-      - MCP_URL=http://qbittorrent-agent-mcp:8000/mcp
-      - PROVIDER=${PROVIDER:-openai}
-      - MODEL_ID=${MODEL_ID:-gpt-4o}
-      - ENABLE_WEB_UI=True
-    ports: ["9004:9004"]
-```
-
-```bash
-docker compose -f docker/agent.compose.yml up -d
-curl -s http://localhost:9004/health         # agent health endpoint
-```
-
 ## Behind a Caddy reverse proxy
 
 Expose the HTTP server on a hostname with automatic TLS. Add to your `Caddyfile`:

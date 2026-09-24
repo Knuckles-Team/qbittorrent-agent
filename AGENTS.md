@@ -52,8 +52,6 @@ pre-commit run --all-files
 # Execution Commands
 # Run MCP Server
 qbittorrent-mcp
-# Run Agent
-qbittorrent-agent
 
 ## Project Structure Quick Reference
 - MCP Entry Point → `mcp_server.py`
