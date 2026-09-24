@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 import requests
-from agent_utilities.core.exceptions import AuthError, UnauthorizedError
+from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
 
 from qbittorrent_agent.api_client import QbittorrentApi
 from qbittorrent_agent.auth import get_client

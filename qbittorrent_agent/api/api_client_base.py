@@ -2,14 +2,12 @@ import logging
 from typing import Any
 
 import requests
-from agent_utilities.core.exceptions import (
+from agent_connector_sdk.exceptions import (
     AuthError,
     UnauthorizedError,
 )
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +29,7 @@ class BaseApiClient:
         self.api_url = f"{self.base_url}/api/v2"
         self.username = username
         self.password = password
-        self.tls_profile = tls_profile or resolve_configured_tls_profile("qbittorrent")
+        self.tls_profile = tls_profile or resolve_tls_profile("qbittorrent")
         self.session = self.tls_profile.configure_requests_session(requests.Session())
         self._authenticated = False
         self.headers = {"Referer": self.base_url}
