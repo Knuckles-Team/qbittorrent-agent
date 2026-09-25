@@ -23,7 +23,11 @@ from typing import Any
 
 from agent_utilities.knowledge_graph.memory.native_ingest import (
     NativeIngestError,
+)
+from agent_utilities.knowledge_graph.memory.native_ingest import (
     ingest_documents as _native_ingest_documents,
+)
+from agent_utilities.knowledge_graph.memory.native_ingest import (
     ingest_entities as _native_ingest_entities,
 )
 
@@ -133,9 +137,7 @@ def ingest_torrents(
     return ingest_entities(entities, relationships, client=client, graph=graph)
 
 
-def _build_torrent_entity(
-    tor: dict[str, Any], thash: str, tid: str
-) -> dict[str, Any]:
+def _build_torrent_entity(tor: dict[str, Any], thash: str, tid: str) -> dict[str, Any]:
     """Map one qBittorrent torrent record to a ``:Torrent`` entity dict."""
     return {
         "id": tid,

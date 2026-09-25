@@ -263,6 +263,7 @@ When query strings or parameters are supplied, an LLM-free **Knowledge Graph res
       "env": {
         "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
+        "INGESTTOOL": "True",
         "LOGTOOL": "True",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
@@ -301,6 +302,7 @@ own runtime secret boundary.
         "PORT": "8000",
         "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
+        "INGESTTOOL": "True",
         "LOGTOOL": "True",
         "RSSTOOL": "True",
         "SEARCHTOOL": "True",
@@ -338,6 +340,7 @@ docker run -i --rm \
   -e TRANSPORT=stdio \
   -e MCP_TOOL_MODE=intent \
   -e APPTOOL=True \
+  -e INGESTTOOL=True \
   -e LOGTOOL=True \
   -e RSSTOOL=True \
   -e SEARCHTOOL=True \
@@ -499,8 +502,6 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
 | `ENABLE_OTEL` | `True` |  |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | secret-injected |  |
-| `OTEL_EXPORTER_OTLP_SECRET_KEY` | secret-injected |  |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
@@ -509,8 +510,9 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `QBITTORRENT_USERNAME` | — |  |
 | `QBITTORRENT_PASSWORD` | secret-injected |  |
 | `QBITTORRENT_TLS_PROFILE` | `private-pki` | TLS verification is mandatory (no boolean downgrade). Select a named runtime profile from AgentConfig; falls back to the global TLS_PROFILE if unset. |
+| `QBITTORRENT_TLS_PROFILE_REF` | `secret://runtime/tls-profiles` |  |
 | `TLS_PROFILE` | `private-pki` |  |
-| `TLS_PROFILES_REF` | `secret://runtime/tls-profiles` |  |
+| `TLS_PROFILE_REF` | `secret://runtime/tls-profiles` |  |
 | `APPTOOL` | `True` |  |
 | `LOGTOOL` | `True` |  |
 | `SYNCTOOL` | `True` |  |
@@ -518,6 +520,9 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `TORRENTSTOOL` | `True` |  |
 | `RSSTOOL` | `True` |  |
 | `SEARCHTOOL` | `True` |  |
+| `INGESTTOOL` | `True` |  |
+| `QBITTORRENT_AGENT_MCP_IMAGE` | `registry.example.invalid/qbittorrent-agent-mcp@sha256:<digest>` |  |
+| `QBITTORRENT_AGENT_AGENT_IMAGE` | `registry.example.invalid/qbittorrent-agent@sha256:<digest>` |  |
 
 #### Inherited agent-utilities variables (apply to every connector)
 
@@ -536,11 +541,11 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
-| `PROVIDER` | `openai` | LLM provider for the agent |
-| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `PROVIDER` | — | Operator-configured LLM provider for the agent |
+| `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_24 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_26 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 

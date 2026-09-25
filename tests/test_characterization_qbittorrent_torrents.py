@@ -222,7 +222,7 @@ def test_ctx_info_awaited_when_context_provided(module_name):
     client = MagicMock()
     client.get_torrents.return_value = {"ok": True}
 
-    async def _info(msg):
+    async def _info(_msg):
         return None
 
     ctx = MagicMock()
