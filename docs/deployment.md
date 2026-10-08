@@ -130,7 +130,7 @@ The per-domain tool sets are toggled independently and default to enabled:
 Plus `HOST` / `PORT` / `TRANSPORT` for HTTP transports. The complete set, including
 telemetry (`ENABLE_OTEL`, `OTEL_*`) and access governance (`EUNOMIA_*`), is documented
 in [`.env.example`](https://github.com/Knuckles-Team/qbittorrent-agent/blob/main/.env.example).
-Copy it to `.env` and fill in only what you use.
+Copy it to `.env` and fill in only what the operator use.
 
 ## Docker Compose
 
@@ -216,7 +216,7 @@ curl -s http://localhost:9004/health         # agent health endpoint
 
 ## Behind a Caddy reverse proxy
 
-Expose the HTTP server on a hostname with automatic TLS. Add to your `Caddyfile`:
+Expose the HTTP server on a hostname with automatic TLS. Add to the operator's `Caddyfile`:
 
 ```caddy
 # Internal (self-signed) — homelab .example.invalid zone
@@ -260,7 +260,7 @@ this as a tool.
 
 ## Register with an MCP client
 
-Add to your client's `mcp_config.json`:
+Add to the operator's client's `mcp_config.json`:
 
 ```json
 {

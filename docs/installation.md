@@ -1,7 +1,7 @@
 # Installation
 
 `qbittorrent-agent` is a standard Python package and a prebuilt container image. Pick
-the path that matches how you want to run it.
+the path that matches how the operator want to run it.
 
 ## Requirements
 
@@ -18,7 +18,7 @@ pip install qbittorrent-agent
 ### Optional extras
 
 The base install carries the MCP-server runtime via `agent-utilities[mcp]`. Install
-the extra for what you need:
+the extra for what the operator need:
 
 | Extra | Install | Pulls in |
 |---|---|---|
