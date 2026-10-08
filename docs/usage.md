@@ -1,7 +1,7 @@
 # Usage — API / CLI / MCP
 
 `qbittorrent-agent` exposes the same capability three ways: as **MCP tools** an agent
-calls, as a **Python API** (`QbittorrentApi`) you import, and as **CLI** entry points.
+calls, as a **Python API** (`QbittorrentApi`) the operator import, and as **CLI** entry points.
 The concept registry behind the tool domains is in [Concepts](concepts.md).
 
 ## As an MCP server
