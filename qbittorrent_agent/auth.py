@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-from agent_utilities.core.config import setting
-from agent_utilities.core.exceptions import AuthError, UnauthorizedError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 from qbittorrent_agent.api_client import QbittorrentApi
 
@@ -32,8 +30,7 @@ def get_client(tls_profile: ResolvedTLSProfile | None = None):
                 base_url=base_url,
                 username=username,
                 password=password,
-                tls_profile=tls_profile
-                or resolve_configured_tls_profile("qbittorrent"),
+                tls_profile=tls_profile or resolve_tls_profile("qbittorrent"),
             )
         except (AuthError, UnauthorizedError) as e:
             raise RuntimeError(

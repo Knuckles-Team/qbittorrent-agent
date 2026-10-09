@@ -1,6 +1,6 @@
 import json
 
-from agent_utilities.core.decorators import require_auth
+from agent_connector_sdk.exceptions import require_auth
 
 from qbittorrent_agent.api.api_client_base import BaseApiClient
 
