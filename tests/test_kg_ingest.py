@@ -1,28 +1,22 @@
-"""Native epistemic-graph typed-node ingestion — Wire-First coverage.
+"""Knowledge-ingest typed-node ingestion — Wire-First coverage.
 
-Exercises the real ``ingest_entities`` / ``ingest_torrents`` seam with a fake
-ChangeEnvelope-capable engine client (no engine required), asserting the committed
-nodes/edges and the qBittorrent torrent -> :Torrent/:Tracker/:TorrentCategory mapping.
+Exercises the real ``ingest_entities`` / ``ingest_torrents`` seam against a fake
+epistemic-graph transport (no engine required), letting the agent-connector-sdk's own
+request builder run on top of it so the test exercises the SDK's validation contract
+rather than re-deriving it. Unlike most fleet connectors, ``qbittorrent_agent.kg_ingest``
+is a **best-effort** surface (its MCP tools must never raise when the KG stack is
+down), so it converts :class:`IngestError` into ``None`` rather than propagating it —
+those semantics are exercised explicitly below.
 CONCEPT:AU-KG.ingest.enterprise-source-extractor.
-
-The fake client mirrors agent-utilities' own sanctioned test double
-(``agent-utilities/tests/knowledge_graph/test_native_ingest.py``) — the ``txn``-only
-fake is retired; ``native_ingest`` now hard-requires an injected client exposing
-``.changes``/``.nodes``/``.rdf``/``.supports()``. Unlike most fleet connectors,
-``qbittorrent_agent.kg_ingest`` is a **best-effort** surface (its MCP tools must never
-raise when the KG stack is down), so it converts ``NativeIngestError`` into ``None``
-rather than propagating it — those semantics are exercised explicitly below.
 """
 
 from __future__ import annotations
 
+from types import SimpleNamespace
 from typing import Any
 
-import msgpack
 import pytest
-from agent_utilities.knowledge_graph.core.session import GraphSession, use_session
-from agent_utilities.security.actor_identity import ActorType
-from agent_utilities.security.brain_context import ActorContext, use_actor
+from agent_connector_sdk.ingest import KnowledgeIngest
 
 from qbittorrent_agent.kg_ingest import (
     ingest_documents,
@@ -31,116 +25,55 @@ from qbittorrent_agent.kg_ingest import (
 )
 
 
-@pytest.fixture(autouse=True)
-def _governed_session():
-    actor = ActorContext(
-        actor_id="subject:opaque:synthetic",
-        actor_type=ActorType.AUTOMATED_SERVICE,
-        roles=(),
-        tenant_id="tenant:opaque:synthetic",
-        authenticated=True,
-    )
-    session = GraphSession(
-        actor=actor,
-        tenant=actor.tenant_id,
-        scopes=frozenset({"kg:write"}),
-        graph="graph:opaque:synthetic",
-        policy_version="policy:opaque:synthetic",
-        audience="epistemic-graph",
-    )
-    with use_actor(actor), use_session(session):
-        yield
-
-
-class _FakeNodes:
+class _FakeTransport:
     def __init__(self) -> None:
-        self.values: dict[str, dict[str, Any]] = {}
+        self.requests: list[Any] = []
 
-    def properties(self, node_id: str) -> dict[str, Any] | None:
-        return self.values.get(node_id)
+    async def source_status(self, connector: str, stream: str) -> Any:
+        return SimpleNamespace(accepted_checkpoint=None)
 
-    def list(self) -> list[tuple[str, dict[str, Any]]]:
-        return list(self.values.items())
+    async def submit(self, request: Any) -> Any:
+        self.requests.append(request)
+        return SimpleNamespace(
+            affected_count=len(request.records),
+            relationship_count=len(request.relationships),
+        )
 
-
-class _FakeChanges:
-    def __init__(self, nodes: _FakeNodes) -> None:
-        self.nodes = nodes
-        self.edges: list[tuple[str, str, dict[str, Any]]] = []
-        self.applied: list[dict[str, Any]] = []
-        self.records: dict[str, dict[str, Any]] = {}
-        self.versions: dict[str, dict[str, Any]] = {}
-
-    def get(self, envelope_id: str) -> dict[str, Any] | None:
-        return self.records.get(envelope_id)
-
-    def content_version(self, object_id: str) -> dict[str, Any] | None:
-        return self.versions.get(object_id)
-
-    def cursor(self, _source: str, _partition: str = "") -> None:
-        return None
-
-    def apply(self, envelope: dict[str, Any]) -> dict[str, Any]:
-        self.applied.append(envelope)
-        mutation = envelope["mutation"]
-        for operation in mutation["operations"]:
-            method = operation["method"]
-            params = method["params"]
-            properties = msgpack.unpackb(params["properties_msgpack"], raw=False)
-            if method["method"] == "AddNode":
-                self.nodes.values[params["node_id"]] = properties
-            elif method["method"] == "AddEdge":
-                self.edges.append(
-                    (params["source_id"], params["target_id"], properties)
-                )
-        version = envelope["content_version"]
-        self.versions[version["object_id"]] = version
-        self.records[envelope["envelope_id"]] = envelope
-        return {
-            "batch_id": mutation["batch_id"],
-            "replayed": False,
-            "projection_pending": False,
-        }
+    async def store_blob(self, data: bytes) -> str:
+        raise AssertionError("this connector's ingestion carries no media")
 
 
-class _FakeRdf:
-    def validate_shacl(self, _shapes: str, _data_graph: str) -> dict[str, Any]:
-        return {"conforms": True, "results": []}
+@pytest.fixture
+def ingest() -> tuple[KnowledgeIngest, _FakeTransport]:
+    transport = _FakeTransport()
+    return KnowledgeIngest(transport, loop=None), transport
 
 
-class _FakeClient:
-    def __init__(self) -> None:
-        self.nodes = _FakeNodes()
-        self.changes = _FakeChanges(self.nodes)
-        self.rdf = _FakeRdf()
-
-    @staticmethod
-    def supports(operation: str) -> bool:
-        return operation == "ApplyChangeEnvelope"
-
-
-def test_ingest_entities_writes_nodes_and_edges():
-    c = _FakeClient()
-    res = ingest_entities(
+@pytest.mark.asyncio
+async def test_ingest_entities_writes_nodes_and_edges(ingest):
+    service, transport = ingest
+    res = await ingest_entities(
         [
             {"id": "a", "node_type": "Torrent", "name": "t"},
             {"id": "b", "node_type": "Tracker"},
         ],
         [{"source": "a", "target": "b", "relationship": "announcesTo"}],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 2, "edges": 1}
-    assert len(c.changes.applied) == 1
-    assert set(c.nodes.values) == {"a", "b"}
-    # provenance is stamped
-    assert c.nodes.values["a"]["source"] == "qbittorrent-agent"
-    assert c.nodes.values["a"]["domain"] == "qbittorrent"
-    assert c.changes.edges == [("a", "b", {"relationship": "announcesTo"})]
+    assert len(transport.requests) == 1
+    request = transport.requests[0]
+    assert {r.record_id for r in request.records} == {"a", "b"}
+    a_record = next(r for r in request.records if r.record_id == "a")
+    assert a_record.payload["name"] == "t"
+    assert request.relationships[0].source.record_id == "a"
+    assert request.relationships[0].target.record_id == "b"
 
 
-def test_ingest_torrents_maps_torrent_tracker_category():
-    c = _FakeClient()
-    res = ingest_torrents(
+@pytest.mark.asyncio
+async def test_ingest_torrents_maps_torrent_tracker_category(ingest):
+    service, transport = ingest
+    res = await ingest_torrents(
         [
             {
                 "hash": "abc123",
@@ -155,84 +88,85 @@ def test_ingest_torrents_maps_torrent_tracker_category():
                 "tags": "iso,os",
             }
         ],
-        client=c,
+        ingest=service,
     )
     # 1 torrent + 1 tracker + 1 category = 3 nodes; 2 edges
     assert res == {"nodes": 3, "edges": 2}
-    tor = c.nodes.values["qbittorrent:Torrent:abc123"]
-    assert tor["node_type"] == "Torrent"
-    assert tor["infoHash"] == "abc123"
-    assert tor["torrentState"] == "uploading"
-    assert tor["shareRatio"] == 2.5
-    assert tor["externalToolId"] == "abc123"
-    assert (
-        c.nodes.values["qbittorrent:Tracker:http://tracker.example/announce"][
-            "node_type"
-        ]
-        == "Tracker"
+    request = transport.requests[0]
+    tor = next(
+        r for r in request.records if r.record_id == "qbittorrent:Torrent:abc123"
     )
-    assert (
-        c.nodes.values["qbittorrent:TorrentCategory:linux"]["node_type"]
-        == "TorrentCategory"
+    assert tor.payload["infoHash"] == "abc123"
+    assert tor.payload["torrentState"] == "uploading"
+    assert tor.payload["shareRatio"] == 2.5
+    assert tor.payload["externalToolId"] == "abc123"
+    assert any(
+        r.record_id == "qbittorrent:Tracker:http://tracker.example/announce"
+        for r in request.records
     )
+    assert any(
+        r.record_id == "qbittorrent:TorrentCategory:linux" for r in request.records
+    )
+    rel_pairs = {(r.source.record_id, r.target.record_id) for r in request.relationships}
     assert (
         "qbittorrent:Torrent:abc123",
         "qbittorrent:Tracker:http://tracker.example/announce",
-        {"relationship": "announcesTo"},
-    ) in c.changes.edges
-    assert (
-        "qbittorrent:Torrent:abc123",
-        "qbittorrent:TorrentCategory:linux",
-        {"relationship": "inCategory"},
-    ) in c.changes.edges
+    ) in rel_pairs
+    assert ("qbittorrent:Torrent:abc123", "qbittorrent:TorrentCategory:linux") in rel_pairs
 
 
-def test_ingest_torrents_dedupes_shared_tracker_and_category():
-    c = _FakeClient()
-    res = ingest_torrents(
+@pytest.mark.asyncio
+async def test_ingest_torrents_dedupes_shared_tracker_and_category(ingest):
+    service, _transport = ingest
+    res = await ingest_torrents(
         [
             {"hash": "h1", "name": "a", "category": "x", "tracker": "udp://tk/a"},
             {"hash": "h2", "name": "b", "category": "x", "tracker": "udp://tk/a"},
         ],
-        client=c,
+        ingest=service,
     )
     # 2 torrents + 1 shared tracker + 1 shared category = 4 nodes; 4 edges
     assert res == {"nodes": 4, "edges": 4}
 
 
-def test_ingest_torrents_skips_records_without_hash():
-    c = _FakeClient()
-    res = ingest_torrents([{"name": "no-hash"}], client=c)
+@pytest.mark.asyncio
+async def test_ingest_torrents_skips_records_without_hash(ingest):
+    service, transport = ingest
+    res = await ingest_torrents([{"name": "no-hash"}], ingest=service)
     assert res is None
-    assert c.changes.applied == []
+    assert transport.requests == []
 
 
-def test_ingest_documents_writes_document_nodes():
-    c = _FakeClient()
-    res = ingest_documents(
+@pytest.mark.asyncio
+async def test_ingest_documents_writes_document_nodes(ingest):
+    service, transport = ingest
+    res = await ingest_documents(
         [{"id": "qbittorrent:Document:1", "text": "hello", "title": "T"}],
-        client=c,
+        ingest=service,
     )
     assert res == {"nodes": 1, "edges": 0}
-    node = c.nodes.values["qbittorrent:Document:1"]
-    assert node["text"] == "hello"
+    assert transport.requests[0].records[0].record_id == "qbittorrent:Document:1"
 
 
-def test_ingest_noops_without_engine():
-    # No injected client + no reachable engine -> clean no-op (best-effort surface).
-    assert ingest_entities([{"id": "a", "node_type": "Torrent"}]) is None
+@pytest.mark.asyncio
+async def test_ingest_noops_without_engine():
+    # No injected service + no reachable engine -> clean no-op (best-effort surface).
+    assert await ingest_entities([{"id": "a", "node_type": "Torrent"}]) is None
 
 
-def test_ingest_rejects_retired_structural_alias_as_noop():
+@pytest.mark.asyncio
+async def test_ingest_rejects_retired_structural_alias_as_noop(ingest):
     # qbittorrent_agent's tool surface is best-effort (never raises): a malformed
     # record (the retired ``type`` alias instead of canonical ``node_type``) is
-    # reported back as a clean no-op rather than propagating NativeIngestError.
-    c = _FakeClient()
-    assert ingest_entities([{"id": "a", "type": "Torrent"}], client=c) is None
-    assert c.changes.applied == []
+    # reported back as a clean no-op rather than propagating IngestError.
+    service, transport = ingest
+    assert await ingest_entities([{"id": "a", "type": "Torrent"}], ingest=service) is None
+    assert transport.requests == []
 
 
-def test_ingest_empty_is_noop():
-    assert ingest_entities([], client=_FakeClient()) is None
-    assert ingest_torrents([], client=_FakeClient()) is None
-    assert ingest_documents([], client=_FakeClient()) is None
+@pytest.mark.asyncio
+async def test_ingest_empty_is_noop(ingest):
+    service, _transport = ingest
+    assert await ingest_entities([], ingest=service) is None
+    assert await ingest_torrents([], ingest=service) is None
+    assert await ingest_documents([], ingest=service) is None
