@@ -1,6 +1,6 @@
 # qbittorrent-agent
 
-qBittorrent management **MCP Server + A2A Agent** for the Graph OS ecosystem
+qBittorrent management **MCP Server + A2A Agent** for the Arbora ecosystem
 — typed, deterministic tools for torrent control, RSS automation, and search over
 the qBittorrent WebUI API.
 

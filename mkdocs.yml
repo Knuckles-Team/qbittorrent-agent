@@ -1,5 +1,5 @@
 site_name: "qbittorrent-agent"
-site_description: "qBittorrent management MCP Server + A2A Agent — typed tools for torrent control, RSS automation, and search in the Graph OS ecosystem."
+site_description: "qBittorrent management MCP Server + A2A Agent — typed tools for torrent control, RSS automation, and search in the Arbora ecosystem."
 site_url: "https://knuckles-team.github.io/qbittorrent-agent/"
 repo_name: "Knuckles-Team/qbittorrent-agent"
 repo_url: "https://github.com/Knuckles-Team/qbittorrent-agent"
