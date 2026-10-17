@@ -17,7 +17,7 @@
 
 ## Functional Requirements
 
-- **FR-001**: Minor update: agent-utilities 0.2.40 (installed) -> 0.16.0
+- **FR-001**: Minor update: agent-connector-sdk 0.2.40 (installed) -> 0.16.0
 - **FR-002**: Minor update: pytest-xdist 3.6.0 (constraint — not installed) -> 3.8.0
 - **FR-003**: Needs attention: mcp_server.py (514L) — 2 functions with high complexity (worst: register_torrents_tools at 123L, CC=51)
 - **FR-004**: 7 functions with nesting depth >4
@@ -47,7 +47,7 @@
 - **FR-028**: 1 tests exceed 100 lines — likely doing too much per test
 - **FR-029**: Undocumented env vars: EUNOMIA_POLICY_FILE, EUNOMIA_TYPE, OTEL_EXPORTER_OTLP_ENDPOINT, TLS_PROFILE, TLS_PROFILES_REF, QBITTORRENT_URL
 - **FR-030**: 2 Python env vars not in .env.example: TLS_PROFILES_REF, QBITTORRENT_URL
-- **FR-031**: Analysis error: No module named 'agent_utilities.knowledge_graph'
+- **FR-031**: Analysis error: No module named 'agent_connector_sdk.knowledge_graph'
 
 ## Success Criteria
 
