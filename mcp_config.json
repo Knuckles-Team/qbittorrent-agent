@@ -7,7 +7,6 @@
         "qbittorrent-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "intent",
         "APPTOOL": "True",
         "LOGTOOL": "True",
         "RSSTOOL": "True",
