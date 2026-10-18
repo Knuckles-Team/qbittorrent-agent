@@ -98,6 +98,6 @@
     rdfs:label "qBittorrent Torrent Ontology" ;
     rdfs:comment """qBittorrent torrent-management model — torrents, their announce
     trackers, and the categories that organise them, plus the media content a
-    completed torrent produces — federated into the agent-utilities knowledge-graph
+    completed torrent produces — federated into the agent-connector-sdk knowledge-graph
     hub. Reuses the shared :AssetOccurrence and :Person classes.""" ;
     owl:imports <http://knuckles.team/kg> .

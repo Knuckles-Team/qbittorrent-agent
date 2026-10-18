@@ -1,5 +1,5 @@
 {
-  "api_version": "graphos.io/v1",
+  "api_version": "arbora.io/v1",
   "artifacts": {
     "connector_manifest.yml": "cc6b98610623a7b2cdd4a04554419736d2b9d5050932248a1c821519e404c053",
     "qbittorrent_agent/connectors/mcp_source_presets.json": "5b8d7a241e69b0440e47cd2cc9f25e5cc29844ba5b632c3a163b0f162a54b7a0",
@@ -18,7 +18,7 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.5.0,<3",
+    "agent_connector_sdk": ">=2.5.0,<3",
     "bundle_schema": "2",
     "epistemic_graph": ">=2.27.0,<3"
   },

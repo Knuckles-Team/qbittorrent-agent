@@ -17,12 +17,12 @@ pip install qbittorrent-agent
 
 ### Optional extras
 
-The base install carries the MCP-server runtime via `agent-utilities[mcp]`. Install
+The base install carries the MCP-server runtime via `agent-connector-sdk[mcp]`. Install
 the extra for what the operator need:
 
 | Extra | Install | Pulls in |
 |---|---|---|
-| `agent` | `pip install "qbittorrent-agent[agent]"` | Pydantic-AI agent + Logfire tracing (`agent-utilities[agent,logfire]`) |
+| `agent` | `pip install "qbittorrent-agent[agent]"` | Pydantic-AI agent + Logfire tracing (`agent-connector-sdk[agent,logfire]`) |
 | `all` | `pip install "qbittorrent-agent[all]"` | The MCP server, the agent, and Logfire tracing |
 | `test` | `pip install "qbittorrent-agent[test]"` | `pytest`, `pytest-asyncio`, `pytest-cov`, `pytest-xdist` |
 

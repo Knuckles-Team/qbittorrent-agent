@@ -1,6 +1,6 @@
 """Action-discovery behavior for the qbittorrent-agent action-routed tools.
 
-Verifies the shared ``agent_utilities.mcp.action_dispatch.resolve_action`` wiring:
+Verifies the shared ``agent_connector_sdk.mcp.action_dispatch.resolve_action`` wiring:
 ``list_actions`` discovery, real-action dispatch, and a rich did-you-mean
 error on an unknown action.
 """

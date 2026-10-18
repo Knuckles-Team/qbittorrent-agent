@@ -2,12 +2,12 @@
 name: qbittorrent-agent-operations
 skill_type: skill
 description: >-
-  Operate qbittorrent-agent through its governed MCP and GraphOS capabilities, including qbittorrent kg ingestion, qbittorrent torrent lifecycle, qbittorrent transfer tuning. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
+  Operate qbittorrent-agent through its governed MCP and Arbora capabilities, including qbittorrent kg ingestion, qbittorrent torrent lifecycle, qbittorrent transfer tuning. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
 ---
 
 # Qbittorrent Agent Operations
 
-Use the provider's governed MCP tools through GraphOS delegation.
+Use the provider's governed MCP tools through Arbora delegation.
 
 ## Workflow
 
