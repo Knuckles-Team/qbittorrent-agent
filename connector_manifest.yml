@@ -89,8 +89,8 @@ schema_mappings:
 sync:
 - preset: qbittorrent-torrents
   server: qbittorrent-mcp
-  tool: qbittorrent_torrents
-  action: get_torrent_list
+  tool: qbittorrent_get_torrents
+  action: null
   records_path: ''
   id_field: hash
   title_field: name
@@ -98,11 +98,11 @@ sync:
   updated_field: added_on
   pagination: null
   doc_type: torrent
-  tool_schema_sha256: bd094598a34de2905c09950dd592b562ee460888bab51e1d8ffc402a447844cc
+  tool_schema_sha256: 006ef33c6eece1d994d0db9108f66f589855ac49df369b051e16c468abe4afd6
   raw:
     server: qbittorrent-mcp
-    tool: qbittorrent_torrents
-    action: get_torrent_list
+    tool: qbittorrent_get_torrents
+    params_style: args
     records_path: ''
     id_field: hash
     title_field: name
