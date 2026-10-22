@@ -6,7 +6,8 @@
   "requirement_ids": [
     "CONN-QBITTORRENT-AGENT-R001",
     "CONN-QBITTORRENT-AGENT-R002",
-    "CONN-QBITTORRENT-AGENT-R003"
+    "CONN-QBITTORRENT-AGENT-R003",
+    "CONN-QBITTORRENT-AGENT-R004"
   ],
   "requirements": [
     {
@@ -34,6 +35,18 @@
       "landed_in": [],
       "verified_by": [
         "tests/test_session_relogin.py:97"
+      ]
+    },
+    {
+      "id": "CONN-QBITTORRENT-AGENT-R004",
+      "title": "Fleet name",
+      "delivery_state": "VERIFIED",
+      "landed_in": [
+        "06ddc35097af",
+        "11ecdcd7fe73"
+      ],
+      "verified_by": [
+        "tests/test_fleet_name.py:35"
       ]
     }
   ]
