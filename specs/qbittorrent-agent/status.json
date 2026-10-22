@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "spec_id": "CONN-QBITTORRENT-AGENT",
+  "owner_repo": "qbittorrent-agent",
+  "delivery_state": "SPECIFIED",
+  "requirement_ids": [
+    "CONN-QBITTORRENT-AGENT-R001",
+    "CONN-QBITTORRENT-AGENT-R002",
+    "CONN-QBITTORRENT-AGENT-R003"
+  ],
+  "requirements": [
+    {
+      "id": "CONN-QBITTORRENT-AGENT-R001",
+      "title": "Session recovery",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": [
+        "tests/test_session_relogin.py:72",
+        "tests/test_session_relogin.py:81",
+        "tests/test_session_relogin.py:90"
+      ]
+    },
+    {
+      "id": "CONN-QBITTORRENT-AGENT-R002",
+      "title": "Wiring",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": []
+    },
+    {
+      "id": "CONN-QBITTORRENT-AGENT-R003",
+      "title": "Hot-path proof",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": [
+        "tests/test_session_relogin.py:97"
+      ]
+    }
+  ]
+}
