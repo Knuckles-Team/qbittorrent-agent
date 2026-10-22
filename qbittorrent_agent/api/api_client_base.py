@@ -77,10 +77,26 @@ class BaseApiClient:
         self.session.post(url, timeout=10)
         self._authenticated = False
 
-    def _get(self, endpoint: str, params: dict | None = None) -> Any:
+    def _send(self, method: str, endpoint: str, **kwargs: Any) -> requests.Response:
+        """Send one API call; on 401/403 re-login and retry exactly once."""
         url = f"{self.api_url}/{endpoint}"
-        response = self.session.get(url, params=params, timeout=30)
+        send = getattr(self.session, method)
+        response = send(url, timeout=30, **kwargs)
+        if response.status_code in (401, 403):
+            logger.info("qBittorrent session rejected; logging in again")
+            self._authenticated = False
+            try:
+                self.login()
+            except UnauthorizedError:
+                raise
+            except AuthError as exc:
+                raise UnauthorizedError("Session expired and re-login failed.") from exc
+            response = send(url, timeout=30, **kwargs)
         self._handle_errors(response)
+        return response
+
+    def _get(self, endpoint: str, params: dict | None = None) -> Any:
+        response = self._send("get", endpoint, params=params)
         try:
             return response.json()
         except ValueError:
@@ -89,9 +105,7 @@ class BaseApiClient:
     def _post(
         self, endpoint: str, data: dict | None = None, files: dict | None = None
     ) -> Any:
-        url = f"{self.api_url}/{endpoint}"
-        response = self.session.post(url, data=data, files=files, timeout=30)
-        self._handle_errors(response)
+        response = self._send("post", endpoint, data=data, files=files)
         try:
             return response.json()
         except ValueError:
