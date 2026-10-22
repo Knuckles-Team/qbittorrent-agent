@@ -16,3 +16,4 @@ The second consecutive rejection raises. The login call never retries itself.
 ## Quality and release proof
 
 Run `pytest tests/test_session_relogin.py`. Run `pipelines-hook spec-standard`.
+| T-005 | `CONN-QBITTORRENT-AGENT-R004` | `tests/test_fleet_name.py::test_connector_name_is_the_fleet_name` | Every connector name in the package is `qbittorrent-mcp`. |

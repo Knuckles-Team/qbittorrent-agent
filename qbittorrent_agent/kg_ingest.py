@@ -32,7 +32,7 @@ from agent_connector_sdk.ingest import (
 
 logger = logging.getLogger("qbittorrent_agent.kg")
 
-_BINDING = IngestBinding(connector="qbittorrent-agent", stream="qbittorrent")
+_BINDING = IngestBinding(connector="qbittorrent-mcp", stream="qbittorrent")
 
 
 def _to_entity(record: dict[str, Any]) -> Entity:
