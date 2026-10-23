@@ -4,8 +4,6 @@
   "schema_version": "1.0",
   "prompt_version": "0.1.0",
   "source": "qbittorrent-agent",
-  "extends": "agent-connector-sdk:base",
-  "compose": "append",
   "description": "qBittorrent torrent-lifecycle specialist: transfers, trackers, categories/tags, RSS automation, and search over the qbittorrent-agent MCP server.",
   "metadata": {
     "topic": "qBittorrent torrent management",

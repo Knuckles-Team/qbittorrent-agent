@@ -99,5 +99,7 @@
     rdfs:comment """qBittorrent torrent-management model — torrents, their announce
     trackers, and the categories that organise them, plus the media content a
     completed torrent produces — federated into the agent-connector-sdk knowledge-graph
-    hub. Reuses the shared :AssetOccurrence and :Person classes.""" ;
-    owl:imports <http://knuckles.team/kg> .
+    hub. Reuses the shared :AssetOccurrence and :Person classes.""" .
+
+# ontology-codemod R3
+<http://knuckles.team/kg#TorrentCategory> rdfs:subClassOf <http://knuckles.team/kg#Category> .

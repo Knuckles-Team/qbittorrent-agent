@@ -1,9 +1,6 @@
 {
   "api_version": "arbora.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "3934de32f6063fd4ffc62cb6caff632be18e82662f46b401ada08be984fbf98f",
-    "qbittorrent_agent/connectors/mcp_source_presets.json": "5b8d7a241e69b0440e47cd2cc9f25e5cc29844ba5b632c3a163b0f162a54b7a0",
-    "qbittorrent_agent/connectors/tool_schema_fingerprints.json": "7b9eaf1f0ad52cb6d59e54019bcf6bd1151d4a7979062ce19b4edd25fdd1e40d",
     "qbittorrent_agent/ontology/fixtures/records.json": "b0e63822f4761a605c4e9b61a3a2f76561a21dd3475b63945892ed069ec38e65",
     "qbittorrent_agent/ontology/mappings/source.yaml": "bd2bdef673565b8a571804b9033d4f8f66f63e2ba6133c3584a53fd19fcdb2d2",
     "qbittorrent_agent/ontology/migrations/manifest.json": "64b5d7fbb9e6f6febfab1f2ae078d5337ecd32a0d19fca6cf28aa0bbdedf7d93",
