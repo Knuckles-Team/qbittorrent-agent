@@ -83,3 +83,16 @@ def __getattr__(name: str) -> Any:
 
 def __dir__() -> list[str]:
     return sorted(list(globals().keys()) + __all__)
+
+
+from agent_connector_sdk.connector import Connector
+
+from qbittorrent_agent.api_client import QbittorrentApi
+from qbittorrent_agent.auth import get_client
+
+connector = Connector(
+    api=QbittorrentApi,
+    get_client=get_client,
+    tools="qbittorrent_agent.mcp_server",
+    instructions="qbittorrent-agent MCP Server — Condensed Action-Routed Tools.",
+)

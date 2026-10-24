@@ -1,11 +1,11 @@
 from fastmcp import FastMCP
 
-from qbittorrent_agent.mcp_server import get_mcp_instance
+from agent_connector_sdk.connector import build_server
 
 
 def test_mcp_instance_creation():
     """Test that the MCP instance can be created successfully."""
-    mcp, args, middlewares = get_mcp_instance()
+    _, mcp = build_server("qbittorrent_agent", command_args=[])
     assert isinstance(mcp, FastMCP)
     assert "qbittorrent" in mcp.name.lower()
 

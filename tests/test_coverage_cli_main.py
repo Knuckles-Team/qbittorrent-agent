@@ -21,19 +21,6 @@ def test_init_coverage():
 
 
 
-def test_mcp_server_main_execution():
-    """Verify mcp_server direct run executes server loops.
-
-    CONCEPT:AU-OS.state.cognitive-scheduler-preemption — Resource Scheduling
-    """
-    import runpy
-
-    with patch("fastmcp.server.mixins.transport.TransportMixin.run") as mock_run:
-        with patch("sys.argv", ["mcp_server.py"]):
-            runpy.run_module("qbittorrent_agent.mcp_server", run_name="__main__")
-            assert mock_run.called
-
-
 def test_requests_dependency_warning_import_error():
     """Verify mcp_server safe import exception handling.
 

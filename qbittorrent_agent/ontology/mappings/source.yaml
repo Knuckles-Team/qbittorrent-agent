@@ -1,5 +1,5 @@
 schema_version: '1'
-connector: qbittorrent-agent
+connector: qbittorrent-mcp
 ontology_source: qbittorrent
 sync:
 - preset: qbittorrent-torrents

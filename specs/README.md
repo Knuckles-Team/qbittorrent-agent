@@ -13,3 +13,4 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 ## Local specifications
 
 [`CONN-QBITTORRENT-AGENT`](qbittorrent-agent/spec.md) — Session recovery for the qBittorrent WebUI client.
+- [`CONN-QBITTORRENT-AGENT-CONNECTOR-CONTENT`](connector-content/spec.md) — The connector serves its packaged content.

@@ -12,7 +12,6 @@ import warnings
 
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
-from fastmcp.utilities.logging import get_logger
 from pydantic import Field
 
 # Filter RequestsDependencyWarning early to prevent log spam
@@ -28,25 +27,12 @@ with warnings.catch_warnings():
 warnings.filterwarnings("ignore", message=".*urllib3.*or chardet.*")
 warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
-import logging
-import sys
 from typing import Any
 
-from agent_connector_sdk.config import load_config
 from agent_connector_sdk.mcp.action_dispatch import resolve_action
 from agent_connector_sdk.mcp.concurrency import run_blocking
-from agent_connector_sdk.mcp.server import create_mcp_server
-from agent_connector_sdk.mcp.tool_surface import register_tool_surface
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
-from qbittorrent_agent.api_client import QbittorrentApi
 from qbittorrent_agent.auth import get_client
-
-__version__ = "2.3.7"
-
-logger = get_logger(name="qbittorrent-agent")
-logger.setLevel(logging.INFO)
 
 
 # One tiny extracted handler per action -- each preserves the exact
@@ -941,51 +927,3 @@ def register_ingest_tools(mcp: FastMCP):
         torrents = _normalize_torrent_records(resp)
         result = await ingest_torrents(torrents)
         return {"listed": len(torrents), "ingested": result}
-
-
-def get_mcp_instance() -> tuple[Any, ...]:
-    """Initialize and return the MCP instance."""
-    load_config()
-    args, mcp, middlewares = create_mcp_server(
-        name="qbittorrent-agent MCP",
-        version=__version__,
-        instructions="qbittorrent-agent MCP Server — Condensed Action-Routed Tools.",
-    )
-
-    @mcp.custom_route("/health", methods=["GET"])
-    async def health_check(request: Request) -> JSONResponse:
-        return JSONResponse({"status": "OK"})
-
-    register_tool_surface(
-        mcp,
-        client_cls=QbittorrentApi,
-        get_client=get_client,
-        service="qbittorrent-agent",
-        tools_module=sys.modules[__name__],
-    )
-
-    for mw in middlewares:
-        mcp.add_middleware(mw)
-    return mcp, args, middlewares
-
-
-def mcp_server() -> None:
-    mcp, args, middlewares = get_mcp_instance()
-    print(f"qbittorrent-agent MCP v{__version__}", file=sys.stderr)
-    print("\nStarting MCP Server", file=sys.stderr)
-    print(f"  Transport: {args.transport.upper()}", file=sys.stderr)
-    print(f"  Auth: {args.auth_type}", file=sys.stderr)
-
-    if args.transport == "stdio":
-        mcp.run(transport="stdio")
-    elif args.transport == "streamable-http":
-        mcp.run(transport="streamable-http", host=args.host, port=args.port)
-    elif args.transport == "sse":
-        mcp.run(transport="sse", host=args.host, port=args.port)
-    else:
-        logger.error("Invalid transport", extra={"transport": args.transport})
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    mcp_server()
