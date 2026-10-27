@@ -31,6 +31,9 @@ provides:
 
 ## Explore the documentation
 
+The [spec delivery dashboard](https://knuckles-team.github.io/qbittorrent-agent/spec-delivery/)
+shows the recorded state and history of this repository's specifications.
+
 <div class="grid cards" markdown>
 
 - :material-rocket-start: **[Installation](installation.md)** — pip, source, extras, and the prebuilt Docker image.

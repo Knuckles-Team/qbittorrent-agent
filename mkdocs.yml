@@ -94,3 +94,4 @@ nav:
   - Backing Platform (qBittorrent): platform.md
   - Architecture: architecture.md
   - Concepts: concepts.md
+  - Spec delivery: https://knuckles-team.github.io/qbittorrent-agent/spec-delivery/
