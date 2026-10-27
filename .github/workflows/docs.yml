@@ -6,7 +6,6 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - 'README.md'
-  workflow_dispatch:
 
 permissions:
   contents: read
