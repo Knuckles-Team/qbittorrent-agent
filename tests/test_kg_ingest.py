@@ -30,7 +30,9 @@ class _FakeTransport:
         self.requests: list[Any] = []
 
     async def source_status(self, connector: str, stream: str) -> Any:  # noqa: V107
-        return SimpleNamespace(connector=connector, stream=stream, accepted_checkpoint=None)
+        return SimpleNamespace(
+            connector=connector, stream=stream, accepted_checkpoint=None
+        )
 
     async def submit(self, request: Any) -> Any:
         self.requests.append(request)
@@ -107,12 +109,17 @@ async def test_ingest_torrents_maps_torrent_tracker_category(ingest):
     assert any(
         r.record_id == "qbittorrent:TorrentCategory:linux" for r in request.records
     )
-    rel_pairs = {(r.source.record_id, r.target.record_id) for r in request.relationships}
+    rel_pairs = {
+        (r.source.record_id, r.target.record_id) for r in request.relationships
+    }
     assert (
         "qbittorrent:Torrent:abc123",
         "qbittorrent:Tracker:http://tracker.example/announce",
     ) in rel_pairs
-    assert ("qbittorrent:Torrent:abc123", "qbittorrent:TorrentCategory:linux") in rel_pairs
+    assert (
+        "qbittorrent:Torrent:abc123",
+        "qbittorrent:TorrentCategory:linux",
+    ) in rel_pairs
 
 
 @pytest.mark.asyncio
@@ -160,7 +167,9 @@ async def test_ingest_rejects_retired_structural_alias_as_noop(ingest):
     # record (the retired ``type`` alias instead of canonical ``node_type``) is
     # reported back as a clean no-op rather than propagating IngestError.
     service, transport = ingest
-    assert await ingest_entities([{"id": "a", "type": "Torrent"}], ingest=service) is None
+    assert (
+        await ingest_entities([{"id": "a", "type": "Torrent"}], ingest=service) is None
+    )
     assert transport.requests == []
 
 
