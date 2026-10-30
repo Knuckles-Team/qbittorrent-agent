@@ -3,7 +3,7 @@
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. The qbittorrent-agent connector
 natively pushes its data into the ONE epistemic-graph knowledge graph as **typed OWL
 nodes** (`:Torrent`, `:Tracker`, `:TorrentCategory`) + links (`:announcesTo`,
-`:inCategory`), through the agent-connector-sdk knowledge-ingest facade — the one
+`:inCategory`), through the scion-sdk knowledge-ingest facade — the one
 connector write path; there is no self-contained fallback transaction here.
 
 The MCP tool surface (``qbittorrent_agent.mcp_server``) exposes these as best-effort
@@ -19,7 +19,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     ChangeSet,
     Document,
     Entity,

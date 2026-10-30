@@ -1,7 +1,7 @@
 """Knowledge-ingest typed-node ingestion — Wire-First coverage.
 
 Exercises the real ``ingest_entities`` / ``ingest_torrents`` seam against a fake
-epistemic-graph transport (no engine required), letting the agent-connector-sdk's own
+epistemic-graph transport (no engine required), letting the scion-sdk's own
 request builder run on top of it so the test exercises the SDK's validation contract
 rather than re-deriving it. Unlike most fleet connectors, ``qbittorrent_agent.kg_ingest``
 is a **best-effort** surface (its MCP tools must never raise when the KG stack is
@@ -16,7 +16,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from agent_connector_sdk.ingest import KnowledgeIngest
+from scion_sdk.ingest import KnowledgeIngest
 
 from qbittorrent_agent.kg_ingest import (
     ingest_documents,

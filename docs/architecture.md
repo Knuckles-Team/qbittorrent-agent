@@ -2,7 +2,7 @@
 
 `qbittorrent-agent` follows the standardized agent-package pattern: a layered REST
 client, a thin MCP tool surface, and an optional A2A agent server — all built on
-`agent-connector-sdk`.
+`scion-sdk`.
 
 ## Components
 

@@ -29,8 +29,8 @@ warnings.filterwarnings("ignore", message=".*urllib3.*or charset_normalizer.*")
 
 from typing import Any
 
-from agent_connector_sdk.mcp.action_dispatch import resolve_action
-from agent_connector_sdk.mcp.concurrency import run_blocking
+from scion_sdk.mcp.action_dispatch import resolve_action
+from scion_sdk.mcp.concurrency import run_blocking
 
 from qbittorrent_agent.auth import get_client
 

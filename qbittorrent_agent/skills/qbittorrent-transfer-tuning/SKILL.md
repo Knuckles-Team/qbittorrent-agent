@@ -13,7 +13,7 @@ description: >-
 license: MIT
 tags: [qbittorrent, bandwidth, ratio, seeding, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # qBittorrent Transfer Tuning

@@ -2,7 +2,7 @@
 
 import pytest
 import requests
-from agent_connector_sdk.exceptions import UnauthorizedError
+from scion_sdk.exceptions import UnauthorizedError
 
 from qbittorrent_agent.api.api_client_base import BaseApiClient
 
