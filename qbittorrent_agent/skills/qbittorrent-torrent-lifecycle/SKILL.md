@@ -12,7 +12,7 @@ description: >-
 license: MIT
 tags: [qbittorrent, torrent, bittorrent, download, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # qBittorrent Torrent Lifecycle

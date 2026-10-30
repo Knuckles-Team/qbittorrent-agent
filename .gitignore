@@ -197,3 +197,6 @@ docker/debug.Dockerfile
 docker/*.compose.yml
 qbittorrent_agent/ontology/shapes/connector.shacl.ttl
 qbittorrent_agent/ontology/certification.json
+
+# Spec status is computed at read time (pipelines-hook spec-status --write), never committed.
+specs/*/status.json
