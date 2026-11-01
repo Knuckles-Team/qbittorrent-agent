@@ -2,7 +2,9 @@
 
 Governing spec: [spec.md](spec.md). Design: [plan.md](plan.md). Rows: [requirements.md](requirements.md).
 
-- [x] `CONN-QBITTORRENT-AGENT-R001`: Add `_send` with one re-login retry in `api_client_base.py`.
-- [x] `CONN-QBITTORRENT-AGENT-R002`: Route `_get` and `_post` through `_send`.
-- [x] `CONN-QBITTORRENT-AGENT-R003`: Prove recovery through `get_version` in `tests/test_session_relogin.py`.
-- [x] **CONN-QBITTORRENT-AGENT-R004:** File the pack, manifest and ingest binding under the fleet name `qbittorrent-mcp`.
+Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run producer first; a checked task has landed.
+
+- [ ] T001 [US1] CONN-QBITTORRENT-AGENT-R001 Session recovery.
+- [ ] T002 [US2] CONN-QBITTORRENT-AGENT-R002 Wiring.
+- [ ] T003 [US3] CONN-QBITTORRENT-AGENT-R003 Hot-path proof.
+- [x] T004 [US4] CONN-QBITTORRENT-AGENT-R004 Fleet name.
