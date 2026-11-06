@@ -36,7 +36,7 @@ The fleet operator and the engine rely on this behaviour of `qbittorrent-agent`:
 
 ### User Story 2 - Wiring (Priority: P1)
 
-The fleet operator and the engine rely on this behaviour of `qbittorrent-agent`: The `_get` and `_post` methods must call `_send` at `qbittorrent_agent/api/api_client_base.py:101` and `:110`. It is proven independently of the other stories.
+The fleet operator and the engine rely on this behaviour of `qbittorrent-agent`: The `_get` and `_post` methods must call `_send` at `qbittorrent_agent/api/api_client_base.py:117` and `:126`. It is proven independently of the other stories.
 
 **Acceptance Scenarios**:
 
@@ -48,7 +48,7 @@ The fleet operator and the engine rely on this behaviour of `qbittorrent-agent`:
 
 **Acceptance Scenarios**:
 
-1. **Given** the `qbittorrent-agent` connector built from the default branch, **When** `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` runs, **Then** `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` must call `get_version` against a faked transport.
+1. **Given** the `qbittorrent-agent` connector built from the default branch, **When** `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` runs, **Then** `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` must call `app_version` against a faked transport.
 
 ### User Story 4 - Fleet name (Priority: P2)
 
@@ -74,7 +74,7 @@ The fleet operator and the engine rely on this behaviour of `qbittorrent-agent`:
 
 - **SC-001**: `tests/test_session_relogin.py::test_expired_session_logs_in_again_and_retries_once` and `::test_second_consecutive_rejection_raises_without_looping` must pass. Rows: `CONN-QBITTORRENT-AGENT-R001`.
 - **SC-002**: `tests/test_session_relogin.py::test_post_also_retries_on_401` must observe the retry through `_post`. Rows: `CONN-QBITTORRENT-AGENT-R002`.
-- **SC-003**: `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` must call `get_version` against a faked transport. Rows: `CONN-QBITTORRENT-AGENT-R003`.
+- **SC-003**: `tests/test_session_relogin.py::test_public_operation_recovers_from_expired_session` must call `app_version` against a faked transport. Rows: `CONN-QBITTORRENT-AGENT-R003`.
 - **SC-004**: Every connector name in the package is `qbittorrent-mcp`. Rows: `CONN-QBITTORRENT-AGENT-R004`.
 
 ## Assumptions

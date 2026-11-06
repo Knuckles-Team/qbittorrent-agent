@@ -2,95 +2,65 @@
 name: qbittorrent-transfer-tuning
 skill_type: skill
 description: >-
-  Tune qBittorrent throughput and seeding policy via the qbittorrent-agent MCP
-  server — global and per-torrent download/upload speed limits, share limits
-  (ratio + seeding-time), the alternate speed-limits (scheduler) mode, and
-  transfer/session stats. Use when the agent must throttle or uncap bandwidth,
-  enforce a seed ratio or seeding-time before stopping, flip alternate speed
-  limits, or read live transfer speeds. Do NOT use to add/pause/delete torrents
-  (use qbittorrent-torrent-lifecycle) or to ingest state into the KG (use
-  qbittorrent-kg-ingestion).
+  Check transfer health and tune qBittorrent's speed and seeding limits through the qbittorrent-mcp connector. Use when the agent must read speeds and stalled torrents, or set global speed limits or per-torrent share limits. Do NOT use to add or delete torrents (qbittorrent-torrent-lifecycle).
 license: MIT
-tags: [qbittorrent, bandwidth, ratio, seeding, mcp]
+tags: [qbittorrent, torrent, media-automation, mcp]
 metadata:
   author: Knuckles-Team
-  version: '0.1.0'
+  version: '1.0.0'
 ---
+
 # qBittorrent Transfer Tuning
 
-Domain-typed access to qBittorrent's **transfer** surface (`transfer/*`) plus the
-per-torrent limit actions on `torrents/*`, for bandwidth shaping and seeding policy.
+Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
 
-## When to use
-- Set or read the **global** download/upload speed caps.
-- Set **per-torrent** download/upload limits.
-- Enforce **share limits** — a max ratio and/or seeding-time before a torrent stops.
-- Toggle / read the **alternate speed limits** (scheduler) mode.
-- Read live global transfer info (speeds, session totals, connection status).
+## Where the data lives
 
-## When NOT to use
-- Adding, pausing, deleting, categorizing torrents → `qbittorrent-torrent-lifecycle`.
-- Writing torrents/trackers into the knowledge graph → `qbittorrent-kg-ingestion`.
-- Editing the full preferences blob (proxy, scheduler days/hours) → the
-  `qbittorrent_app` tool's `set_preferences` action.
+- **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.
 
-## Prerequisites & environment
-Connect via the `mcp-client` skill against the **`qbittorrent-agent`** MCP server.
+## Workflows (tool-use contracts)
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `QBITTORRENT_URL` | ✅ | WebUI base URL (default `http://localhost:8080`) |
-| `QBITTORRENT_USERNAME` | ✅ | WebUI user (default `admin`) |
-| `QBITTORRENT_PASSWORD` | ✅ | WebUI password |
-| `QBITTORRENT_SSL_VERIFY` | optional | TLS verification toggle (alias `QBITTORRENT_AGENT_VERIFY`) |
+Each workflow is a tool-use contract in the connector ontology (`ontology://qbittorrent-mcp/qbittorrent-contracts.ttl`, `qbt:ToolUseContract`). Run the steps in order; a parameter written `stepN.field` comes from step N's result.
 
-`MCP_TOOL_MODE` (`condensed`|`verbose`|`both`) selects the condensed surface vs. the
-one-to-one verbose tools.
+### Check transfer health (`qbittorrent-check-transfer-health`)
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `qbittorrent_transfer` | `get_global_transfer_info`, `get_speed_limits_mode`, `toggle_speed_limits_mode`, `get_global_download_limit`, `set_global_download_limit`, `get_global_upload_limit`, `set_global_upload_limit`, `ban_peers` |
-| `qbittorrent_torrents` | `get_torrent_download_limit`, `set_torrent_download_limit`, `get_torrent_upload_limit`, `set_torrent_upload_limit`, `set_torrent_share_limit` |
+Read the connection status, speeds and limits, and list stalled and errored torrents with the log reasons.
 
-### Key parameters
-- `limit` — speed cap in **bytes/second**; `0` means unlimited.
-- `hashes` — target torrent(s) for the per-torrent limit actions (`"all"` allowed).
-- `set_torrent_share_limit` — `ratio_limit` (float; `-1` unlimited, `-2` global),
-  `seeding_time_limit` (minutes; `-1`/`-2` same convention), optional
-  `inactive_seeding_time_limit`.
+1. `qbittorrent_transfer_info` — `connection_status` must be `connected`; speeds, totals and DHT nodes.
+2. `qbittorrent_transfer_speed_limits_mode` — `1` means the alternative (slower) limits are on.
+3. `qbittorrent_torrents_info` (`filter` = "stalled") — Stalled torrents (no peers or no progress).
+4. `qbittorrent_torrents_info` (`filter` = "errored") — Errored torrents (missing files, disk errors).
+5. `qbittorrent_log_main` (`normal` = false, `info` = false, `warning` = true, `critical` = true) — Warnings and critical messages: failed logins, IP bans, disk and tracker errors.
 
-## Recipes (`params_json`)
-Cap global download at 5 MiB/s (`qbittorrent_transfer` → `set_global_download_limit`):
-```json
-{"limit":5242880}
-```
-Uncap global upload (`set_global_upload_limit`):
-```json
-{"limit":0}
-```
-Stop a torrent after ratio 2.0 or 3 days of seeding
-(`qbittorrent_torrents` → `set_torrent_share_limit`):
-```json
-{"hashes":"8c212779b4abde7c6bc608063a0d008b7e40ce32","ratio_limit":2.0,"seeding_time_limit":4320}
-```
-Throttle one torrent's upload to 512 KiB/s (`set_torrent_upload_limit`):
-```json
-{"hashes":"8c212779b4abde7c6bc608063a0d008b7e40ce32","limit":524288}
-```
+### Set seeding limits for completed torrents (`qbittorrent-set-share-limits`)
 
-## Gotchas
-- `params_json` is a **string** of JSON, not an object — serialize it.
-- Limits are **bytes/second**, not bits or KiB — convert before sending (5 MiB/s =
-  `5242880`). `0` = unlimited, not "stop".
-- Share-limit sentinels: `-1` = unlimited, `-2` = use the global setting. A plain
-  `0` ratio means "stop immediately once seeding starts".
-- `toggle_speed_limits_mode` is a **toggle**, not a setter — read
-  `get_speed_limits_mode` (0 = normal, 1 = alternate) first if you need a specific
-  state.
-- Alternate limits only take effect for the whole client, not per-torrent.
+Read completed torrents' ratio and seeding time, and set their share limits with approval.
 
-## Related
-- `qbittorrent-torrent-lifecycle` — add/control/organize torrents.
-- `qbittorrent-kg-ingestion` — record transfer/seeding state in the KG.
-- **Prompt:** composed by the `qbittorrent_torrent_specialist` prompt.
+1. `qbittorrent_torrents_info` (`filter` = "completed") — Completed torrents with `ratio` and `seeding_time`.
+2. `qbittorrent_torrents_properties` (`hash` = step1.result[].hash) — One torrent's current share limits.
+3. `qbittorrent_torrents_set_share_limits` (`hashes` = step1.result[].hash, `ratio_limit` = operator input, `seeding_time_limit` = operator input, `inactive_seeding_time_limit` = -2, `share_limit_action` = "Default") — Approval required: `ratioLimit`, `seedingTimeLimit`, `inactiveSeedingTimeLimit` (-2 global, -1 none) and `shareLimitAction`.
+4. `qbittorrent_torrents_properties` (`hash` = step1.result[].hash) — Confirm the new limits.
+
+Needs approval: `qbittorrent_torrents_set_share_limits`.
+
+### Set global speed limits (`qbittorrent-set-speed-limits`)
+
+Read and set the global download and upload limits with approval.
+
+1. `qbittorrent_transfer_download_limit` — Bytes per second; 0 is unlimited.
+2. `qbittorrent_transfer_upload_limit` — Bytes per second; 0 is unlimited.
+3. `qbittorrent_transfer_set_download_limit` (`limit` = operator input) — Approval required.
+4. `qbittorrent_transfer_set_upload_limit` (`limit` = operator input) — Approval required.
+5. `qbittorrent_transfer_info` — Confirm `dl_rate_limit` and `up_rate_limit`.
+
+Needs approval: `qbittorrent_transfer_set_download_limit`, `qbittorrent_transfer_set_upload_limit`.
+
+## Guardrails
+
+- Read before you write: every change starts from the read steps of its contract.
+- Writes that delete, change limits or preferences, or add torrents need the operator's approval first; pass `confirm=true` only after it.
+- Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.
+- Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.
+- Never add a torrent the operator or a linked app did not ask for.
+- Identify a torrent by its info hash, never by its position in a list.
+- Report a tool refusal or HTTP error as it is (the error carries qBittorrent's reason); never retry past a refusal or invent a result.

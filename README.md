@@ -97,279 +97,132 @@ This server use dynamic Action-Routed tools to optimize token overhead and maxim
 
 ### Available MCP Tools
 
-This table is auto-generated from the live server — do not edit by hand.
+Every qBittorrent WebUI API operation (121, qBittorrent 5.2.4) is one typed tool, plus `qbittorrent_ingest_torrents` (knowledge-graph ingest). There are no action-routed tools. A failed call raises with qBittorrent's reason.
 
-<!-- MCP-TOOLS-TABLE:START -->
-
-#### Condensed action-routed tools (`MCP_TOOL_MODE=condensed`)
-
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `qbittorrent_app` | `APPTOOL` | Manage qbittorrent app operations. |
-| `qbittorrent_ingest_torrents` | `INGESTTOOL` | Natively ingest qBittorrent torrents into epistemic-graph as typed nodes. |
-| `qbittorrent_log` | `LOGTOOL` | Manage qbittorrent log operations. |
-| `qbittorrent_rss` | `RSSTOOL` | Manage qbittorrent rss operations. |
-| `qbittorrent_search` | `SEARCHTOOL` | Manage qbittorrent search operations. |
-| `qbittorrent_sync` | `SYNCTOOL` | Manage qbittorrent sync operations. |
-| `qbittorrent_torrents` | `TORRENTSTOOL` | Manage qbittorrent torrents operations. |
-| `qbittorrent_transfer` | `TRANSFERTOOL` | Manage qbittorrent transfer operations. |
-
-#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
-
-<details>
-<summary>87 per-operation tools — one per public API method (click to expand)</summary>
-
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `qbittorrent_add_peers` | `APITOOL` | Add peers. |
-| `qbittorrent_add_rss_feed` | `APITOOL` | Add RSS feed. |
-| `qbittorrent_add_rss_folder` | `APITOOL` | Add RSS folder. |
-| `qbittorrent_add_torrent` | `APITOOL` | Add new torrent. |
-| `qbittorrent_add_torrent_tags` | `APITOOL` | Add torrent tags. |
-| `qbittorrent_add_trackers` | `APITOOL` | Add trackers to torrent. |
-| `qbittorrent_ban_peers` | `APITOOL` | Ban peers. 'peers' is a string of peers separated by \| (host:port). |
-| `qbittorrent_bottom_priority` | `APITOOL` | Minimal torrent priority. |
-| `qbittorrent_create_category` | `APITOOL` | Add new category. |
-| `qbittorrent_create_tags` | `APITOOL` | Create tags. |
-| `qbittorrent_decrease_priority` | `APITOOL` | Decrease torrent priority. |
-| `qbittorrent_delete_tags` | `APITOOL` | Delete tags. |
-| `qbittorrent_delete_torrents` | `APITOOL` | Delete torrents. |
-| `qbittorrent_edit_category` | `APITOOL` | Edit category. |
-| `qbittorrent_edit_tracker` | `APITOOL` | Edit tracker. |
-| `qbittorrent_enable_search_plugin` | `APITOOL` | Enable/disable search plugin. |
-| `qbittorrent_get_api_version` | `APITOOL` | Get API version. |
-| `qbittorrent_get_build_info` | `APITOOL` | Get build info. |
-| `qbittorrent_get_categories` | `APITOOL` | Get all categories. |
-| `qbittorrent_get_default_save_path` | `APITOOL` | Get default save path. |
-| `qbittorrent_get_global_download_limit` | `APITOOL` | Get global download limit in bytes/second. |
-| `qbittorrent_get_global_upload_limit` | `APITOOL` | Get global upload limit in bytes/second. |
-| `qbittorrent_get_log` | `APITOOL` | Get main log. |
-| `qbittorrent_get_main_data` | `APITOOL` | Get main data. |
-| `qbittorrent_get_peer_log` | `APITOOL` | Get peer log. |
-| `qbittorrent_get_preferences` | `APITOOL` | Get application preferences. |
-| `qbittorrent_get_rss_items` | `APITOOL` | Get all RSS items. |
-| `qbittorrent_get_rss_matching_articles` | `APITOOL` | Get all articles matching a rule. |
-| `qbittorrent_get_rss_rules` | `APITOOL` | Get all auto-downloading rules. |
-| `qbittorrent_get_search_plugins` | `APITOOL` | Get search plugins. |
-| `qbittorrent_get_speed_limits_mode` | `APITOOL` | Get alternative speed limits state (1 if enabled, 0 otherwise). |
-| `qbittorrent_get_tags` | `APITOOL` | Get all tags. |
-| `qbittorrent_get_torrent_contents` | `APITOOL` | Get torrent contents. |
-| `qbittorrent_get_torrent_download_limit` | `APITOOL` | Get torrent download limit. |
-| `qbittorrent_get_torrent_peers_data` | `APITOOL` | Get torrent peers data. |
-| `qbittorrent_get_torrent_piece_hashes` | `APITOOL` | Get torrent pieces' hashes. |
-| `qbittorrent_get_torrent_piece_states` | `APITOOL` | Get torrent pieces' states. |
-| `qbittorrent_get_torrent_properties` | `APITOOL` | Get torrent generic properties. |
-| `qbittorrent_get_torrent_trackers` | `APITOOL` | Get torrent trackers. |
-| `qbittorrent_get_torrent_upload_limit` | `APITOOL` | Get torrent upload limit. |
-| `qbittorrent_get_torrent_webseeds` | `APITOOL` | Get torrent web seeds. |
-| `qbittorrent_get_torrents` | `APITOOL` | Get torrent list. |
-| `qbittorrent_get_transfer_info` | `APITOOL` | Get global transfer info. |
-| `qbittorrent_get_version` | `APITOOL` | Get application version. |
-| `qbittorrent_increase_priority` | `APITOOL` | Increase torrent priority. |
-| `qbittorrent_install_search_plugin` | `APITOOL` | Install search plugin. |
-| `qbittorrent_mark_rss_as_read` | `APITOOL` | Mark RSS as read. |
-| `qbittorrent_move_rss_item` | `APITOOL` | Move RSS item. |
-| `qbittorrent_pause_torrents` | `APITOOL` | Pause (stop) torrents. qBittorrent 5.x renamed the endpoint to torrents/stop. |
-| `qbittorrent_reannounce_torrents` | `APITOOL` | Reannounce torrents. |
-| `qbittorrent_recheck_torrents` | `APITOOL` | Recheck torrents. |
-| `qbittorrent_refresh_rss_item` | `APITOOL` | Refresh RSS item. |
-| `qbittorrent_remove_categories` | `APITOOL` | Remove categories. 'categories' is |
-| `qbittorrent_remove_rss_item` | `APITOOL` | Remove RSS item. |
-| `qbittorrent_remove_rss_rule` | `APITOOL` | Remove auto-downloading rule. |
-| `qbittorrent_remove_torrent_tags` | `APITOOL` | Remove torrent tags. |
-| `qbittorrent_remove_trackers` | `APITOOL` | Remove trackers. |
-| `qbittorrent_rename_file` | `APITOOL` | Rename file. |
-| `qbittorrent_rename_folder` | `APITOOL` | Rename folder. |
-| `qbittorrent_rename_rss_rule` | `APITOOL` | Rename auto-downloading rule. |
-| `qbittorrent_resume_torrents` | `APITOOL` | Resume (start) torrents. qBittorrent 5.x renamed the endpoint to torrents/start. |
-| `qbittorrent_search_delete` | `APITOOL` | Delete search. |
-| `qbittorrent_search_results` | `APITOOL` | Get search results. |
-| `qbittorrent_search_start` | `APITOOL` | Start search. |
-| `qbittorrent_search_status` | `APITOOL` | Get search status. |
-| `qbittorrent_search_stop` | `APITOOL` | Stop search. |
-| `qbittorrent_set_auto_management` | `APITOOL` | Set automatic torrent management. |
-| `qbittorrent_set_file_priority` | `APITOOL` | Set file priority. |
-| `qbittorrent_set_force_start` | `APITOOL` | Set force start. |
-| `qbittorrent_set_global_download_limit` | `APITOOL` | Set global download limit in bytes/second. |
-| `qbittorrent_set_global_upload_limit` | `APITOOL` | Set global upload limit in bytes/second. |
-| `qbittorrent_set_preferences` | `APITOOL` | Set application preferences. |
-| `qbittorrent_set_rss_rule` | `APITOOL` | Set auto-downloading rule. |
-| `qbittorrent_set_super_seeding` | `APITOOL` | Set super seeding. |
-| `qbittorrent_set_torrent_category` | `APITOOL` | Set torrent category. |
-| `qbittorrent_set_torrent_download_limit` | `APITOOL` | Set torrent download limit. |
-| `qbittorrent_set_torrent_location` | `APITOOL` | Set torrent location. |
-| `qbittorrent_set_torrent_name` | `APITOOL` | Set torrent name. |
-| `qbittorrent_set_torrent_share_limit` | `APITOOL` | Set torrent share limit. |
-| `qbittorrent_set_torrent_upload_limit` | `APITOOL` | Set torrent upload limit. |
-| `qbittorrent_shutdown_application` | `APITOOL` | Shutdown application. |
-| `qbittorrent_toggle_first_last_piece_priority` | `APITOOL` | Set first/last piece priority. |
-| `qbittorrent_toggle_sequential_download` | `APITOOL` | Toggle sequential download. |
-| `qbittorrent_toggle_speed_limits_mode` | `APITOOL` | Toggle alternative speed limits. |
-| `qbittorrent_top_priority` | `APITOOL` | Maximal torrent priority. |
-| `qbittorrent_uninstall_search_plugin` | `APITOOL` | Uninstall search plugin. |
-| `qbittorrent_update_search_plugins` | `APITOOL` | Update search plugins. |
-
-</details>
-
-_8 action-routed tool(s) · 87 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
-<!-- MCP-TOOLS-TABLE:END -->
-
-Detailed tool schemas, parameter shapes, and validation constraints are preserved in [docs/usage.md](docs/usage.md).
-
-### Dynamic Tool Selection & Visibility
-
-This MCP server supports dynamic toolset selection and visibility filtering at runtime. This allows the operator to restrict the set of exposed tools to prevent blowing up the LLM's context window.
-
-The operator can configure tool filtering via multiple input channels:
-
-- **CLI Arguments:** Pass `--tools` or `--toolsets` (or their disabled counterparts `--disabled-tools` and `--disabled-toolsets`) during startup.
-- **Environment Variables:** Define standard environment variables:
-  - `MCP_ENABLED_TOOLS` / `MCP_DISABLED_TOOLS`
-  - `MCP_ENABLED_TAGS` / `MCP_DISABLED_TAGS`
-- **HTTP SSE Request Headers:** Pass custom headers during transport initialization:
-  - `x-mcp-enabled-tools` / `x-mcp-disabled-tools`
-  - `x-mcp-enabled-tags` / `x-mcp-disabled-tags`
-- **HTTP SSE Request Query Parameters:** Append query parameters directly to the operator's transport connection URL:
-  - `?tools=tool1,tool2`
-  - `?tags=tag1`
-
-When query strings or parameters are supplied, an LLM-free **Knowledge Graph resolution layer** (using `DynamicToolOrchestrator`) matches query intents against known tool tags, names, or descriptions, with safe fallback and automated 24-hour background cache refreshing.
-
----
-
-### MCP Configuration Examples
-
-<!-- MCP-CONFIG-EXAMPLES:START -->
-
-> **Install the connector-focused `[mcp]` extra.** Examples use `qbittorrent-agent[mcp]` to add
-> FastMCP / FastAPI through `scion-sdk[mcp]`; the required Agent Utilities core
-> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
-> enables model orchestration.
-
-#### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
-
-```json
-{
-  "mcpServers": {
-    "qbittorrent-mcp": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "qbittorrent-agent[mcp]",
-        "qbittorrent-mcp"
-      ],
-      "env": {
-        "MCP_TOOL_MODE": "intent",
-        "APPTOOL": "True",
-        "LOGTOOL": "True",
-        "RSSTOOL": "True",
-        "SEARCHTOOL": "True",
-        "SYNCTOOL": "True",
-        "TORRENTSTOOL": "True",
-        "TRANSFERTOOL": "True"
-      }
-    }
-  }
-}
-```
-
-Runtime references require an alias-aware launcher such as Arbora. Other
-launchers must omit those entries and inject the resolved values through their
-own runtime secret boundary.
-
-#### Streamable-HTTP Transport (networked / production)
-
-```json
-{
-  "mcpServers": {
-    "qbittorrent-mcp": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "qbittorrent-agent[mcp]",
-        "qbittorrent-mcp",
-        "--transport",
-        "streamable-http",
-        "--port",
-        "8000"
-      ],
-      "env": {
-        "TRANSPORT": "streamable-http",
-        "HOST": "127.0.0.1",
-        "PORT": "8000",
-        "MCP_TOOL_MODE": "intent",
-        "APPTOOL": "True",
-        "LOGTOOL": "True",
-        "RSSTOOL": "True",
-        "SEARCHTOOL": "True",
-        "SYNCTOOL": "True",
-        "TORRENTSTOOL": "True",
-        "TRANSFERTOOL": "True"
-      }
-    }
-  }
-}
-```
-
-Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
-
-```json
-{
-  "mcpServers": {
-    "qbittorrent-mcp": {
-      "url": "http://localhost:8000/qbittorrent-mcp/mcp"
-    }
-  }
-}
-```
-
-Run a reviewed container image as a least-privilege stdio child (no
-listener or published port):
-
-```bash
-docker run -i --rm \
-  --read-only \
-  --cap-drop=ALL \
-  --security-opt=no-new-privileges \
-  --pids-limit=256 \
-  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
-  -e TRANSPORT=stdio \
-  -e MCP_TOOL_MODE=intent \
-  -e APPTOOL=True \
-  -e LOGTOOL=True \
-  -e RSSTOOL=True \
-  -e SEARCHTOOL=True \
-  -e SYNCTOOL=True \
-  -e TORRENTSTOOL=True \
-  -e TRANSFERTOOL=True \
-  registry.example.invalid/qbittorrent-agent@sha256:<digest> qbittorrent-mcp
-```
-
-For containerized network HTTP, supply an authenticated TLS ingress (or
-direct server TLS), exact `MCP_ALLOWED_HOSTS`, and an exact trusted-proxy
-CIDR policy through the operator-owned deployment profile. The generator
-does not emit an unauthenticated non-loopback listener.
-
-_Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
-<!-- MCP-CONFIG-EXAMPLES:END -->
-
-<!-- BEGIN GENERATED: additional-deployment-options -->
-### Additional Deployment Options
-
-`qbittorrent-agent` can run as a local stdio process or container, or behind a remote
-network boundary. The
-[Deployment guide](https://knuckles-team.github.io/qbittorrent-agent/deployment/) has full,
-copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable-http**,
-**local container**, and **remote URL**:
-
-- **Local container** — launch a reviewed immutable image as a least-privilege
-  stdio child with no listener or published port (`uvx`, `docker run`, or `podman run`),
-  or point at a local streamable-http container by `url`.
-- **Remote URL** — connect through an operator-supplied authenticated HTTPS
-  ingress (for example, a server deployed behind Caddy at
-  `http://qbittorrent-mcp.example/mcp`) using the `"url"` key. Keep its URL, outbound
-  identity references, trust profile, and exact `MCP_ALLOWED_HOSTS` in `AgentConfig`.
-<!-- END GENERATED: additional-deployment-options -->
+| Tool | Operation | Description |
+|---|---|---|
+| `qbittorrent_app_webapi_version` | `GET /api/v2/app/webapiVersion` | Get the WebUI API version. |
+| `qbittorrent_app_version` | `GET /api/v2/app/version` | Get the qBittorrent application version. |
+| `qbittorrent_app_build_info` | `GET /api/v2/app/buildInfo` | Get build info: Qt, libtorrent, Boost, OpenSSL, zlib versions and bitness. |
+| `qbittorrent_app_process_info` | `GET /api/v2/app/processInfo` | Get process info of the running qBittorrent. |
+| `qbittorrent_app_shutdown` | `POST /api/v2/app/shutdown` | Shut down the qBittorrent application. |
+| `qbittorrent_app_preferences` | `GET /api/v2/app/preferences` | Get all application preferences. |
+| `qbittorrent_app_set_preferences` | `POST /api/v2/app/setPreferences` | Set application preferences; only the keys sent change. |
+| `qbittorrent_app_default_save_path` | `GET /api/v2/app/defaultSavePath` | Get the default save path. |
+| `qbittorrent_app_send_test_email` | `POST /api/v2/app/sendTestEmail` | Send a test email with the configured email notification settings. |
+| `qbittorrent_app_get_directory_content` | `GET /api/v2/app/getDirectoryContent` | List the content of a directory on the qBittorrent host. |
+| `qbittorrent_app_cookies` | `GET /api/v2/app/cookies` | Get the cookies used for downloading torrents and RSS. |
+| `qbittorrent_app_set_cookies` | `POST /api/v2/app/setCookies` | Set the cookies used for downloading torrents and RSS. |
+| `qbittorrent_app_rotate_api_key` | `POST /api/v2/app/rotateAPIKey` | Create or replace the WebUI API key. |
+| `qbittorrent_app_delete_api_key` | `POST /api/v2/app/deleteAPIKey` | Delete the WebUI API key. |
+| `qbittorrent_app_network_interface_list` | `GET /api/v2/app/networkInterfaceList` | List the network interfaces. |
+| `qbittorrent_app_network_interface_address_list` | `GET /api/v2/app/networkInterfaceAddressList` | List the addresses of a network interface. |
+| `qbittorrent_clientdata_load` | `GET /api/v2/clientdata/load` | Load WebUI client data stored on the server. |
+| `qbittorrent_clientdata_store` | `POST /api/v2/clientdata/store` | Store WebUI client data on the server. |
+| `qbittorrent_log_main` | `GET /api/v2/log/main` | Get the main log, filtered by severity. |
+| `qbittorrent_log_peers` | `GET /api/v2/log/peers` | Get the peer log. |
+| `qbittorrent_rss_add_folder` | `POST /api/v2/rss/addFolder` | Add an RSS folder. |
+| `qbittorrent_rss_add_feed` | `POST /api/v2/rss/addFeed` | Add an RSS feed. |
+| `qbittorrent_rss_set_feed_url` | `POST /api/v2/rss/setFeedURL` | Change the URL of an RSS feed. |
+| `qbittorrent_rss_set_feed_refresh_interval` | `GET /api/v2/rss/setFeedRefreshInterval` | Set the refresh interval of an RSS feed. |
+| `qbittorrent_rss_remove_item` | `POST /api/v2/rss/removeItem` | Remove an RSS feed or folder. |
+| `qbittorrent_rss_move_item` | `POST /api/v2/rss/moveItem` | Move or rename an RSS feed or folder. |
+| `qbittorrent_rss_items` | `GET /api/v2/rss/items` | List RSS feeds and folders, optionally with articles. |
+| `qbittorrent_rss_mark_as_read` | `POST /api/v2/rss/markAsRead` | Mark an RSS item or article as read. |
+| `qbittorrent_rss_refresh_item` | `POST /api/v2/rss/refreshItem` | Refresh an RSS feed or folder. |
+| `qbittorrent_rss_set_rule` | `POST /api/v2/rss/setRule` | Create or update an RSS auto-download rule. |
+| `qbittorrent_rss_rename_rule` | `POST /api/v2/rss/renameRule` | Rename an RSS auto-download rule. |
+| `qbittorrent_rss_remove_rule` | `POST /api/v2/rss/removeRule` | Remove an RSS auto-download rule. |
+| `qbittorrent_rss_rules` | `GET /api/v2/rss/rules` | List RSS auto-download rules. |
+| `qbittorrent_rss_matching_articles` | `GET /api/v2/rss/matchingArticles` | List the articles that match an RSS auto-download rule. |
+| `qbittorrent_search_start` | `POST /api/v2/search/start` | Start a search job with the search plugins. |
+| `qbittorrent_search_stop` | `POST /api/v2/search/stop` | Stop a search job. |
+| `qbittorrent_search_status` | `GET /api/v2/search/status` | Get the status of one or all search jobs. |
+| `qbittorrent_search_results` | `GET /api/v2/search/results` | Get the results of a search job. |
+| `qbittorrent_search_delete` | `POST /api/v2/search/delete` | Delete a search job. |
+| `qbittorrent_search_download_torrent` | `GET /api/v2/search/downloadTorrent` | Download a torrent found by a search plugin. |
+| `qbittorrent_search_plugins` | `GET /api/v2/search/plugins` | List the search plugins. |
+| `qbittorrent_search_install_plugin` | `POST /api/v2/search/installPlugin` | Install search plugins from URLs or paths. |
+| `qbittorrent_search_uninstall_plugin` | `POST /api/v2/search/uninstallPlugin` | Uninstall search plugins. |
+| `qbittorrent_search_enable_plugin` | `POST /api/v2/search/enablePlugin` | Enable or disable search plugins. |
+| `qbittorrent_search_update_plugins` | `POST /api/v2/search/updatePlugins` | Update all search plugins. |
+| `qbittorrent_sync_maindata` | `GET /api/v2/sync/maindata` | Get the main data changes since a response id (full state when rid is 0). |
+| `qbittorrent_sync_torrent_peers` | `GET /api/v2/sync/torrentPeers` | Get the peer data changes of one torrent since a response id. |
+| `qbittorrent_torrentcreator_add_task` | `POST /api/v2/torrentcreator/addTask` | Create a torrent from a file or folder on the qBittorrent host. |
+| `qbittorrent_torrentcreator_status` | `GET /api/v2/torrentcreator/status` | Get the status of one or all torrent-creator tasks. |
+| `qbittorrent_torrentcreator_torrent_file` | `GET /api/v2/torrentcreator/torrentFile` | Get the .torrent file a creator task produced. |
+| `qbittorrent_torrentcreator_delete_task` | `POST /api/v2/torrentcreator/deleteTask` | Delete a torrent-creator task. |
+| `qbittorrent_torrents_count` | `GET /api/v2/torrents/count` | Count the torrents. |
+| `qbittorrent_torrents_info` | `GET /api/v2/torrents/info` | List torrents, filtered and sorted. |
+| `qbittorrent_torrents_properties` | `GET /api/v2/torrents/properties` | Get the generic properties of one torrent. |
+| `qbittorrent_torrents_trackers` | `GET /api/v2/torrents/trackers` | List the trackers of one torrent. |
+| `qbittorrent_torrents_webseeds` | `GET /api/v2/torrents/webseeds` | List the web seeds of one torrent. |
+| `qbittorrent_torrents_add_web_seeds` | `POST /api/v2/torrents/addWebSeeds` | Add web seeds to a torrent. |
+| `qbittorrent_torrents_edit_web_seed` | `POST /api/v2/torrents/editWebSeed` | Replace a web seed URL of a torrent. |
+| `qbittorrent_torrents_remove_web_seeds` | `POST /api/v2/torrents/removeWebSeeds` | Remove web seeds from a torrent. |
+| `qbittorrent_torrents_files` | `GET /api/v2/torrents/files` | List the files of one torrent. |
+| `qbittorrent_torrents_piece_hashes` | `GET /api/v2/torrents/pieceHashes` | Get the piece hashes of one torrent. |
+| `qbittorrent_torrents_piece_states` | `GET /api/v2/torrents/pieceStates` | Get the piece states of one torrent. |
+| `qbittorrent_torrents_piece_availability` | `GET /api/v2/torrents/pieceAvailability` | Get the piece availability of one torrent. |
+| `qbittorrent_torrents_start` | `POST /api/v2/torrents/start` | Start (resume) torrents. |
+| `qbittorrent_torrents_stop` | `POST /api/v2/torrents/stop` | Stop (pause) torrents. |
+| `qbittorrent_torrents_recheck` | `POST /api/v2/torrents/recheck` | Recheck torrents. |
+| `qbittorrent_torrents_reannounce` | `POST /api/v2/torrents/reannounce` | Reannounce torrents to their trackers. |
+| `qbittorrent_torrents_rename` | `POST /api/v2/torrents/rename` | Rename a torrent. |
+| `qbittorrent_torrents_set_comment` | `POST /api/v2/torrents/setComment` | Set the comment of torrents. |
+| `qbittorrent_torrents_set_category` | `POST /api/v2/torrents/setCategory` | Set the category of torrents. |
+| `qbittorrent_torrents_create_category` | `POST /api/v2/torrents/createCategory` | Create a category. |
+| `qbittorrent_torrents_edit_category` | `POST /api/v2/torrents/editCategory` | Edit a category's save and download paths. |
+| `qbittorrent_torrents_remove_categories` | `POST /api/v2/torrents/removeCategories` | Remove categories. |
+| `qbittorrent_torrents_categories` | `GET /api/v2/torrents/categories` | List all categories. |
+| `qbittorrent_torrents_add_tags` | `POST /api/v2/torrents/addTags` | Add tags to torrents. |
+| `qbittorrent_torrents_set_tags` | `POST /api/v2/torrents/setTags` | Replace the tags of torrents. |
+| `qbittorrent_torrents_remove_tags` | `POST /api/v2/torrents/removeTags` | Remove tags from torrents (all tags when none are given). |
+| `qbittorrent_torrents_create_tags` | `POST /api/v2/torrents/createTags` | Create tags. |
+| `qbittorrent_torrents_delete_tags` | `POST /api/v2/torrents/deleteTags` | Delete tags. |
+| `qbittorrent_torrents_tags` | `GET /api/v2/torrents/tags` | List all tags. |
+| `qbittorrent_torrents_add` | `POST /api/v2/torrents/add` | Add torrents from URLs, magnet links or uploaded .torrent files. |
+| `qbittorrent_torrents_delete` | `POST /api/v2/torrents/delete` | Delete torrents, optionally with their downloaded files. |
+| `qbittorrent_torrents_add_trackers` | `POST /api/v2/torrents/addTrackers` | Add trackers to a torrent. |
+| `qbittorrent_torrents_edit_tracker` | `POST /api/v2/torrents/editTracker` | Replace a tracker URL of a torrent. |
+| `qbittorrent_torrents_remove_trackers` | `POST /api/v2/torrents/removeTrackers` | Remove trackers from a torrent. |
+| `qbittorrent_torrents_add_peers` | `POST /api/v2/torrents/addPeers` | Add peers to torrents. |
+| `qbittorrent_torrents_file_prio` | `POST /api/v2/torrents/filePrio` | Set the priority of files in a torrent. |
+| `qbittorrent_torrents_upload_limit` | `GET /api/v2/torrents/uploadLimit` | Get the upload limit of torrents. |
+| `qbittorrent_torrents_download_limit` | `GET /api/v2/torrents/downloadLimit` | Get the download limit of torrents. |
+| `qbittorrent_torrents_set_upload_limit` | `POST /api/v2/torrents/setUploadLimit` | Set the upload limit of torrents. |
+| `qbittorrent_torrents_set_download_limit` | `POST /api/v2/torrents/setDownloadLimit` | Set the download limit of torrents. |
+| `qbittorrent_torrents_set_share_limits` | `POST /api/v2/torrents/setShareLimits` | Set the share (ratio and seeding time) limits of torrents. |
+| `qbittorrent_torrents_increase_prio` | `POST /api/v2/torrents/increasePrio` | Raise the queue priority of torrents. |
+| `qbittorrent_torrents_decrease_prio` | `POST /api/v2/torrents/decreasePrio` | Lower the queue priority of torrents. |
+| `qbittorrent_torrents_top_prio` | `POST /api/v2/torrents/topPrio` | Move torrents to the top of the queue. |
+| `qbittorrent_torrents_bottom_prio` | `POST /api/v2/torrents/bottomPrio` | Move torrents to the bottom of the queue. |
+| `qbittorrent_torrents_set_location` | `POST /api/v2/torrents/setLocation` | Move the data of torrents to a new location. |
+| `qbittorrent_torrents_set_save_path` | `POST /api/v2/torrents/setSavePath` | Set the save path of torrents. |
+| `qbittorrent_torrents_set_download_path` | `POST /api/v2/torrents/setDownloadPath` | Set the incomplete-download path of torrents. |
+| `qbittorrent_torrents_set_auto_management` | `POST /api/v2/torrents/setAutoManagement` | Turn automatic torrent management on or off. |
+| `qbittorrent_torrents_set_super_seeding` | `POST /api/v2/torrents/setSuperSeeding` | Turn super seeding on or off. |
+| `qbittorrent_torrents_set_force_start` | `POST /api/v2/torrents/setForceStart` | Turn force start on or off. |
+| `qbittorrent_torrents_toggle_sequential_download` | `POST /api/v2/torrents/toggleSequentialDownload` | Toggle sequential download. |
+| `qbittorrent_torrents_toggle_first_last_piece_prio` | `POST /api/v2/torrents/toggleFirstLastPiecePrio` | Toggle first and last piece priority. |
+| `qbittorrent_torrents_rename_file` | `POST /api/v2/torrents/renameFile` | Rename a file in a torrent. |
+| `qbittorrent_torrents_rename_folder` | `POST /api/v2/torrents/renameFolder` | Rename a folder in a torrent. |
+| `qbittorrent_torrents_export` | `GET /api/v2/torrents/export` | Export a torrent as a .torrent file. |
+| `qbittorrent_torrents_ssl_parameters` | `GET /api/v2/torrents/SSLParameters` | Get the SSL parameters of a torrent. |
+| `qbittorrent_torrents_set_ssl_parameters` | `POST /api/v2/torrents/setSSLParameters` | Set the SSL parameters of a torrent. |
+| `qbittorrent_torrents_fetch_metadata` | `POST /api/v2/torrents/fetchMetadata` | Fetch the metadata of a magnet link or URL without adding it. |
+| `qbittorrent_torrents_parse_metadata` | `POST /api/v2/torrents/parseMetadata` | Parse uploaded .torrent files and return their metadata. |
+| `qbittorrent_torrents_save_metadata` | `GET /api/v2/torrents/saveMetadata` | Save fetched metadata as a .torrent file. |
+| `qbittorrent_transfer_info` | `GET /api/v2/transfer/info` | Get global transfer info: speeds, totals, connection status. |
+| `qbittorrent_transfer_speed_limits_mode` | `GET /api/v2/transfer/speedLimitsMode` | Get whether the alternative speed limits are on. |
+| `qbittorrent_transfer_set_speed_limits_mode` | `POST /api/v2/transfer/setSpeedLimitsMode` | Turn the alternative speed limits on (1) or off (0). |
+| `qbittorrent_transfer_toggle_speed_limits_mode` | `POST /api/v2/transfer/toggleSpeedLimitsMode` | Toggle the alternative speed limits. |
+| `qbittorrent_transfer_upload_limit` | `GET /api/v2/transfer/uploadLimit` | Get the global upload limit. |
+| `qbittorrent_transfer_download_limit` | `GET /api/v2/transfer/downloadLimit` | Get the global download limit. |
+| `qbittorrent_transfer_set_upload_limit` | `POST /api/v2/transfer/setUploadLimit` | Set the global upload limit. |
+| `qbittorrent_transfer_set_download_limit` | `POST /api/v2/transfer/setDownloadLimit` | Set the global download limit. |
+| `qbittorrent_transfer_ban_peers` | `POST /api/v2/transfer/banPeers` | Ban peers. |
+| `qbittorrent_ingest_torrents` | (connector) | Ingest torrents into the knowledge graph as typed Torrent, Tracker and Category nodes. |
 
 ## Agent
 

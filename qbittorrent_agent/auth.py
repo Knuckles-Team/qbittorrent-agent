@@ -5,6 +5,7 @@ from scion_sdk.exceptions import AuthError, UnauthorizedError
 from scion_sdk.tls.profile import ResolvedTLSProfile
 from scion_sdk.tls.resolve import resolve_tls_profile
 
+from qbittorrent_agent.api.api_client_base import is_api_key
 from qbittorrent_agent.api_client import QbittorrentApi
 
 _client = None
@@ -20,16 +21,21 @@ def get_client(tls_profile: ResolvedTLSProfile | None = None):
         base_url = setting("QBITTORRENT_URL", "")
         username = setting("QBITTORRENT_USERNAME", "")
         password = setting("QBITTORRENT_PASSWORD", "")
+        api_key = setting("QBITTORRENT_API_KEY", "")
         if not base_url:
             raise RuntimeError("QBITTORRENT_URL is required")
-        if not username or not password:
-            raise RuntimeError("qBittorrent credentials are required")
+        if not is_api_key(api_key) and (not username or not password):
+            raise RuntimeError(
+                "qBittorrent credentials are required: QBITTORRENT_API_KEY, or "
+                "QBITTORRENT_USERNAME and QBITTORRENT_PASSWORD"
+            )
 
         try:
             _client = QbittorrentApi(
                 base_url=base_url,
                 username=username,
                 password=password,
+                api_key=api_key or None,
                 tls_profile=tls_profile or resolve_tls_profile("qbittorrent"),
             )
         except (AuthError, UnauthorizedError) as e:

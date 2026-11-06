@@ -2,32 +2,47 @@
 name: qbittorrent-agent-operations
 skill_type: skill
 description: >-
-  Operate qbittorrent-agent through its governed MCP and Arbora capabilities, including qbittorrent kg ingestion, qbittorrent torrent lifecycle, qbittorrent transfer tuning. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
+  Operate qBittorrent through the qbittorrent-mcp connector: pick the skill and workflow for a torrent, transfer, download-client or ingest task. Use as the entry point for any qBittorrent request.
+license: MIT
+tags: [qbittorrent, operations, mcp]
+metadata:
+  author: Knuckles-Team
+  version: '1.0.0'
 ---
 
-# Qbittorrent Agent Operations
+# qBittorrent Operations
 
-Use the provider's governed MCP tools through Arbora delegation.
+The connector serves one typed tool per WebUI API operation (`qbittorrent_<scope>_<action>`; scopes `app`, `clientdata`, `log`, `rss`, `search`, `sync`, `torrentcreator`, `torrents`, `transfer`) plus `qbittorrent_ingest_torrents`.
 
-## Workflow
+## Where the data lives
 
-1. Establish the verified GraphSession and tenant before discovery or retrieval.
-2. Discover the current condensed tool surface; never assume a stale tool name or schema.
-3. Prefer read-only inspection first. For changes, present impact and use the provider's
-   dry-run or preview mode when available.
-4. Execute mutations as fenced WorkItems so retries remain idempotent and auditable.
-5. Ingest source data only through the signed connector preset and ChangeEnvelope path.
-6. Verify the durable result and its trace/evidence before reporting completion.
+- **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.
 
-## Safety contract
+## Which skill
 
-- Never persist credentials, endpoints, raw personal identifiers, hostnames, or local paths.
-- Resolve TLS trust and verification from environment/configuration; never hardcode bypasses.
-- Treat unknown ACL, tenant, schema, or tool-contract state as a hard failure.
-- Require explicit approval for destructive, externally visible, or irreversible actions.
-- Keep runtime traces policy-scoped and privacy-sanitized.
+- `qbittorrent-torrent-lifecycle`: Manage the qBittorrent torrent lifecycle through the qbittorrent-mcp connector: list and filter torrents, add a torrent to a category, recover a stalled torrent, and prove category writes with a test category. Use when the agent must add, inspect, reannounce, recheck or organize torrents. Do NOT use for speed or ratio limits (qbittorrent-transfer-tuning) or knowledge-graph ingest (qbittorrent-kg-ingestion).
+- `qbittorrent-transfer-tuning`: Check transfer health and tune qBittorrent's speed and seeding limits through the qbittorrent-mcp connector. Use when the agent must read speeds and stalled torrents, or set global speed limits or per-torrent share limits. Do NOT use to add or delete torrents (qbittorrent-torrent-lifecycle).
+- `qbittorrent-download-client`: Keep qBittorrent working as the download client of the arr media apps through the qbittorrent-mcp connector: diagnose login failures and IP bans, and provision each app's category. Use when Radarr, Sonarr, Lidarr or Chaptarr report the client unavailable or a new app needs a category. Do NOT use to change the apps' own settings (arr-mcp `arr-repair-download-client`).
+- `qbittorrent-kg-ingestion`: Ingest qBittorrent torrents into the knowledge graph through the qbittorrent-mcp connector as typed Torrent, Tracker and Category nodes. Use when the torrent inventory must be queryable with other sources. Do NOT use to change torrents.
 
-## Specialized workflows
+## Workflows (tool-use contracts)
 
-Read [the workflow catalog](references/catalog.md) only when the request needs a
-provider-specific procedure, parameter map, script, or reference asset.
+- `qbittorrent-check-transfer-health` (qbittorrent-transfer-tuning): Read the connection status, speeds and limits, and list stalled and errored torrents with the log reasons.
+- `qbittorrent-recover-stalled-torrent` (qbittorrent-torrent-lifecycle): For one stalled torrent, read its trackers, reannounce, and recheck it if its data may be damaged.
+- `qbittorrent-category-roundtrip` (qbittorrent-torrent-lifecycle): Create a `zz-validation-<date>` category, confirm it lists, remove it, and confirm it is gone.
+- `qbittorrent-add-torrent` (qbittorrent-torrent-lifecycle): Add a magnet link or URL the operator asked for into the consuming app's category, and confirm it is listed.
+- `qbittorrent-set-share-limits` (qbittorrent-transfer-tuning): Read completed torrents' ratio and seeding time, and set their share limits with approval.
+- `qbittorrent-set-speed-limits` (qbittorrent-transfer-tuning): Read and set the global download and upload limits with approval.
+- `qbittorrent-diagnose-app-connection` (qbittorrent-download-client): When an arr app reports its qBittorrent client unavailable, read the login failures and bans in the log and the WebUI auth settings, then hand the fix to the arr-mcp `arr-repair-download-client` workflow.
+- `qbittorrent-provision-app-category` (qbittorrent-download-client): Create the category an arr app sends its downloads to, so they land in the app's import folder.
+- `qbittorrent-ingest-torrents` (qbittorrent-kg-ingestion): Count the torrents and push them, with trackers and categories, into the knowledge graph.
+
+## Guardrails
+
+- Read before you write: every change starts from the read steps of its contract.
+- Writes that delete, change limits or preferences, or add torrents need the operator's approval first; pass `confirm=true` only after it.
+- Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.
+- Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.
+- Never add a torrent the operator or a linked app did not ask for.
+- Identify a torrent by its info hash, never by its position in a list.
+- Report a tool refusal or HTTP error as it is (the error carries qBittorrent's reason); never retry past a refusal or invent a result.

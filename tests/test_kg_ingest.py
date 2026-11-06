@@ -107,7 +107,7 @@ async def test_ingest_torrents_maps_torrent_tracker_category(ingest):
         for r in request.records
     )
     assert any(
-        r.record_id == "qbittorrent:TorrentCategory:linux" for r in request.records
+        r.record_id == "qbittorrent:Category:linux" for r in request.records
     )
     rel_pairs = {
         (r.source.record_id, r.target.record_id) for r in request.relationships
@@ -118,7 +118,7 @@ async def test_ingest_torrents_maps_torrent_tracker_category(ingest):
     ) in rel_pairs
     assert (
         "qbittorrent:Torrent:abc123",
-        "qbittorrent:TorrentCategory:linux",
+        "qbittorrent:Category:linux",
     ) in rel_pairs
 
 

@@ -9,7 +9,7 @@ __all__: list[str] = []
 CORE_MODULES: list[str] = ["qbittorrent_agent.api_client"]
 
 OPTIONAL_MODULES = {
-    "qbittorrent_agent.mcp_server": "mcp",
+    "qbittorrent_agent.mcp": "mcp",
 }
 
 
@@ -30,7 +30,7 @@ for module_name in CORE_MODULES:
         module = importlib.import_module(module_name)
         _expose_members(module)
 
-# Dynamic/lazy loading of optional modules (mcp_server)
+# Dynamic/lazy loading of optional modules (the MCP registrars)
 _loaded_optional_modules: dict[str, Any] = {}
 
 
@@ -45,7 +45,7 @@ def _import_module_safely(module_name: str):
 # Maps a synthetic availability-flag attribute to the substring identifying
 # which entry in OPTIONAL_MODULES it reports on.
 _AVAILABILITY_FLAGS = {
-    "_MCP_AVAILABLE": "mcp_server",
+    "_MCP_AVAILABLE": "qbittorrent_agent.mcp",
 }
 
 
@@ -93,6 +93,9 @@ from qbittorrent_agent.auth import get_client
 connector = Connector(
     api=QbittorrentApi,
     get_client=get_client,
-    tools="qbittorrent_agent.mcp_server",
-    instructions="qbittorrent-agent MCP Server — Condensed Action-Routed Tools.",
+    tools="qbittorrent_agent.mcp",
+    instructions=(
+        "qBittorrent MCP Server: every WebUI API operation as one typed tool "
+        "(qbittorrent_<scope>_<action>), plus knowledge-graph ingest."
+    ),
 )
