@@ -80,5 +80,46 @@
     "qbittorrent_app_default_save_path",
     "qbittorrent_torrents_create_category",
     "qbittorrent_torrents_remove_categories"
-  ]
+  ],
+  "agent": {
+    "kind": "business-role",
+    "business_role": "download client steward",
+    "tools": [
+      "qbittorrent_log_main",
+      "qbittorrent_app_preferences",
+      "qbittorrent_torrents_categories",
+      "qbittorrent_app_default_save_path",
+      "qbittorrent_torrents_create_category",
+      "qbittorrent_torrents_remove_categories"
+    ],
+    "skills": [
+      "qbittorrent-download-client",
+      "qbittorrent-torrent-lifecycle"
+    ],
+    "data": {
+      "reads": [
+        "qbittorrent-categories",
+        "qbittorrent-instance"
+      ],
+      "writes": [
+        "qbittorrent-categories"
+      ]
+    },
+    "guardrails": {
+      "approval_required": [
+        "qbittorrent_torrents_create_category",
+        "qbittorrent_torrents_remove_categories"
+      ],
+      "never": [
+        "Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.",
+        "Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.",
+        "Never add a torrent the operator or a linked app did not ask for."
+      ]
+    },
+    "outputs": [
+      "Each consuming app and its category.",
+      "Login failures and bans, with the caller and time.",
+      "Categories created, and the fix handed to the arr apps."
+    ]
+  }
 }

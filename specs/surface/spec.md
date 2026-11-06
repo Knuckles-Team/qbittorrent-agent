@@ -59,6 +59,8 @@ A graph query answers where qBittorrent stores downloads, which category belongs
 - **FR-006**: Data location, routing and federation. Rows: `CONN-QBITTORRENT-AGENT-SURFACE-R006`.
 - **FR-007**: Every class rolls up to medulla core. Rows: `CONN-QBITTORRENT-AGENT-SURFACE-R007`.
 - **FR-008**: Ingest uses core classes and a served tool. Rows: `CONN-QBITTORRENT-AGENT-SURFACE-R008`.
+- **FR-009**: The whole surface is declared. Rows: `CONN-QBITTORRENT-AGENT-SURFACE-R009`.
+- **FR-010**: An operation newer than the server refuses with a typed error. Rows: `CONN-QBITTORRENT-AGENT-SURFACE-R010`.
 
 ## Success Criteria
 
@@ -84,3 +86,5 @@ A graph query answers where qBittorrent stores downloads, which category belongs
 | FR-006 | `CONN-QBITTORRENT-AGENT-SURFACE-R006` | [plan.md](plan.md) | T-006 | [test-spec.md](test-spec.md) |
 | FR-007 | `CONN-QBITTORRENT-AGENT-SURFACE-R007` | [plan.md](plan.md) | T-007 | [test-spec.md](test-spec.md) |
 | FR-008 | `CONN-QBITTORRENT-AGENT-SURFACE-R008` | [plan.md](plan.md) | T-008 | [test-spec.md](test-spec.md) |
+| FR-009 | `CONN-QBITTORRENT-AGENT-SURFACE-R009` | [plan.md](plan.md) | T-009 | [test-spec.md](test-spec.md) |
+| FR-010 | `CONN-QBITTORRENT-AGENT-SURFACE-R010` | [plan.md](plan.md) | T-010 | [test-spec.md](test-spec.md) |

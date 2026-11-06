@@ -186,7 +186,7 @@ def test_api_key_is_a_bearer_and_a_placeholder_falls_back_to_login(monkeypatch):
     assert base.is_api_key(valid_key)
     assert not base.is_api_key(placeholder)
     logins = []
-    monkeypatch.setattr(base.BaseApiClient, "login", lambda self: logins.append(1))
+    monkeypatch.setattr(base.BaseApiClient, "_login", lambda self: logins.append(1))
 
     class Profile:
         def configure_requests_session(self, session):
@@ -342,3 +342,37 @@ def test_ingest_uses_core_classes_and_a_pinned_served_tool(served):
         assert preset["tool"] in tools and "action" not in preset
         live = validate_live_tool_contract(listed, tool_name=preset["tool"])
         assert live.compatibility_sha256 == preset["tool_schema_sha256"]
+
+
+# --- R009: the whole surface is declared; R010: version gate ------------------
+
+
+@pytest.mark.spec(f"{ID}-R009")
+def test_every_tool_is_called_by_a_contract_step():
+    from qbittorrent_agent.connector_contracts import CONTRACTS
+
+    tools = {
+        f"qbittorrent_{route}"
+        for route in (m for (_, _), m in _client_routes().items())
+    }
+    called = {step.tool for contract in CONTRACTS for step in contract.steps}
+    assert not sorted(tools - called), "tools no contract calls"
+
+
+@pytest.mark.spec(f"{ID}-R010")
+def test_a_5_2_operation_on_an_older_server_refuses_with_a_typed_error():
+    from qbittorrent_agent.api import QbittorrentUnsupportedError
+
+    seen = []
+    old = _api(_Resp(200, b"v5.1.4"), seen)
+    with pytest.raises(QbittorrentUnsupportedError, match="UNSUPPORTED_BY_SERVER.*5.1.4"):
+        old.torrents_set_comment(hashes="a", comment="x")
+    assert [s[1] for s in seen] == ["http://q/api/v2/app/version"]
+    seen.clear()
+    new = _api(_Resp(200, b"v5.2.4"), seen)
+    new.torrents_set_comment(hashes="a", comment="x")
+    assert seen[-1][0] == "POST" and seen[-1][1].endswith("torrents/setComment")
+    seen.clear()
+    old = _api(_Resp(200, b"v5.1.4"), seen)
+    old.app_version()
+    assert len(seen) == 1
