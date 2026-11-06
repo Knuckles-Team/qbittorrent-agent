@@ -97,7 +97,7 @@
      "name": "withMetadata",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "withMetadata"
     }
    ],
    "files": false
@@ -153,7 +153,7 @@
      "name": "iface",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "iface"
     }
    ],
    "files": false
@@ -195,25 +195,25 @@
      "name": "normal",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "normal"
     },
     {
      "name": "info",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "info"
     },
     {
      "name": "warning",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "warning"
     },
     {
      "name": "critical",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "critical"
     },
     {
      "name": "last_known_id",
@@ -261,7 +261,7 @@
      "name": "url",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "url"
     },
     {
      "name": "path",
@@ -273,7 +273,7 @@
      "name": "refreshInterval",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "refreshInterval"
     }
    ],
    "files": false
@@ -293,7 +293,7 @@
      "name": "url",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "url"
     }
    ],
    "files": false
@@ -307,7 +307,7 @@
      "name": "refreshInterval",
      "type": "int",
      "required": true,
-     "description": ""
+     "description": "refreshInterval"
     },
     {
      "name": "path",
@@ -361,7 +361,7 @@
      "name": "withData",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "withData"
     }
    ],
    "files": false
@@ -381,7 +381,7 @@
      "name": "articleId",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "articleId"
     }
    ],
    "files": false
@@ -435,7 +435,7 @@
      "name": "newRuleName",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "newRuleName"
     }
    ],
    "files": false
@@ -544,13 +544,13 @@
      "name": "limit",
      "type": "int",
      "required": false,
-     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+     "description": "At most this many results"
     },
     {
      "name": "offset",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "Skip this many results"
     }
    ],
    "files": false
@@ -578,13 +578,13 @@
      "name": "torrentUrl",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "torrentUrl"
     },
     {
      "name": "pluginName",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "pluginName"
     }
    ],
    "files": false
@@ -694,31 +694,31 @@
      "name": "private",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "private"
     },
     {
      "name": "format",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "format"
     },
     {
      "name": "optimizeAlignment",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "optimizeAlignment"
     },
     {
      "name": "paddedFileSizeLimit",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "paddedFileSizeLimit"
     },
     {
      "name": "pieceSize",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "pieceSize"
     },
     {
      "name": "sourcePath",
@@ -730,13 +730,13 @@
      "name": "torrentFilePath",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "torrentFilePath"
     },
     {
      "name": "comment",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "comment"
     },
     {
      "name": "source",
@@ -748,19 +748,19 @@
      "name": "trackers",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "trackers"
     },
     {
      "name": "urlSeeds",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "urlSeeds"
     },
     {
      "name": "startSeeding",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "startSeeding"
     }
    ],
    "files": false
@@ -835,7 +835,7 @@
      "name": "tag",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "Tag name"
     },
     {
      "name": "sort",
@@ -847,19 +847,19 @@
      "name": "reverse",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "Reverse the sort order"
     },
     {
      "name": "limit",
      "type": "int",
      "required": false,
-     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+     "description": "At most this many torrents"
     },
     {
      "name": "offset",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "Skip this many torrents (negative counts from the end)"
     },
     {
      "name": "hashes",
@@ -871,19 +871,19 @@
      "name": "private",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "Only private (true) or public (false) torrents"
     },
     {
      "name": "includeFiles",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "Include each torrent's files"
     },
     {
      "name": "includeTrackers",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "Include each torrent's trackers"
     }
    ],
    "files": false
@@ -965,13 +965,13 @@
      "name": "origUrl",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "origUrl"
     },
     {
      "name": "newUrl",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "newUrl"
     }
    ],
    "files": false
@@ -1129,7 +1129,7 @@
      "name": "name",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "name"
     }
    ],
    "files": false
@@ -1149,7 +1149,7 @@
      "name": "comment",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "comment"
     }
    ],
    "files": false
@@ -1195,7 +1195,7 @@
      "name": "downloadPathEnabled",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "downloadPathEnabled"
     },
     {
      "name": "downloadPath",
@@ -1227,7 +1227,7 @@
      "name": "downloadPathEnabled",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "downloadPathEnabled"
     },
     {
      "name": "downloadPath",
@@ -1369,43 +1369,43 @@
      "name": "skip_checking",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "skip_checking"
     },
     {
      "name": "sequentialDownload",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "sequentialDownload"
     },
     {
      "name": "firstLastPiecePrio",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "firstLastPiecePrio"
     },
     {
      "name": "forced",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "forced"
     },
     {
      "name": "addToTopOfQueue",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "addToTopOfQueue"
     },
     {
      "name": "stopped",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "stopped"
     },
     {
      "name": "savepath",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "savepath"
     },
     {
      "name": "downloadPath",
@@ -1417,7 +1417,7 @@
      "name": "useDownloadPath",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "useDownloadPath"
     },
     {
      "name": "category",
@@ -1435,91 +1435,91 @@
      "name": "rename",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "rename"
     },
     {
      "name": "upLimit",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "upLimit"
     },
     {
      "name": "dlLimit",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "dlLimit"
     },
     {
      "name": "ratioLimit",
      "type": "float",
      "required": false,
-     "description": ""
+     "description": "ratioLimit"
     },
     {
      "name": "seedingTimeLimit",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "seedingTimeLimit"
     },
     {
      "name": "inactiveSeedingTimeLimit",
      "type": "int",
      "required": false,
-     "description": ""
+     "description": "inactiveSeedingTimeLimit"
     },
     {
      "name": "shareLimitAction",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "shareLimitAction"
     },
     {
      "name": "autoTMM",
      "type": "bool",
      "required": false,
-     "description": ""
+     "description": "autoTMM"
     },
     {
      "name": "stopCondition",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "stopCondition"
     },
     {
      "name": "contentLayout",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "contentLayout"
     },
     {
      "name": "filePriorities",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "filePriorities"
     },
     {
      "name": "downloader",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "downloader"
     },
     {
      "name": "ssl_certificate",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "ssl_certificate"
     },
     {
      "name": "ssl_private_key",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "ssl_private_key"
     },
     {
      "name": "ssl_dh_params",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "ssl_dh_params"
     }
    ],
    "files": true
@@ -1579,19 +1579,19 @@
      "name": "url",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "url"
     },
     {
      "name": "newUrl",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "newUrl"
     },
     {
      "name": "tier",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "tier"
     }
    ],
    "files": false
@@ -1739,25 +1739,25 @@
      "name": "ratioLimit",
      "type": "float",
      "required": true,
-     "description": ""
+     "description": "ratioLimit"
     },
     {
      "name": "seedingTimeLimit",
      "type": "int",
      "required": true,
-     "description": ""
+     "description": "seedingTimeLimit"
     },
     {
      "name": "inactiveSeedingTimeLimit",
      "type": "int",
      "required": true,
-     "description": ""
+     "description": "inactiveSeedingTimeLimit"
     },
     {
      "name": "shareLimitAction",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "shareLimitAction"
     },
     {
      "name": "hashes",
@@ -2067,19 +2067,19 @@
      "name": "ssl_certificate",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "ssl_certificate"
     },
     {
      "name": "ssl_private_key",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "ssl_private_key"
     },
     {
      "name": "ssl_dh_params",
      "type": "str",
      "required": true,
-     "description": ""
+     "description": "ssl_dh_params"
     }
    ],
    "files": false
@@ -2099,7 +2099,7 @@
      "name": "downloader",
      "type": "str",
      "required": false,
-     "description": ""
+     "description": "downloader"
     }
    ],
    "files": false

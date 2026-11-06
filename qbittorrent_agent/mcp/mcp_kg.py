@@ -31,7 +31,9 @@ def register_kg_tools(mcp: FastMCP) -> None:
         ),
         category: str | None = Field(default=None, description="Only this category"),
         tag: str | None = Field(default=None, description="Only this tag"),
-        limit: int | None = Field(default=None, description="At most this many torrents"),
+        limit: int | None = Field(
+            default=None, description="At most this many torrents"
+        ),
     ) -> dict[str, Any]:
         """Ingest qBittorrent torrents into the knowledge graph as typed nodes.
 

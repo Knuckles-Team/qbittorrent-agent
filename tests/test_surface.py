@@ -133,7 +133,9 @@ def _api(answer, seen):
     from qbittorrent_agent.api import Api
 
     api = Api.__new__(Api)
-    api.base_url, api.api_url, api.api_key = "http://q", "http://q/api/v2", None
+    api.base_url = "http://q"
+    api.api_url = "http://q/api/v2"
+    api.api_key = None
     api._authenticated = True
 
     class Session:
