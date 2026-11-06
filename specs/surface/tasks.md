@@ -12,3 +12,5 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Order is pr
 - [x] T006 [US3] CONN-QBITTORRENT-AGENT-SURFACE-R006 Data location, routing and federation.
 - [x] T007 [US3] CONN-QBITTORRENT-AGENT-SURFACE-R007 Every class rolls up to medulla core.
 - [x] T008 [US3] CONN-QBITTORRENT-AGENT-SURFACE-R008 Ingest uses core classes and a served tool.
+- [x] T009 [US3] CONN-QBITTORRENT-AGENT-SURFACE-R009 The whole surface is declared.
+- [x] T010 [US1] CONN-QBITTORRENT-AGENT-SURFACE-R010 An operation newer than the server refuses with a typed error.

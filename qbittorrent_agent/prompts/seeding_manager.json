@@ -84,5 +84,50 @@
     "qbittorrent_transfer_info",
     "qbittorrent_transfer_speed_limits_mode",
     "qbittorrent_log_main"
-  ]
+  ],
+  "agent": {
+    "kind": "business-role",
+    "business_role": "seeding manager",
+    "tools": [
+      "qbittorrent_torrents_info",
+      "qbittorrent_torrents_properties",
+      "qbittorrent_torrents_set_share_limits",
+      "qbittorrent_transfer_download_limit",
+      "qbittorrent_transfer_upload_limit",
+      "qbittorrent_transfer_set_download_limit",
+      "qbittorrent_transfer_set_upload_limit",
+      "qbittorrent_transfer_info",
+      "qbittorrent_transfer_speed_limits_mode",
+      "qbittorrent_log_main"
+    ],
+    "skills": [
+      "qbittorrent-transfer-tuning"
+    ],
+    "data": {
+      "reads": [
+        "qbittorrent-torrents",
+        "qbittorrent-instance"
+      ],
+      "writes": [
+        "qbittorrent-torrents"
+      ]
+    },
+    "guardrails": {
+      "approval_required": [
+        "qbittorrent_torrents_set_share_limits",
+        "qbittorrent_transfer_set_download_limit",
+        "qbittorrent_transfer_set_upload_limit"
+      ],
+      "never": [
+        "Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.",
+        "Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.",
+        "Never add a torrent the operator or a linked app did not ask for."
+      ]
+    },
+    "outputs": [
+      "Completed torrents with ratio and seeding time against the policy.",
+      "Limits changed, before and after.",
+      "Bandwidth in use against the global limits."
+    ]
+  }
 }

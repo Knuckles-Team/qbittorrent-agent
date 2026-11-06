@@ -80,5 +80,45 @@
     "qbittorrent_torrents_reannounce",
     "qbittorrent_torrents_recheck",
     "qbittorrent_torrents_properties"
-  ]
+  ],
+  "agent": {
+    "kind": "business-role",
+    "business_role": "torrent download monitor",
+    "tools": [
+      "qbittorrent_transfer_info",
+      "qbittorrent_transfer_speed_limits_mode",
+      "qbittorrent_torrents_info",
+      "qbittorrent_log_main",
+      "qbittorrent_torrents_trackers",
+      "qbittorrent_torrents_reannounce",
+      "qbittorrent_torrents_recheck",
+      "qbittorrent_torrents_properties"
+    ],
+    "skills": [
+      "qbittorrent-transfer-tuning",
+      "qbittorrent-torrent-lifecycle"
+    ],
+    "data": {
+      "reads": [
+        "qbittorrent-torrents",
+        "qbittorrent-instance"
+      ],
+      "writes": []
+    },
+    "guardrails": {
+      "approval_required": [
+        "qbittorrent_torrents_recheck"
+      ],
+      "never": [
+        "Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.",
+        "Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.",
+        "Never add a torrent the operator or a linked app did not ask for."
+      ]
+    },
+    "outputs": [
+      "Stalled and errored torrents: name, hash, category, cause.",
+      "Torrents recovered by reannounce or recheck.",
+      "Torrents that need the operator."
+    ]
+  }
 }

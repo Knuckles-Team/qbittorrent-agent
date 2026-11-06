@@ -12,3 +12,5 @@ Governing spec: [spec.md](spec.md).
 | T-006 | `CONN-QBITTORRENT-AGENT-SURFACE-R006` | `tests/test_surface.py::test_data_locations_routing_and_federation` | The instance has its URL setting and save paths; at least 4 routes and 4 federation links. |
 | T-007 | `CONN-QBITTORRENT-AGENT-SURFACE-R007` | `tests/test_surface.py::test_every_class_reaches_medulla_core_without_imports` | No import; every class is in `qbt:`, has a core ancestor and reaches `BFO_0000001`. |
 | T-008 | `CONN-QBITTORRENT-AGENT-SURFACE-R008` | `tests/test_surface.py::test_ingest_uses_core_classes_and_a_pinned_served_tool` | Every emitted node type is a core class; the preset tool is served with a matching pin. |
+| T-009 | `CONN-QBITTORRENT-AGENT-SURFACE-R009` | `tests/test_surface.py::test_every_tool_is_called_by_a_contract_step` | Every served tool is called by a contract step. |
+| T-010 | `CONN-QBITTORRENT-AGENT-SURFACE-R010` | `tests/test_surface.py::test_a_5_2_operation_on_an_older_server_refuses_with_a_typed_error` | A 5.1.4 server refuses a 5.2-only route with UNSUPPORTED_BY_SERVER; 5.2.4 sends it. |

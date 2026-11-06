@@ -1,6 +1,7 @@
 import base64
 import json
 import logging
+import re
 from typing import Any
 
 import requests
@@ -52,9 +53,9 @@ class BaseApiClient:
             self.session.headers["Authorization"] = f"Bearer {self.api_key}"
             self._authenticated = True
         else:
-            self.login()
+            self._login()
 
-    def login(self):
+    def _login(self):
         """Authenticate with qBittorrent and get SID cookie."""
         url = f"{self.api_url}/auth/login"
         data = {"username": self.username, "password": self.password}
@@ -84,12 +85,12 @@ class BaseApiClient:
         except requests.exceptions.RequestException as e:
             raise AuthError(f"Connection error during login: {type(e).__name__}") from e
 
-    def close(self) -> None:
+    def _close(self) -> None:
         """Release transport resources and runtime-only TLS material."""
         self.session.close()
         self.tls_profile.cleanup()
 
-    def logout(self):
+    def _logout(self):
         """Log out from qBittorrent."""
         url = f"{self.api_url}/auth/logout"
         self.session.post(url, timeout=10)
@@ -104,7 +105,7 @@ class BaseApiClient:
             logger.info("qBittorrent session rejected; logging in again")
             self._authenticated = False
             try:
-                self.login()
+                self._login()
             except UnauthorizedError:
                 raise
             except AuthError as exc:
@@ -147,6 +148,15 @@ class BaseApiClient:
             raise UnauthorizedError(f"Forbidden (banned IP or refused API key){suffix}")
         raise QbittorrentApiError(response.status_code, reason)
 
+    def _require_5_2(self, route: str) -> None:
+        """Refuse an operation the running server is too old to serve."""
+        if getattr(self, "_server_version", None) is None:
+            self._server_version = str(
+                _shape(self._send("get", "app/version")).get("result", "")
+            )
+        if parse_version(self._server_version) < (5, 2):
+            raise QbittorrentUnsupportedError(route, "5.2", self._server_version)
+
     def _call(
         self,
         verb: str,
@@ -160,6 +170,8 @@ class BaseApiClient:
         booleans become ``true``/``false`` and ``None`` values are dropped.
         ``files`` maps an uploaded file name to its base64 content.
         """
+        if route in REQUIRES_5_2:
+            self._require_5_2(route)
         clean = {
             key: _wire(value)
             for key, value in (params or {}).items()
@@ -176,6 +188,43 @@ class BaseApiClient:
                 ]
             response = self._send("post", route, data=clean, files=upload)
         return _shape(response)
+
+
+#: WebUI operations that qBittorrent serves only from release 5.2 (CONN-QBITTORRENT-AGENT-SURFACE-R010).
+REQUIRES_5_2 = frozenset(
+    {
+        "app/processInfo",
+        "app/rotateAPIKey",
+        "app/deleteAPIKey",
+        "clientdata/load",
+        "clientdata/store",
+        "rss/setFeedRefreshInterval",
+        "torrents/pieceAvailability",
+        "torrents/setComment",
+        "torrents/fetchMetadata",
+        "torrents/parseMetadata",
+        "torrents/saveMetadata",
+    }
+)
+
+
+def parse_version(text: str) -> tuple[int, ...]:
+    """``v5.1.4`` -> ``(5, 1, 4)``; an unreadable answer is ``()``."""
+    parts = re.findall(r"\d+", str(text))
+    return tuple(int(p) for p in parts[:3])
+
+
+class QbittorrentUnsupportedError(RuntimeError):
+    """The server is older than the release that serves this operation."""
+
+    code = "UNSUPPORTED_BY_SERVER"
+
+    def __init__(self, route: str, needs: str, running: str):
+        self.route = route
+        super().__init__(
+            f"UNSUPPORTED_BY_SERVER: {route} needs qBittorrent {needs} or newer; "
+            f"this server runs {running}"
+        )
 
 
 class QbittorrentApiError(RuntimeError):
