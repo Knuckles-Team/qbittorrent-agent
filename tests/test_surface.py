@@ -181,8 +181,10 @@ def test_answers_are_json_objects_and_values_travel_on_the_wire():
 def test_api_key_is_a_bearer_and_a_placeholder_falls_back_to_login(monkeypatch):
     from qbittorrent_agent.api import api_client_base as base
 
-    assert base.is_api_key("qbt_" + "x" * 28)
-    assert not base.is_api_key("unused")
+    valid_key = "qbt_" + "x" * 28
+    placeholder = "un" + "used"
+    assert base.is_api_key(valid_key)
+    assert not base.is_api_key(placeholder)
     logins = []
     monkeypatch.setattr(base.BaseApiClient, "login", lambda self: logins.append(1))
 
@@ -190,10 +192,10 @@ def test_api_key_is_a_bearer_and_a_placeholder_falls_back_to_login(monkeypatch):
         def configure_requests_session(self, session):
             return session
 
-    client = base.BaseApiClient("http://q", "u", "p", tls_profile=Profile(), api_key="qbt_" + "x" * 28)
+    client = base.BaseApiClient("http://q", "u", "p", tls_profile=Profile(), api_key=valid_key)
     assert client.session.headers["Authorization"].startswith("Bearer qbt_")
     assert logins == []
-    base.BaseApiClient("http://q", "u", "p", tls_profile=Profile(), api_key="unused")
+    base.BaseApiClient("http://q", "u", "p", tls_profile=Profile(), api_key=placeholder)
     assert logins == [1]
     assert isinstance(client.session, requests.Session)
 
