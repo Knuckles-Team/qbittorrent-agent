@@ -1,0 +1,2220 @@
+{
+ "source": "qBittorrent release-5.2.4 src/webui/api/*controller.{h,cpp} and src/webui/webapplication.h (POST-only actions); live 5.2.4, WebAPI 2.15.1",
+ "web_sign_in_excluded": [
+  "POST auth/login",
+  "POST auth/logout"
+ ],
+ "operations": [
+  {
+   "route": "app/webapiVersion",
+   "verb": "GET",
+   "summary": "Get the WebUI API version",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/version",
+   "verb": "GET",
+   "summary": "Get the qBittorrent application version",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/buildInfo",
+   "verb": "GET",
+   "summary": "Get build info: Qt, libtorrent, Boost, OpenSSL, zlib versions and bitness",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/processInfo",
+   "verb": "GET",
+   "summary": "Get process info of the running qBittorrent",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/shutdown",
+   "verb": "POST",
+   "summary": "Shut down the qBittorrent application",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/preferences",
+   "verb": "GET",
+   "summary": "Get all application preferences",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/setPreferences",
+   "verb": "POST",
+   "summary": "Set application preferences; only the keys sent change",
+   "params": [
+    {
+     "name": "json",
+     "type": "dict[str, Any]",
+     "required": true,
+     "description": "JSON object of the preferences to set",
+     "arg": "preferences"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "app/defaultSavePath",
+   "verb": "GET",
+   "summary": "Get the default save path",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/sendTestEmail",
+   "verb": "POST",
+   "summary": "Send a test email with the configured email notification settings",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/getDirectoryContent",
+   "verb": "GET",
+   "summary": "List the content of a directory on the qBittorrent host",
+   "params": [
+    {
+     "name": "dirPath",
+     "type": "str",
+     "required": true,
+     "description": "Directory on the qBittorrent host"
+    },
+    {
+     "name": "mode",
+     "type": "str",
+     "required": false,
+     "description": "1 = alternative limits on, 0 = off"
+    },
+    {
+     "name": "withMetadata",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "app/cookies",
+   "verb": "GET",
+   "summary": "Get the cookies used for downloading torrents and RSS",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/setCookies",
+   "verb": "POST",
+   "summary": "Set the cookies used for downloading torrents and RSS",
+   "params": [
+    {
+     "name": "cookies",
+     "type": "list[dict[str, Any]]",
+     "required": true,
+     "description": "JSON array of cookies"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "app/rotateAPIKey",
+   "verb": "POST",
+   "summary": "Create or replace the WebUI API key",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/deleteAPIKey",
+   "verb": "POST",
+   "summary": "Delete the WebUI API key",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/networkInterfaceList",
+   "verb": "GET",
+   "summary": "List the network interfaces",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "app/networkInterfaceAddressList",
+   "verb": "GET",
+   "summary": "List the addresses of a network interface",
+   "params": [
+    {
+     "name": "iface",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "clientdata/load",
+   "verb": "GET",
+   "summary": "Load WebUI client data stored on the server",
+   "params": [
+    {
+     "name": "keys",
+     "type": "list[str]",
+     "required": false,
+     "description": "JSON array of client-data keys"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "clientdata/store",
+   "verb": "POST",
+   "summary": "Store WebUI client data on the server",
+   "params": [
+    {
+     "name": "data",
+     "type": "dict[str, Any]",
+     "required": true,
+     "description": "JSON object of client data to store"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "log/main",
+   "verb": "GET",
+   "summary": "Get the main log, filtered by severity",
+   "params": [
+    {
+     "name": "normal",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "info",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "warning",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "critical",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "last_known_id",
+     "type": "int",
+     "required": false,
+     "description": "Only entries newer than this id"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "log/peers",
+   "verb": "GET",
+   "summary": "Get the peer log",
+   "params": [
+    {
+     "name": "last_known_id",
+     "type": "int",
+     "required": false,
+     "description": "Only entries newer than this id"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/addFolder",
+   "verb": "POST",
+   "summary": "Add an RSS folder",
+   "params": [
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/addFeed",
+   "verb": "POST",
+   "summary": "Add an RSS feed",
+   "params": [
+    {
+     "name": "url",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    },
+    {
+     "name": "refreshInterval",
+     "type": "int",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/setFeedURL",
+   "verb": "POST",
+   "summary": "Change the URL of an RSS feed",
+   "params": [
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    },
+    {
+     "name": "url",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/setFeedRefreshInterval",
+   "verb": "GET",
+   "summary": "Set the refresh interval of an RSS feed",
+   "params": [
+    {
+     "name": "refreshInterval",
+     "type": "int",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/removeItem",
+   "verb": "POST",
+   "summary": "Remove an RSS feed or folder",
+   "params": [
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/moveItem",
+   "verb": "POST",
+   "summary": "Move or rename an RSS feed or folder",
+   "params": [
+    {
+     "name": "itemPath",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path"
+    },
+    {
+     "name": "destPath",
+     "type": "str",
+     "required": true,
+     "description": "Destination RSS path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/items",
+   "verb": "GET",
+   "summary": "List RSS feeds and folders, optionally with articles",
+   "params": [
+    {
+     "name": "withData",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/markAsRead",
+   "verb": "POST",
+   "summary": "Mark an RSS item or article as read",
+   "params": [
+    {
+     "name": "itemPath",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path"
+    },
+    {
+     "name": "articleId",
+     "type": "str",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/refreshItem",
+   "verb": "POST",
+   "summary": "Refresh an RSS feed or folder",
+   "params": [
+    {
+     "name": "itemPath",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/setRule",
+   "verb": "POST",
+   "summary": "Create or update an RSS auto-download rule",
+   "params": [
+    {
+     "name": "ruleName",
+     "type": "str",
+     "required": true,
+     "description": "RSS rule name"
+    },
+    {
+     "name": "ruleDef",
+     "type": "dict[str, Any]",
+     "required": true,
+     "description": "JSON rule definition"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/renameRule",
+   "verb": "POST",
+   "summary": "Rename an RSS auto-download rule",
+   "params": [
+    {
+     "name": "ruleName",
+     "type": "str",
+     "required": true,
+     "description": "RSS rule name"
+    },
+    {
+     "name": "newRuleName",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/removeRule",
+   "verb": "POST",
+   "summary": "Remove an RSS auto-download rule",
+   "params": [
+    {
+     "name": "ruleName",
+     "type": "str",
+     "required": true,
+     "description": "RSS rule name"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "rss/rules",
+   "verb": "GET",
+   "summary": "List RSS auto-download rules",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "rss/matchingArticles",
+   "verb": "GET",
+   "summary": "List the articles that match an RSS auto-download rule",
+   "params": [
+    {
+     "name": "ruleName",
+     "type": "str",
+     "required": true,
+     "description": "RSS rule name"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/start",
+   "verb": "POST",
+   "summary": "Start a search job with the search plugins",
+   "params": [
+    {
+     "name": "pattern",
+     "type": "str",
+     "required": true,
+     "description": "Search text"
+    },
+    {
+     "name": "category",
+     "type": "str",
+     "required": true,
+     "description": "Category name"
+    },
+    {
+     "name": "plugins",
+     "type": "str",
+     "required": true,
+     "description": "Plugins to use: names separated by `|`, `all` or `enabled`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/stop",
+   "verb": "POST",
+   "summary": "Stop a search job",
+   "params": [
+    {
+     "name": "id",
+     "type": "int",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/status",
+   "verb": "GET",
+   "summary": "Get the status of one or all search jobs",
+   "params": [
+    {
+     "name": "id",
+     "type": "int",
+     "required": false,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/results",
+   "verb": "GET",
+   "summary": "Get the results of a search job",
+   "params": [
+    {
+     "name": "id",
+     "type": "int",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    },
+    {
+     "name": "limit",
+     "type": "int",
+     "required": false,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    },
+    {
+     "name": "offset",
+     "type": "int",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/delete",
+   "verb": "POST",
+   "summary": "Delete a search job",
+   "params": [
+    {
+     "name": "id",
+     "type": "int",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/downloadTorrent",
+   "verb": "GET",
+   "summary": "Download a torrent found by a search plugin",
+   "params": [
+    {
+     "name": "torrentUrl",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "pluginName",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/plugins",
+   "verb": "GET",
+   "summary": "List the search plugins",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "search/installPlugin",
+   "verb": "POST",
+   "summary": "Install search plugins from URLs or paths",
+   "params": [
+    {
+     "name": "sources",
+     "type": "str",
+     "required": true,
+     "description": "Plugin URLs or paths separated by `|`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/uninstallPlugin",
+   "verb": "POST",
+   "summary": "Uninstall search plugins",
+   "params": [
+    {
+     "name": "names",
+     "type": "str",
+     "required": true,
+     "description": "Plugin names separated by `|`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/enablePlugin",
+   "verb": "POST",
+   "summary": "Enable or disable search plugins",
+   "params": [
+    {
+     "name": "names",
+     "type": "str",
+     "required": true,
+     "description": "Plugin names separated by `|`"
+    },
+    {
+     "name": "enable",
+     "type": "bool",
+     "required": true,
+     "description": "true to enable, false to disable"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "search/updatePlugins",
+   "verb": "POST",
+   "summary": "Update all search plugins",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "sync/maindata",
+   "verb": "GET",
+   "summary": "Get the main data changes since a response id (full state when rid is 0)",
+   "params": [
+    {
+     "name": "rid",
+     "type": "int",
+     "required": false,
+     "description": "Response id from the last sync call (0 = full state)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "sync/torrentPeers",
+   "verb": "GET",
+   "summary": "Get the peer data changes of one torrent since a response id",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": false,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "rid",
+     "type": "int",
+     "required": false,
+     "description": "Response id from the last sync call (0 = full state)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrentcreator/addTask",
+   "verb": "POST",
+   "summary": "Create a torrent from a file or folder on the qBittorrent host",
+   "params": [
+    {
+     "name": "private",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "format",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "optimizeAlignment",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "paddedFileSizeLimit",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "pieceSize",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "sourcePath",
+     "type": "str",
+     "required": true,
+     "description": "File or folder on the qBittorrent host"
+    },
+    {
+     "name": "torrentFilePath",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "comment",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "source",
+     "type": "str",
+     "required": false,
+     "description": "Magnet link, URL or info-hash"
+    },
+    {
+     "name": "trackers",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "urlSeeds",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "startSeeding",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrentcreator/status",
+   "verb": "GET",
+   "summary": "Get the status of one or all torrent-creator tasks",
+   "params": [
+    {
+     "name": "taskID",
+     "type": "str",
+     "required": false,
+     "description": "Torrent-creator task id"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrentcreator/torrentFile",
+   "verb": "GET",
+   "summary": "Get the .torrent file a creator task produced",
+   "params": [
+    {
+     "name": "taskID",
+     "type": "str",
+     "required": true,
+     "description": "Torrent-creator task id"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrentcreator/deleteTask",
+   "verb": "POST",
+   "summary": "Delete a torrent-creator task",
+   "params": [
+    {
+     "name": "taskID",
+     "type": "str",
+     "required": true,
+     "description": "Torrent-creator task id"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/count",
+   "verb": "GET",
+   "summary": "Count the torrents",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "torrents/info",
+   "verb": "GET",
+   "summary": "List torrents, filtered and sorted",
+   "params": [
+    {
+     "name": "filter",
+     "type": "str",
+     "required": false,
+     "description": "State filter: all, downloading, seeding, completed, stopped, running, active, inactive, stalled, errored, ..."
+    },
+    {
+     "name": "category",
+     "type": "str",
+     "required": false,
+     "description": "Category name"
+    },
+    {
+     "name": "tag",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "sort",
+     "type": "str",
+     "required": false,
+     "description": "Field to sort by (any torrent property, for example added_on)"
+    },
+    {
+     "name": "reverse",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "limit",
+     "type": "int",
+     "required": false,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    },
+    {
+     "name": "offset",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": false,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "private",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "includeFiles",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "includeTrackers",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/properties",
+   "verb": "GET",
+   "summary": "Get the generic properties of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/trackers",
+   "verb": "GET",
+   "summary": "List the trackers of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/webseeds",
+   "verb": "GET",
+   "summary": "List the web seeds of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/addWebSeeds",
+   "verb": "POST",
+   "summary": "Add web seeds to a torrent",
+   "params": [
+    {
+     "name": "urls",
+     "type": "str",
+     "required": true,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    },
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/editWebSeed",
+   "verb": "POST",
+   "summary": "Replace a web seed URL of a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "origUrl",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "newUrl",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/removeWebSeeds",
+   "verb": "POST",
+   "summary": "Remove web seeds from a torrent",
+   "params": [
+    {
+     "name": "urls",
+     "type": "str",
+     "required": true,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    },
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/files",
+   "verb": "GET",
+   "summary": "List the files of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/pieceHashes",
+   "verb": "GET",
+   "summary": "Get the piece hashes of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/pieceStates",
+   "verb": "GET",
+   "summary": "Get the piece states of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/pieceAvailability",
+   "verb": "GET",
+   "summary": "Get the piece availability of one torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/start",
+   "verb": "POST",
+   "summary": "Start (resume) torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/stop",
+   "verb": "POST",
+   "summary": "Stop (pause) torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/recheck",
+   "verb": "POST",
+   "summary": "Recheck torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/reannounce",
+   "verb": "POST",
+   "summary": "Reannounce torrents to their trackers",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "urls",
+     "type": "str",
+     "required": false,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/rename",
+   "verb": "POST",
+   "summary": "Rename a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "name",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setComment",
+   "verb": "POST",
+   "summary": "Set the comment of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "comment",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setCategory",
+   "verb": "POST",
+   "summary": "Set the category of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "category",
+     "type": "str",
+     "required": true,
+     "description": "Category name"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/createCategory",
+   "verb": "POST",
+   "summary": "Create a category",
+   "params": [
+    {
+     "name": "category",
+     "type": "str",
+     "required": true,
+     "description": "Category name"
+    },
+    {
+     "name": "savePath",
+     "type": "str",
+     "required": false,
+     "description": "Save path"
+    },
+    {
+     "name": "downloadPathEnabled",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "downloadPath",
+     "type": "str",
+     "required": false,
+     "description": "Incomplete-download path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/editCategory",
+   "verb": "POST",
+   "summary": "Edit a category's save and download paths",
+   "params": [
+    {
+     "name": "category",
+     "type": "str",
+     "required": true,
+     "description": "Category name"
+    },
+    {
+     "name": "savePath",
+     "type": "str",
+     "required": true,
+     "description": "Save path"
+    },
+    {
+     "name": "downloadPathEnabled",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "downloadPath",
+     "type": "str",
+     "required": false,
+     "description": "Incomplete-download path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/removeCategories",
+   "verb": "POST",
+   "summary": "Remove categories",
+   "params": [
+    {
+     "name": "categories",
+     "type": "str",
+     "required": true,
+     "description": "Category names separated by newline"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/categories",
+   "verb": "GET",
+   "summary": "List all categories",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "torrents/addTags",
+   "verb": "POST",
+   "summary": "Add tags to torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "tags",
+     "type": "str",
+     "required": true,
+     "description": "Comma-separated tag names"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setTags",
+   "verb": "POST",
+   "summary": "Replace the tags of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "tags",
+     "type": "str",
+     "required": true,
+     "description": "Comma-separated tag names"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/removeTags",
+   "verb": "POST",
+   "summary": "Remove tags from torrents (all tags when none are given)",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "tags",
+     "type": "str",
+     "required": false,
+     "description": "Comma-separated tag names"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/createTags",
+   "verb": "POST",
+   "summary": "Create tags",
+   "params": [
+    {
+     "name": "tags",
+     "type": "str",
+     "required": true,
+     "description": "Comma-separated tag names"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/deleteTags",
+   "verb": "POST",
+   "summary": "Delete tags",
+   "params": [
+    {
+     "name": "tags",
+     "type": "str",
+     "required": true,
+     "description": "Comma-separated tag names"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/tags",
+   "verb": "GET",
+   "summary": "List all tags",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "torrents/add",
+   "verb": "POST",
+   "summary": "Add torrents from URLs, magnet links or uploaded .torrent files",
+   "params": [
+    {
+     "name": "urls",
+     "type": "str",
+     "required": false,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    },
+    {
+     "name": "skip_checking",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "sequentialDownload",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "firstLastPiecePrio",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "forced",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "addToTopOfQueue",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "stopped",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "savepath",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "downloadPath",
+     "type": "str",
+     "required": false,
+     "description": "Incomplete-download path"
+    },
+    {
+     "name": "useDownloadPath",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "category",
+     "type": "str",
+     "required": false,
+     "description": "Category name"
+    },
+    {
+     "name": "tags",
+     "type": "str",
+     "required": false,
+     "description": "Comma-separated tag names"
+    },
+    {
+     "name": "rename",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "upLimit",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "dlLimit",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "ratioLimit",
+     "type": "float",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "seedingTimeLimit",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "inactiveSeedingTimeLimit",
+     "type": "int",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "shareLimitAction",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "autoTMM",
+     "type": "bool",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "stopCondition",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "contentLayout",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "filePriorities",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "downloader",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "ssl_certificate",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "ssl_private_key",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "ssl_dh_params",
+     "type": "str",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": true
+  },
+  {
+   "route": "torrents/delete",
+   "verb": "POST",
+   "summary": "Delete torrents, optionally with their downloaded files",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "deleteFiles",
+     "type": "bool",
+     "required": true,
+     "description": "Also delete the downloaded files"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/addTrackers",
+   "verb": "POST",
+   "summary": "Add trackers to a torrent",
+   "params": [
+    {
+     "name": "urls",
+     "type": "str",
+     "required": true,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    },
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/editTracker",
+   "verb": "POST",
+   "summary": "Replace a tracker URL of a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "url",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "newUrl",
+     "type": "str",
+     "required": false,
+     "description": ""
+    },
+    {
+     "name": "tier",
+     "type": "str",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/removeTrackers",
+   "verb": "POST",
+   "summary": "Remove trackers from a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "urls",
+     "type": "str",
+     "required": true,
+     "description": "URLs; separate several with `|` (torrents/add: newline)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/addPeers",
+   "verb": "POST",
+   "summary": "Add peers to torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "peers",
+     "type": "str",
+     "required": true,
+     "description": "Peers as host:port separated by `|`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/filePrio",
+   "verb": "POST",
+   "summary": "Set the priority of files in a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "id",
+     "type": "str",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    },
+    {
+     "name": "priority",
+     "type": "int",
+     "required": true,
+     "description": "File priority: 0 skip, 1 normal, 6 high, 7 maximal"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/uploadLimit",
+   "verb": "GET",
+   "summary": "Get the upload limit of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/downloadLimit",
+   "verb": "GET",
+   "summary": "Get the download limit of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setUploadLimit",
+   "verb": "POST",
+   "summary": "Set the upload limit of torrents",
+   "params": [
+    {
+     "name": "limit",
+     "type": "int",
+     "required": true,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setDownloadLimit",
+   "verb": "POST",
+   "summary": "Set the download limit of torrents",
+   "params": [
+    {
+     "name": "limit",
+     "type": "int",
+     "required": true,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setShareLimits",
+   "verb": "POST",
+   "summary": "Set the share (ratio and seeding time) limits of torrents",
+   "params": [
+    {
+     "name": "ratioLimit",
+     "type": "float",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "seedingTimeLimit",
+     "type": "int",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "inactiveSeedingTimeLimit",
+     "type": "int",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "shareLimitAction",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/increasePrio",
+   "verb": "POST",
+   "summary": "Raise the queue priority of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/decreasePrio",
+   "verb": "POST",
+   "summary": "Lower the queue priority of torrents",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/topPrio",
+   "verb": "POST",
+   "summary": "Move torrents to the top of the queue",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/bottomPrio",
+   "verb": "POST",
+   "summary": "Move torrents to the bottom of the queue",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setLocation",
+   "verb": "POST",
+   "summary": "Move the data of torrents to a new location",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "location",
+     "type": "str",
+     "required": true,
+     "description": "New location of the data"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setSavePath",
+   "verb": "POST",
+   "summary": "Set the save path of torrents",
+   "params": [
+    {
+     "name": "id",
+     "type": "str",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    },
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setDownloadPath",
+   "verb": "POST",
+   "summary": "Set the incomplete-download path of torrents",
+   "params": [
+    {
+     "name": "id",
+     "type": "str",
+     "required": true,
+     "description": "Id (search job id; for torrents/setSavePath and setDownloadPath: hashes separated by `|`)"
+    },
+    {
+     "name": "path",
+     "type": "str",
+     "required": true,
+     "description": "RSS item path, folders separated by `\\\\`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setAutoManagement",
+   "verb": "POST",
+   "summary": "Turn automatic torrent management on or off",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    },
+    {
+     "name": "enable",
+     "type": "bool",
+     "required": true,
+     "description": "true to enable, false to disable"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setSuperSeeding",
+   "verb": "POST",
+   "summary": "Turn super seeding on or off",
+   "params": [
+    {
+     "name": "value",
+     "type": "bool",
+     "required": true,
+     "description": "true to turn on, false to turn off"
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setForceStart",
+   "verb": "POST",
+   "summary": "Turn force start on or off",
+   "params": [
+    {
+     "name": "value",
+     "type": "bool",
+     "required": true,
+     "description": "true to turn on, false to turn off"
+    },
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/toggleSequentialDownload",
+   "verb": "POST",
+   "summary": "Toggle sequential download",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/toggleFirstLastPiecePrio",
+   "verb": "POST",
+   "summary": "Toggle first and last piece priority",
+   "params": [
+    {
+     "name": "hashes",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hashes separated by `|`, or `all`"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/renameFile",
+   "verb": "POST",
+   "summary": "Rename a file in a torrent",
+   "params": [
+    {
+     "name": "newPath",
+     "type": "str",
+     "required": true,
+     "description": "New path"
+    },
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "oldPath",
+     "type": "str",
+     "required": true,
+     "description": "Current path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/renameFolder",
+   "verb": "POST",
+   "summary": "Rename a folder in a torrent",
+   "params": [
+    {
+     "name": "newPath",
+     "type": "str",
+     "required": true,
+     "description": "New path"
+    },
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "oldPath",
+     "type": "str",
+     "required": true,
+     "description": "Current path"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/export",
+   "verb": "GET",
+   "summary": "Export a torrent as a .torrent file",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/SSLParameters",
+   "verb": "GET",
+   "summary": "Get the SSL parameters of a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/setSSLParameters",
+   "verb": "POST",
+   "summary": "Set the SSL parameters of a torrent",
+   "params": [
+    {
+     "name": "hash",
+     "type": "str",
+     "required": true,
+     "description": "Torrent hash"
+    },
+    {
+     "name": "ssl_certificate",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "ssl_private_key",
+     "type": "str",
+     "required": true,
+     "description": ""
+    },
+    {
+     "name": "ssl_dh_params",
+     "type": "str",
+     "required": true,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/fetchMetadata",
+   "verb": "POST",
+   "summary": "Fetch the metadata of a magnet link or URL without adding it",
+   "params": [
+    {
+     "name": "source",
+     "type": "str",
+     "required": true,
+     "description": "Magnet link, URL or info-hash"
+    },
+    {
+     "name": "downloader",
+     "type": "str",
+     "required": false,
+     "description": ""
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "torrents/parseMetadata",
+   "verb": "POST",
+   "summary": "Parse uploaded .torrent files and return their metadata",
+   "params": [],
+   "files": true
+  },
+  {
+   "route": "torrents/saveMetadata",
+   "verb": "GET",
+   "summary": "Save fetched metadata as a .torrent file",
+   "params": [
+    {
+     "name": "source",
+     "type": "str",
+     "required": true,
+     "description": "Magnet link, URL or info-hash"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "transfer/info",
+   "verb": "GET",
+   "summary": "Get global transfer info: speeds, totals, connection status",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "transfer/speedLimitsMode",
+   "verb": "GET",
+   "summary": "Get whether the alternative speed limits are on",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "transfer/setSpeedLimitsMode",
+   "verb": "POST",
+   "summary": "Turn the alternative speed limits on (1) or off (0)",
+   "params": [
+    {
+     "name": "mode",
+     "type": "int",
+     "required": true,
+     "description": "1 = alternative limits on, 0 = off"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "transfer/toggleSpeedLimitsMode",
+   "verb": "POST",
+   "summary": "Toggle the alternative speed limits",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "transfer/uploadLimit",
+   "verb": "GET",
+   "summary": "Get the global upload limit",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "transfer/downloadLimit",
+   "verb": "GET",
+   "summary": "Get the global download limit",
+   "params": [],
+   "files": false
+  },
+  {
+   "route": "transfer/setUploadLimit",
+   "verb": "POST",
+   "summary": "Set the global upload limit",
+   "params": [
+    {
+     "name": "limit",
+     "type": "int",
+     "required": true,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "transfer/setDownloadLimit",
+   "verb": "POST",
+   "summary": "Set the global download limit",
+   "params": [
+    {
+     "name": "limit",
+     "type": "int",
+     "required": true,
+     "description": "Limit in bytes per second (0 or -1 = unlimited)"
+    }
+   ],
+   "files": false
+  },
+  {
+   "route": "transfer/banPeers",
+   "verb": "POST",
+   "summary": "Ban peers",
+   "params": [
+    {
+     "name": "peers",
+     "type": "str",
+     "required": true,
+     "description": "Peers as host:port separated by `|`"
+    }
+   ],
+   "files": false
+  }
+ ]
+}

@@ -12,6 +12,8 @@ class FakeResponse:
         self.status_code = status_code
         self._body = body
         self.text = ""
+        self.content = b"{}" if body is not None else b""
+        self.headers = {"content-type": "application/json"}
 
     def json(self):
         if self._body is None:
@@ -105,5 +107,5 @@ def test_public_operation_recovers_from_expired_session():
         password="pw",
         tls_profile=FakeProfile(session),
     )
-    assert api.get_version() == {"ok": True}
+    assert api.app_version() == {"ok": True}
     assert session.logins == 2

@@ -2,100 +2,66 @@
 name: qbittorrent-torrent-lifecycle
 skill_type: skill
 description: >-
-  Manage the qBittorrent torrent lifecycle via the qbittorrent-agent MCP server —
-  add torrents from magnet/URL/.torrent, list and filter, pause/resume/recheck/
-  reannounce, delete (with or without data), and organize with categories and
-  tags. Use when the agent must add a download, triage the transfer list, stop or
-  resume seeding, prune completed torrents, or (re)categorize/tag them. Do NOT use
-  for speed/ratio throttling (use qbittorrent-transfer-tuning), or for pushing
-  torrent state into the knowledge graph (use qbittorrent-kg-ingestion).
+  Manage the qBittorrent torrent lifecycle through the qbittorrent-mcp connector: list and filter torrents, add a torrent to a category, recover a stalled torrent, and prove category writes with a test category. Use when the agent must add, inspect, reannounce, recheck or organize torrents. Do NOT use for speed or ratio limits (qbittorrent-transfer-tuning) or knowledge-graph ingest (qbittorrent-kg-ingestion).
 license: MIT
-tags: [qbittorrent, torrent, bittorrent, download, mcp]
+tags: [qbittorrent, torrent, media-automation, mcp]
 metadata:
   author: Knuckles-Team
-  version: '0.1.0'
+  version: '1.0.0'
 ---
+
 # qBittorrent Torrent Lifecycle
 
-Domain-typed access to the qBittorrent **torrents** surface (Web API `torrents/*`)
-for adding, inspecting, controlling, and organizing torrents. Prefer the condensed
-`qbittorrent_torrents` tool — it carries the qBittorrent field conventions and
-returns torrent-shaped records.
+Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
 
-## When to use
-- Add a torrent from a magnet link, HTTP(S) URL, or local `.torrent` file.
-- List / filter the transfer list (by state, category, or tag) and read a torrent's
-  properties, trackers, or file contents.
-- Control a torrent: pause, resume, recheck, reannounce, or delete it.
-- Organize: set a category, add/remove tags, move save location, adjust queue priority.
+## Where the data lives
 
-## When NOT to use
-- Bandwidth, ratio, or seeding-time limits → `qbittorrent-transfer-tuning`.
-- Recording torrents/trackers/categories into the knowledge graph →
-  `qbittorrent-kg-ingestion`.
-- RSS auto-download rules or plugin search → the `qbittorrent_rss` /
-  `qbittorrent_search` tools directly.
+- **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.
 
-## Prerequisites & environment
-Connect via the `mcp-client` skill against the **`qbittorrent-agent`** MCP server.
+## Workflows (tool-use contracts)
 
-| Variable | Required | Notes |
-|----------|----------|-------|
-| `QBITTORRENT_URL` | ✅ | WebUI base URL (default `http://localhost:8080`) |
-| `QBITTORRENT_USERNAME` | ✅ | WebUI user (default `admin`) |
-| `QBITTORRENT_PASSWORD` | ✅ | WebUI password |
-| `QBITTORRENT_SSL_VERIFY` | optional | TLS verification toggle (alias `QBITTORRENT_AGENT_VERIFY`) |
+Each workflow is a tool-use contract in the connector ontology (`ontology://qbittorrent-mcp/qbittorrent-contracts.ttl`, `qbt:ToolUseContract`). Run the steps in order; a parameter written `stepN.field` comes from step N's result.
 
-`MCP_TOOL_MODE` (`condensed`|`verbose`|`both`) selects the condensed surface (used
-below) vs. the one-to-one verbose tools.
+### Recover a stalled torrent (`qbittorrent-recover-stalled-torrent`)
 
-## Tools & actions
-Prefer the **condensed** tool; it takes `action` + a `params_json` **JSON string**
-whose keys are passed straight to the client method.
+For one stalled torrent, read its trackers, reannounce, and recheck it if its data may be damaged.
 
-| Condensed tool | Actions (subset) |
-|----------------|------------------|
-| `qbittorrent_torrents` | `get_torrent_list`, `get_torrent_properties`, `get_torrent_trackers`, `get_torrent_contents`, `add_new_torrent`, `pause_torrents`, `resume_torrents`, `recheck_torrents`, `reannounce_torrents`, `delete_torrents`, `set_torrent_category`, `add_torrent_tags`, `remove_torrent_tags`, `set_torrent_location`, `get_all_categories`, `add_new_category` |
+1. `qbittorrent_torrents_info` (`filter` = "stalled") — Pick the stalled torrent by `hash`.
+2. `qbittorrent_torrents_trackers` (`hash` = step1.result[].hash) — Tracker status 4 (not working) or a message names the cause.
+3. `qbittorrent_torrents_reannounce` (`hashes` = step1.result[].hash) — Ask the trackers for peers again.
+4. `qbittorrent_torrents_recheck` (`hashes` = step1.result[].hash) — Approval required: rehashes the data on disk (slow on large torrents).
+5. `qbittorrent_torrents_properties` (`hash` = step1.result[].hash) — Confirm peers, seeds and progress after the reannounce.
 
-### Key parameters
-- `hashes` — one info hash, a `\|`-separated list, or `"all"` (bulk control actions).
-- `hash` — single info hash (properties, trackers, contents, rename).
-- `urls` — newline-separated magnet/HTTP URLs for `add_new_torrent`; or
-  `torrent_files` a list of local `.torrent` paths. Extra add kwargs: `category`,
-  `savepath`, `tags`, `paused`.
-- `delete_files` — boolean for `delete_torrents`; `false` keeps the data on disk.
-- `filter` / `category` / `tag` — narrow `get_torrent_list`.
+Needs approval: `qbittorrent_torrents_recheck`.
 
-## Recipes (`params_json`)
-List all downloading torrents (name/state/progress via the returned records):
-```json
-{"filter":"downloading","sort":"progress","reverse":true}
-```
-Add a magnet into a category, paused:
-```json
-{"urls":"magnet:?xt=urn:btih:HASH&dn=Example","category":"linux-isos","paused":"true"}
-```
-Pause then recheck a specific torrent:
-```json
-{"hashes":"8c212779b4abde7c6bc608063a0d008b7e40ce32"}
-```
-Delete a torrent but keep the downloaded files:
-```json
-{"hashes":"8c212779b4abde7c6bc608063a0d008b7e40ce32","delete_files":false}
-```
+### Prove category writes with a test category (`qbittorrent-category-roundtrip`)
 
-## Gotchas
-- `params_json` is a **string** of JSON, not an object — serialize it.
-- Info hashes are **lowercase hex**; a wrong-case hash silently matches nothing.
-- qBittorrent 5.x renamed pause/resume endpoints to `torrents/stop` / `torrents/start`
-  — the client maps `pause_torrents` / `resume_torrents` onto them, so keep using
-  those action names.
-- `delete_torrents` with `delete_files:true` is irreversible — confirm intent first;
-  the default here keeps files.
-- `add_new_torrent` returns qBittorrent's terse `Ok.`/`Fails.` body, not the new
-  hash — re-list by name/category to confirm the add.
+Create a `zz-validation-<date>` category, confirm it lists, remove it, and confirm it is gone.
 
-## Related
-- `qbittorrent-transfer-tuning` — speed, ratio, and seeding-time limits.
-- `qbittorrent-kg-ingestion` — push torrents/trackers/categories into the KG.
-- **Prompt:** composed by the `qbittorrent_torrent_specialist` prompt.
+1. `qbittorrent_torrents_categories` — The categories before the test.
+2. `qbittorrent_torrents_create_category` (`category` = "zz-validation-2026-11-06") — Creates the test category.
+3. `qbittorrent_torrents_categories` — The test category lists.
+4. `qbittorrent_torrents_remove_categories` (`categories` = "zz-validation-2026-11-06") — Removes only the test category (destructive; `confirm=true`).
+5. `qbittorrent_torrents_categories` — The test category is gone.
+
+Needs approval: `qbittorrent_torrents_remove_categories`.
+
+### Add a torrent to a category (`qbittorrent-add-torrent`)
+
+Add a magnet link or URL the operator asked for into the consuming app's category, and confirm it is listed.
+
+1. `qbittorrent_torrents_categories` — The category must exist (one per consuming app).
+2. `qbittorrent_torrents_add` (`urls` = operator input, `category` = operator input) — Approval required: adds the torrent.
+3. `qbittorrent_torrents_info` (`category` = operator input) — The torrent lists in the category.
+
+Needs approval: `qbittorrent_torrents_add`.
+
+## Guardrails
+
+- Read before you write: every change starts from the read steps of its contract.
+- Writes that delete, change limits or preferences, or add torrents need the operator's approval first; pass `confirm=true` only after it.
+- Never delete a torrent's downloaded files, a real category or a real tag; only remove test objects named `zz-validation-<date>` that this run created.
+- Never change preferences, credentials, the API key, or shut qBittorrent down without the operator's approval; read secrets from the credential store and never print them.
+- Never add a torrent the operator or a linked app did not ask for.
+- Identify a torrent by its info hash, never by its position in a list.
+- Report a tool refusal or HTTP error as it is (the error carries qBittorrent's reason); never retry past a refusal or invent a result.

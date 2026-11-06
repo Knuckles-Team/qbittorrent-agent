@@ -10,7 +10,7 @@ from scion_sdk.ingest.live_declaration import source_meta
 
 SOURCES = (
     source_meta(
-        tool="qbittorrent_get_torrents",
+        tool="qbittorrent_torrents_info",
         source_id="qbittorrent-torrents",
         record_type="Torrent",
         id_field="hash",
@@ -19,7 +19,7 @@ SOURCES = (
             "doc_type": "torrent",
             "params_style": "args",
         },
-        records_path="",
+        records_path="result",
         server="qbittorrent-mcp",
         text_field="name",
         title_field="name",
@@ -46,7 +46,7 @@ SCHEMA_MAPPINGS = {
         "field_sets": ["fields_1"],
         "ontology_class": None,
     },
-    "TorrentCategory": {
+    "Category": {
         "field_sets": ["fields_1"],
         "ontology_class": None,
     },
@@ -63,9 +63,9 @@ RESOURCES = (
         "name": "Torrent",
     },
     {
-        "id_prefix": "torrentcategory",
-        "label": "Torrent Category",
-        "name": "TorrentCategory",
+        "id_prefix": "category",
+        "label": "Category",
+        "name": "Category",
     },
     {
         "id_prefix": "tracker",

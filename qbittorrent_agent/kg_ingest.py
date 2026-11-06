@@ -2,11 +2,11 @@
 
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. The qbittorrent-agent connector
 natively pushes its data into the ONE epistemic-graph knowledge graph as **typed OWL
-nodes** (`:Torrent`, `:Tracker`, `:TorrentCategory`) + links (`:announcesTo`,
+nodes** (`:Torrent`, `:Tracker`, `:Category`) + links (`:announcesTo`,
 `:inCategory`), through the scion-sdk knowledge-ingest facade — the one
 connector write path; there is no self-contained fallback transaction here.
 
-The MCP tool surface (``qbittorrent_agent.mcp_server``) exposes these as best-effort
+The MCP tool surface (``qbittorrent_agent.mcp.mcp_kg``) exposes these as best-effort
 tools that must never raise on an unreachable/misconfigured KG stack, so
 ``ingest_entities`` / ``ingest_documents`` stay **best-effort**: they return ``None``
 (never raise) for empty input or when the SDK's facade reports :class:`IngestError`
@@ -126,12 +126,12 @@ async def ingest_torrents(
     ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int] | None:
     """Map qBittorrent torrent-list records → ``:Torrent`` (+ ``:Tracker`` /
-    ``:TorrentCategory``) nodes and links, then ingest.
+    ``:Category``) nodes and links, then ingest.
 
     Accepts raw ``torrents/info`` dicts (or ``TorrentInfo.model_dump()``). Skips any
     record without a ``hash``. The primary announce URL (``tracker``) becomes a
     ``:Tracker`` node linked by ``:announcesTo``; a non-empty ``category`` becomes a
-    ``:TorrentCategory`` linked by ``:inCategory``.
+    ``:Category`` linked by ``:inCategory``.
     """
     entities: list[dict[str, Any]] = []
     relationships: list[dict[str, Any]] = []
@@ -205,7 +205,7 @@ def _torrent_tracker_link(
 def _torrent_category_link(
     tor: dict[str, Any], tid: str, seen_categories: set[str]
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
-    """Build the (deduped) ``:TorrentCategory`` entity and ``:inCategory`` relationship.
+    """Build the (deduped) ``:Category`` entity and ``:inCategory`` relationship.
 
     Returns ``(entity, relationship)`` where ``entity`` is ``None`` when this
     category was already emitted for a prior torrent in the same batch, and
@@ -214,10 +214,10 @@ def _torrent_category_link(
     category = (tor.get("category") or "").strip()
     if not category:
         return None, None
-    catid = f"qbittorrent:TorrentCategory:{category}"
+    catid = f"qbittorrent:Category:{category}"
     entity = None
     if catid not in seen_categories:
         seen_categories.add(catid)
-        entity = {"id": catid, "node_type": "TorrentCategory", "name": category}
+        entity = {"id": catid, "node_type": "Category", "name": category}
     relationship = {"source": tid, "target": catid, "relationship": "inCategory"}
     return entity, relationship

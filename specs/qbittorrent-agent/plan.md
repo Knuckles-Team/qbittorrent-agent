@@ -26,7 +26,7 @@ This plan states how `qbittorrent-agent` delivers the rows of `CONN-QBITTORRENT-
 ## Project Structure
 
 - `qbittorrent_agent/api/api_client_base.py` (existing)
-- `qbittorrent_agent/mcp_server.py` (existing)
+- `qbittorrent_agent/api/client.py` (existing)
 - `tests/test_session_relogin.py` (existing)
 - `pyproject.toml` (existing)
 - `qbittorrent_agent/__init__.py` (existing)
@@ -62,7 +62,7 @@ This plan states how `qbittorrent-agent` delivers the rows of `CONN-QBITTORRENT-
 ### Project Structure
 
 - `qbittorrent_agent/api/api_client_base.py` (existing)
-- `qbittorrent_agent/mcp_server.py` (existing)
+- `qbittorrent_agent/api/client.py` (existing)
 - `tests/test_session_relogin.py` (existing)
 - `pyproject.toml` (existing)
 - `qbittorrent_agent/__init__.py` (existing)
@@ -98,7 +98,7 @@ This plan states how `qbittorrent-agent` delivers the rows of `CONN-QBITTORRENT-
 ### Project Structure
 
 - `qbittorrent_agent/api/api_client_base.py` (existing)
-- `qbittorrent_agent/mcp_server.py` (existing)
+- `qbittorrent_agent/api/client.py` (existing)
 - `tests/test_session_relogin.py` (existing)
 - `pyproject.toml` (existing)
 - `qbittorrent_agent/__init__.py` (existing)
@@ -164,9 +164,9 @@ No wire, schema, or tool change. Log lines carry no credentials and no cookie va
 
 ### Live integration path
 
-An MCP tool calls an `Api` method, such as `get_version` in `api_client_app.py`.
-The method calls `_get` or `_post`. Both call `_send` at `api_client_base.py:101` and `:110`.
-`_send` calls `login` at `api_client_base.py:89` after a rejection.
+An MCP tool calls an `Api` method, such as `app_version` in `client.py`.
+The method calls `_get` or `_post`. Both call `_send` at `api_client_base.py:117` and `:126`.
+`_send` calls `login` at `api_client_base.py:107` after a rejection.
 
 ### Quality and release gates
 
@@ -215,9 +215,9 @@ None. The constitution check passed.
 
 ### Production caller chain
 
-- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool of `qbittorrent_agent/mcp_server.py` calls a domain client, which calls `_get` (`qbittorrent_agent/api/api_client_base.py:98`) or `_post` (`qbittorrent_agent/api/api_client_base.py:105`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:80`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:89`) after a 401 or 403.
+- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool calls an operation method of `qbittorrent_agent/api/client.py`, which calls `_call` and then `_get` (`qbittorrent_agent/api/api_client_base.py:116`) or `_post` (`qbittorrent_agent/api/api_client_base.py:123`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:98`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:107`) after a 401 or 403.
 - `CONN-QBITTORRENT-AGENT-R002`: `_get` and `_post` in `qbittorrent_agent/api/api_client_base.py` call `_send`; `_send` calls `login`.
-- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `get_version` on the API client calls `_get`, which calls `_send` and the re-login path.
+- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `app_version` on the API client calls `_call`, which calls `_send` and the re-login path.
 - `CONN-QBITTORRENT-AGENT-R004`: `qbittorrent-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `qbittorrent_agent:connector` (`qbittorrent_agent/__init__.py:93`); `connector_name("qbittorrent_agent")` in the SDK resolves the same entry point name for the content pack, the manifest and the ingest binding.
 
 ### Cross-repo seams
@@ -240,9 +240,9 @@ None. The constitution check passed.
 
 ### Production caller chain
 
-- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool of `qbittorrent_agent/mcp_server.py` calls a domain client, which calls `_get` (`qbittorrent_agent/api/api_client_base.py:98`) or `_post` (`qbittorrent_agent/api/api_client_base.py:105`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:80`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:89`) after a 401 or 403.
+- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool calls an operation method of `qbittorrent_agent/api/client.py`, which calls `_call` and then `_get` (`qbittorrent_agent/api/api_client_base.py:116`) or `_post` (`qbittorrent_agent/api/api_client_base.py:123`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:98`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:107`) after a 401 or 403.
 - `CONN-QBITTORRENT-AGENT-R002`: `_get` and `_post` in `qbittorrent_agent/api/api_client_base.py` call `_send`; `_send` calls `login`.
-- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `get_version` on the API client calls `_get`, which calls `_send` and the re-login path.
+- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `app_version` on the API client calls `_call`, which calls `_send` and the re-login path.
 - `CONN-QBITTORRENT-AGENT-R004`: `qbittorrent-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `qbittorrent_agent:connector` (`qbittorrent_agent/__init__.py:93`); `connector_name("qbittorrent_agent")` in the SDK resolves the same entry point name for the content pack, the manifest and the ingest binding.
 
 ### Cross-repo seams
@@ -265,9 +265,9 @@ None. The constitution check passed.
 
 ## Production caller chain
 
-- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool of `qbittorrent_agent/mcp_server.py` calls a domain client, which calls `_get` (`qbittorrent_agent/api/api_client_base.py:98`) or `_post` (`qbittorrent_agent/api/api_client_base.py:105`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:80`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:89`) after a 401 or 403.
+- `CONN-QBITTORRENT-AGENT-R001`: an MCP tool calls an operation method of `qbittorrent_agent/api/client.py`, which calls `_call` and then `_get` (`qbittorrent_agent/api/api_client_base.py:116`) or `_post` (`qbittorrent_agent/api/api_client_base.py:123`), which call `_send` (`qbittorrent_agent/api/api_client_base.py:98`); `_send` calls `login` (`qbittorrent_agent/api/api_client_base.py:107`) after a 401 or 403.
 - `CONN-QBITTORRENT-AGENT-R002`: `_get` and `_post` in `qbittorrent_agent/api/api_client_base.py` call `_send`; `_send` calls `login`.
-- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `get_version` on the API client calls `_get`, which calls `_send` and the re-login path.
+- `CONN-QBITTORRENT-AGENT-R003`: a public operation such as `app_version` on the API client calls `_call`, which calls `_send` and the re-login path.
 - `CONN-QBITTORRENT-AGENT-R004`: `qbittorrent-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `qbittorrent_agent:connector` (`qbittorrent_agent/__init__.py:93`); `connector_name("qbittorrent_agent")` in the SDK resolves the same entry point name for the content pack, the manifest and the ingest binding.
 
 ## Cross-repo seams

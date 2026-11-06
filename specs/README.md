@@ -14,3 +14,4 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 
 [`CONN-QBITTORRENT-AGENT`](qbittorrent-agent/spec.md) — Session recovery for the qBittorrent WebUI client.
 - [`CONN-QBITTORRENT-AGENT-CONNECTOR-CONTENT`](connector-content/spec.md) — The connector serves its packaged content.
+- [`CONN-QBITTORRENT-AGENT-SURFACE`](surface/spec.md) — Every WebUI API operation as one typed tool, with skills, agent prompts and a core-rooted ontology.

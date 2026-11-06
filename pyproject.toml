@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qbittorrent-agent"
-version = "2.3.10"
+version = "3.0.0"
 description = "AI agent for qBittorrent management, RSS automation, and search."
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12, <3.15"
-dependencies = [ "scion-sdk[mcp]>=0.6.4,<0.7.0", "requests>=2.34.2",]
+dependencies = [ "scion-sdk[mcp]>=0.8.2,<0.9", "requests>=2.34.2",]
 [[project.authors]]
 name = "Repository Maintainers"
 email = "maintainers@knuckles.team"
@@ -19,7 +19,8 @@ text = "MIT"
 
 [project.optional-dependencies]
 test = [
-    "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0",]
+    "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0",
+    "rdflib>=7.0.0,<8", "medulla>=3.1.0,<4",]
 
 [project.scripts]
 qbittorrent-mcp = "scion_sdk.cli:serve"

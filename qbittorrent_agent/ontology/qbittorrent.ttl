@@ -1,105 +1,341 @@
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix dc: <http://purl.org/dc/terms/> .
 @prefix : <http://knuckles.team/kg#> .
+@prefix qbt: <http://knuckles.team/kg/qbittorrent#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# qBittorrent torrent-management ontology — torrents, their announce trackers, and the
-# categories that organise them, plus the media content a completed torrent yields.
-# All classes and properties live in the shared `:` (kg#) namespace; only the
-# owl:Ontology node gets the per-package IRI. Backs the qbittorrent-agent MCP tool
-# surface (qbittorrent_torrents / qbittorrent_transfer / qbittorrent_rss / …).
-# :AssetOccurrence and :Person are REUSED from the shared hub base — never redefined here.
-
-:Torrent a owl:Class ;
-    rdfs:label "Torrent" ;
-    rdfs:comment "A BitTorrent transfer tracked by qBittorrent, identified by its info hash (qbittorrent_torrents get_torrent_list)." .
-
-:Tracker a owl:Class ;
-    rdfs:label "Tracker" ;
-    rdfs:comment "A BitTorrent tracker announce endpoint a torrent reports to (qbittorrent_torrents get_torrent_trackers)." .
-
-:TorrentCategory a owl:Class ;
-    rdfs:label "Torrent Category" ;
-    rdfs:comment "A user-defined category grouping torrents and pinning their save path (qbittorrent_torrents get_all_categories)." .
-
-# --- links (owl:ObjectProperty) ---
-
-:announcesTo a owl:ObjectProperty ;
-    rdfs:label "announces to" ;
-    rdfs:comment "Links a Torrent to a Tracker it announces to." ;
-    rdfs:domain :Torrent ;
-    rdfs:range :Tracker .
-
-:inCategory a owl:ObjectProperty ;
-    rdfs:label "in category" ;
-    rdfs:comment "Links a Torrent to the TorrentCategory it belongs to." ;
-    rdfs:domain :Torrent ;
-    rdfs:range :TorrentCategory .
-
-:producesAsset a owl:ObjectProperty ;
-    rdfs:label "produces asset" ;
-    rdfs:comment "Links a completed Torrent to the :AssetOccurrence (downloaded content) it yields." ;
-    rdfs:domain :Torrent ;
-    rdfs:range :AssetOccurrence .
-
-# --- fields (owl:DatatypeProperty) ---
-
-:infoHash a owl:DatatypeProperty ;
-    rdfs:label "info hash" ;
-    rdfs:comment "The BitTorrent info hash uniquely identifying a Torrent." ;
-    rdfs:domain :Torrent ;
-    rdfs:range xsd:string .
-
-:torrentState a owl:DatatypeProperty ;
-    rdfs:label "torrent state" ;
-    rdfs:comment "Lifecycle/transfer state of a Torrent (downloading, uploading, stalledUP, pausedDL, checkingDL, error, …)." ;
-    rdfs:domain :Torrent ;
-    rdfs:range xsd:string .
-
-:progress a owl:DatatypeProperty ;
-    rdfs:label "progress" ;
-    rdfs:comment "Download completion fraction of a Torrent (0.0–1.0)." ;
-    rdfs:domain :Torrent ;
-    rdfs:range xsd:float .
-
-:shareRatio a owl:DatatypeProperty ;
-    rdfs:label "share ratio" ;
-    rdfs:comment "Upload/download share ratio of a Torrent." ;
-    rdfs:domain :Torrent ;
-    rdfs:range xsd:float .
-
-:sizeBytes a owl:DatatypeProperty ;
-    rdfs:label "size bytes" ;
-    rdfs:comment "Total size of a Torrent's selected content, in bytes." ;
-    rdfs:domain :Torrent ;
-    rdfs:range xsd:long .
-
-:savePath a owl:DatatypeProperty ;
-    rdfs:label "save path" ;
-    rdfs:comment "Filesystem path where a Torrent or TorrentCategory stores its content." ;
-    rdfs:range xsd:string .
-
-:trackerUrl a owl:DatatypeProperty ;
-    rdfs:label "tracker url" ;
-    rdfs:comment "Announce URL of a Tracker." ;
-    rdfs:domain :Tracker ;
-    rdfs:range xsd:string .
-
-:trackerStatus a owl:DatatypeProperty ;
-    rdfs:label "tracker status" ;
-    rdfs:comment "Working status code of a Tracker (0 disabled, 1 not contacted, 2 working, 3 updating, 4 not working)." ;
-    rdfs:domain :Tracker ;
-    rdfs:range xsd:integer .
+# qBittorrent connector ontology (CONN-QBITTORRENT-AGENT-SURFACE-R006, R007).
+# Every class lives in the qbt: namespace and subclasses a medulla core class;
+# there is no owl:imports. Torrents, trackers and categories are ingested as
+# the core classes :Torrent, :Tracker and :Category.
 
 <http://knuckles.team/kg/qbittorrent> a owl:Ontology ;
-    rdfs:label "qBittorrent Torrent Ontology" ;
-    rdfs:comment """qBittorrent torrent-management model — torrents, their announce
-    trackers, and the categories that organise them, plus the media content a
-    completed torrent produces — federated into the scion-sdk knowledge-graph
-    hub. Reuses the shared :AssetOccurrence and :Person classes.""" .
+    rdfs:label "qBittorrent connector ontology" ;
+    rdfs:comment "The qBittorrent client, its data locations, the media apps it serves, and the connector's tools, workflows and agent definitions. Rolls up to medulla core by subclassing." .
 
-# ontology-codemod R3
-<http://knuckles.team/kg#TorrentCategory> rdfs:subClassOf <http://knuckles.team/kg#Category> .
+qbt:TorrentClientApp a owl:Class ;
+    rdfs:subClassOf :Application ;
+    rdfs:label "TorrentClientApp" ;
+    rdfs:comment "The qBittorrent BitTorrent client application." .
+
+qbt:ClientInstance a owl:Class ;
+    rdfs:subClassOf :AssetInstance ;
+    rdfs:label "ClientInstance" ;
+    rdfs:comment "One deployed qBittorrent instance, reached at its URL setting with its credential settings." .
+
+qbt:SavePath a owl:Class ;
+    rdfs:subClassOf :Folder ;
+    rdfs:label "SavePath" ;
+    rdfs:comment "A folder where qBittorrent stores downloads: the default save path, the incomplete path, or a category folder." .
+
+qbt:ClientCategory a owl:Class ;
+    rdfs:subClassOf :Category ;
+    rdfs:label "ClientCategory" ;
+    rdfs:comment "A qBittorrent category: a label with its save path that routes a download to its consuming app." .
+
+qbt:ClientTag a owl:Class ;
+    rdfs:subClassOf :Tag ;
+    rdfs:label "ClientTag" ;
+    rdfs:comment "A qBittorrent tag on torrents." .
+
+qbt:RssFeedItem a owl:Class ;
+    rdfs:subClassOf :Feed ;
+    rdfs:label "RssFeedItem" ;
+    rdfs:comment "An RSS feed qBittorrent polls for auto-download rules." .
+
+qbt:RssDownloadRule a owl:Class ;
+    rdfs:subClassOf :Policy ;
+    rdfs:label "RssDownloadRule" ;
+    rdfs:comment "An RSS auto-download rule: which feed articles become torrents, in which category." .
+
+qbt:SearchEnginePlugin a owl:Class ;
+    rdfs:subClassOf :SoftwareComponent ;
+    rdfs:label "SearchEnginePlugin" ;
+    rdfs:comment "A qBittorrent search plugin." .
+
+qbt:RoutingRule a owl:Class ;
+    rdfs:subClassOf :Policy ;
+    rdfs:label "RoutingRule" ;
+    rdfs:comment "Which consuming app a category's downloads belong to, and the folder they land in." .
+
+qbt:FederationLink a owl:Class ;
+    rdfs:subClassOf :ConfigurationItemCollection ;
+    rdfs:label "FederationLink" ;
+    rdfs:comment "A media app that sends its grabbed releases to qBittorrent as its download client." .
+
+qbt:ConnectorTool a owl:Class ;
+    rdfs:subClassOf :Tool ;
+    rdfs:label "ConnectorTool" ;
+    rdfs:comment "One typed MCP tool of the qbittorrent-mcp connector: one WebUI API operation." .
+
+qbt:ToolUseContract a owl:Class ;
+    rdfs:subClassOf :Procedure ;
+    rdfs:label "ToolUseContract" ;
+    rdfs:comment "A workflow: which tools run, in what order, with which parameters." .
+
+qbt:ContractStep a owl:Class ;
+    rdfs:subClassOf :TaskStep ;
+    rdfs:label "ContractStep" ;
+    rdfs:comment "One ordered step of a tool-use contract: one tool call." .
+
+qbt:ParameterBinding a owl:Class ;
+    rdfs:subClassOf :ActionParameter ;
+    rdfs:label "ParameterBinding" ;
+    rdfs:comment "Where one parameter of a step comes from: operator input, a constant, or an earlier step's result." .
+
+qbt:ConnectorSkill a owl:Class ;
+    rdfs:subClassOf :Procedure ;
+    rdfs:label "ConnectorSkill" ;
+    rdfs:comment "A skill shipped in the connector package: task workflows over the connector's tools." .
+
+qbt:ConnectorPrompt a owl:Class ;
+    rdfs:subClassOf :Prompt ;
+    rdfs:label "ConnectorPrompt" ;
+    rdfs:comment "A prompt shipped in the connector package; an agent definition arbora builds an agent from." .
+
+qbt:TorrentAgentRole a owl:Class ;
+    rdfs:subClassOf :Role ;
+    rdfs:label "TorrentAgentRole" ;
+    rdfs:comment "A business role an agent plays over qBittorrent; a connector prompt is its system prompt." .
+
+qbt:TorrentOperator a owl:Class ;
+    rdfs:subClassOf qbt:TorrentAgentRole ;
+    rdfs:label "Torrent Operator" ;
+    rdfs:comment "The Torrent Operator role over qBittorrent." .
+
+qbt:TorrentDownloadMonitor a owl:Class ;
+    rdfs:subClassOf qbt:TorrentAgentRole ;
+    rdfs:label "Torrent Download Monitor" ;
+    rdfs:comment "The Torrent Download Monitor role over qBittorrent." .
+
+qbt:SeedingManager a owl:Class ;
+    rdfs:subClassOf qbt:TorrentAgentRole ;
+    rdfs:label "Seeding Manager" ;
+    rdfs:comment "The Seeding Manager role over qBittorrent." .
+
+qbt:DownloadClientSteward a owl:Class ;
+    rdfs:subClassOf qbt:TorrentAgentRole ;
+    rdfs:label "Download Client Steward" ;
+    rdfs:comment "The Download Client Steward role over qBittorrent." .
+
+qbt:instanceOf a owl:ObjectProperty ;
+    rdfs:domain qbt:ClientInstance ;
+    rdfs:range qbt:TorrentClientApp .
+
+qbt:storesIn a owl:ObjectProperty ;
+    rdfs:domain qbt:ClientInstance ;
+    rdfs:range qbt:SavePath .
+
+qbt:categorySavePath a owl:ObjectProperty ;
+    rdfs:domain qbt:ClientCategory ;
+    rdfs:range qbt:SavePath .
+
+qbt:routesCategory a owl:ObjectProperty ;
+    rdfs:domain qbt:RoutingRule ;
+    rdfs:range qbt:ClientCategory .
+
+qbt:routesToApp a owl:ObjectProperty ;
+    rdfs:domain qbt:RoutingRule .
+
+qbt:federationSource a owl:ObjectProperty ;
+    rdfs:domain qbt:FederationLink .
+
+qbt:federationTarget a owl:ObjectProperty ;
+    rdfs:domain qbt:FederationLink ;
+    rdfs:range qbt:ClientInstance .
+
+qbt:toolOf a owl:ObjectProperty ;
+    rdfs:domain qbt:ConnectorTool ;
+    rdfs:range qbt:TorrentClientApp .
+
+qbt:hasStep a owl:ObjectProperty ;
+    rdfs:domain qbt:ToolUseContract ;
+    rdfs:range qbt:ContractStep .
+
+qbt:precedesStep a owl:ObjectProperty ;
+    rdfs:domain qbt:ContractStep ;
+    rdfs:range qbt:ContractStep .
+
+qbt:callsTool a owl:ObjectProperty ;
+    rdfs:domain qbt:ContractStep ;
+    rdfs:range qbt:ConnectorTool .
+
+qbt:bindsParameter a owl:ObjectProperty ;
+    rdfs:domain qbt:ContractStep ;
+    rdfs:range qbt:ParameterBinding .
+
+qbt:contractOf a owl:ObjectProperty ;
+    rdfs:domain qbt:ToolUseContract ;
+    rdfs:range qbt:ConnectorSkill .
+
+qbt:usesSkill a owl:ObjectProperty ;
+    rdfs:domain qbt:ConnectorPrompt ;
+    rdfs:range qbt:ConnectorSkill .
+
+qbt:runsContract a owl:ObjectProperty ;
+    rdfs:domain qbt:ConnectorPrompt ;
+    rdfs:range qbt:ToolUseContract .
+
+qbt:usesTool a owl:ObjectProperty ;
+    rdfs:domain qbt:ConnectorPrompt ;
+    rdfs:range qbt:ConnectorTool .
+
+qbt:systemPromptForRole a owl:ObjectProperty ;
+    rdfs:domain qbt:ConnectorPrompt ;
+    rdfs:range qbt:TorrentAgentRole .
+
+qbt:holdsMediaClass a owl:ObjectProperty ;
+    rdfs:domain qbt:ClientInstance .
+
+qbt:urlSetting a owl:DatatypeProperty ;
+    rdfs:domain qbt:ClientInstance .
+
+qbt:usernameSetting a owl:DatatypeProperty ;
+    rdfs:domain qbt:ClientInstance .
+
+qbt:passwordSetting a owl:DatatypeProperty ;
+    rdfs:domain qbt:ClientInstance .
+
+qbt:apiKeySetting a owl:DatatypeProperty ;
+    rdfs:domain qbt:ClientInstance .
+
+qbt:path a owl:DatatypeProperty ;
+    rdfs:domain qbt:SavePath .
+
+qbt:categoryName a owl:DatatypeProperty ;
+    rdfs:domain qbt:ClientCategory .
+
+qbt:federationKind a owl:DatatypeProperty ;
+    rdfs:domain qbt:FederationLink .
+
+qbt:toolName a owl:DatatypeProperty ;
+    rdfs:domain qbt:ConnectorTool .
+
+qbt:stepIndex a owl:DatatypeProperty ;
+    rdfs:domain qbt:ContractStep .
+
+qbt:needsApproval a owl:DatatypeProperty ;
+    rdfs:domain qbt:ContractStep .
+
+qbt:parameterName a owl:DatatypeProperty ;
+    rdfs:domain qbt:ParameterBinding .
+
+qbt:parameterSource a owl:DatatypeProperty ;
+    rdfs:domain qbt:ParameterBinding .
+
+qbt:skillName a owl:DatatypeProperty ;
+    rdfs:domain qbt:ConnectorSkill .
+
+qbt:promptName a owl:DatatypeProperty ;
+    rdfs:domain qbt:ConnectorPrompt .
+
+qbt:infoHash a owl:DatatypeProperty .
+
+qbt:torrentState a owl:DatatypeProperty .
+
+qbt:trackerUrl a owl:DatatypeProperty .
+
+qbt:app-qbittorrent a qbt:TorrentClientApp ;
+    rdfs:label "qBittorrent" .
+
+qbt:instance-qbittorrent a qbt:ClientInstance ;
+    rdfs:label "qBittorrent instance" ;
+    qbt:instanceOf qbt:app-qbittorrent ;
+    qbt:urlSetting "QBITTORRENT_URL" ;
+    qbt:usernameSetting "QBITTORRENT_USERNAME" ;
+    qbt:passwordSetting "QBITTORRENT_PASSWORD" ;
+    qbt:apiKeySetting "QBITTORRENT_API_KEY" ;
+    qbt:holdsMediaClass :Torrent ;
+    qbt:storesIn qbt:savepath-complete, qbt:savepath-incomplete .
+
+qbt:savepath-complete a qbt:SavePath ;
+    rdfs:label "Default save path" ;
+    qbt:path "/downloads/complete" .
+
+qbt:savepath-incomplete a qbt:SavePath ;
+    rdfs:label "Incomplete downloads" ;
+    qbt:path "/downloads/incomplete" .
+
+qbt:category-radarr a qbt:ClientCategory ;
+    qbt:categoryName "radarr" ;
+    qbt:categorySavePath qbt:savepath-radarr .
+
+qbt:savepath-radarr a qbt:SavePath ;
+    qbt:path "/downloads/complete/radarr" .
+
+qbt:route-radarr a qbt:RoutingRule ;
+    rdfs:comment "Downloads in category `radarr` belong to Radarr, which imports them from the category folder." ;
+    qbt:routesCategory qbt:category-radarr ;
+    qbt:routesToApp <http://knuckles.team/kg/arr#app-radarr> .
+
+qbt:federation-radarr-sendsDownloadsTo-qbittorrent a qbt:FederationLink ;
+    rdfs:comment "Radarr sends grabbed releases to qBittorrent in category `radarr` (arr-mcp `radarr_get_downloadclient`)." ;
+    qbt:federationKind "sendsDownloadsTo" ;
+    qbt:federationSource <http://knuckles.team/kg/arr#instance-radarr> ;
+    qbt:federationTarget qbt:instance-qbittorrent .
+
+qbt:category-sonarr a qbt:ClientCategory ;
+    qbt:categoryName "sonarr" ;
+    qbt:categorySavePath qbt:savepath-sonarr .
+
+qbt:savepath-sonarr a qbt:SavePath ;
+    qbt:path "/downloads/complete/sonarr" .
+
+qbt:route-sonarr a qbt:RoutingRule ;
+    rdfs:comment "Downloads in category `sonarr` belong to Sonarr, which imports them from the category folder." ;
+    qbt:routesCategory qbt:category-sonarr ;
+    qbt:routesToApp <http://knuckles.team/kg/arr#app-sonarr> .
+
+qbt:federation-sonarr-sendsDownloadsTo-qbittorrent a qbt:FederationLink ;
+    rdfs:comment "Sonarr sends grabbed releases to qBittorrent in category `sonarr` (arr-mcp `sonarr_get_downloadclient`)." ;
+    qbt:federationKind "sendsDownloadsTo" ;
+    qbt:federationSource <http://knuckles.team/kg/arr#instance-sonarr> ;
+    qbt:federationTarget qbt:instance-qbittorrent .
+
+qbt:category-lidarr a qbt:ClientCategory ;
+    qbt:categoryName "lidarr" ;
+    qbt:categorySavePath qbt:savepath-lidarr .
+
+qbt:savepath-lidarr a qbt:SavePath ;
+    qbt:path "/downloads/complete/lidarr" .
+
+qbt:route-lidarr a qbt:RoutingRule ;
+    rdfs:comment "Downloads in category `lidarr` belong to Lidarr, which imports them from the category folder." ;
+    qbt:routesCategory qbt:category-lidarr ;
+    qbt:routesToApp <http://knuckles.team/kg/arr#app-lidarr> .
+
+qbt:federation-lidarr-sendsDownloadsTo-qbittorrent a qbt:FederationLink ;
+    rdfs:comment "Lidarr sends grabbed releases to qBittorrent in category `lidarr` (arr-mcp `lidarr_get_downloadclient`)." ;
+    qbt:federationKind "sendsDownloadsTo" ;
+    qbt:federationSource <http://knuckles.team/kg/arr#instance-lidarr> ;
+    qbt:federationTarget qbt:instance-qbittorrent .
+
+qbt:category-chaptarr a qbt:ClientCategory ;
+    qbt:categoryName "chaptarr" ;
+    qbt:categorySavePath qbt:savepath-chaptarr .
+
+qbt:savepath-chaptarr a qbt:SavePath ;
+    qbt:path "/downloads/complete/chaptarr" .
+
+qbt:route-chaptarr a qbt:RoutingRule ;
+    rdfs:comment "Downloads in category `chaptarr` belong to Chaptarr, which imports them from the category folder." ;
+    qbt:routesCategory qbt:category-chaptarr ;
+    qbt:routesToApp <http://knuckles.team/kg/arr#app-chaptarr> .
+
+qbt:federation-chaptarr-sendsDownloadsTo-qbittorrent a qbt:FederationLink ;
+    rdfs:comment "Chaptarr sends grabbed releases to qBittorrent in category `chaptarr` (arr-mcp `chaptarr_get_downloadclient`)." ;
+    qbt:federationKind "sendsDownloadsTo" ;
+    qbt:federationSource <http://knuckles.team/kg/arr#instance-chaptarr> ;
+    qbt:federationTarget qbt:instance-qbittorrent .
+
+qbt:category-prowlarr a qbt:ClientCategory ;
+    qbt:categoryName "prowlarr" ;
+    qbt:categorySavePath qbt:savepath-prowlarr .
+
+qbt:savepath-prowlarr a qbt:SavePath ;
+    qbt:path "/downloads/complete/prowlarr" .
+
+qbt:route-prowlarr a qbt:RoutingRule ;
+    rdfs:comment "Downloads in category `prowlarr` belong to Prowlarr, which imports them from the category folder." ;
+    qbt:routesCategory qbt:category-prowlarr ;
+    qbt:routesToApp <http://knuckles.team/kg/arr#app-prowlarr> .
