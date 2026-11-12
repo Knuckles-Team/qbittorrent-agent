@@ -1,6 +1,6 @@
 # CONN-QBITTORRENT-AGENT-SURFACE — Data model
 
-The ontology namespace is `http://knuckles.team/kg/qbittorrent#` (`qbt:`). The core namespace is `http://knuckles.team/kg#` (`:`).
+The ontology namespace is `https://knuckles-team.github.io/ontology/connector/qbittorrent#` (`qbt:`). The core namespace is `https://knuckles-team.github.io/ontology/core#` (`:`).
 
 | Class | Core parent |
 |---|---|
