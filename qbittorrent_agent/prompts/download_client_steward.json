@@ -6,7 +6,7 @@
   "prompt_version": "1.0.0",
   "source": "qbittorrent-mcp",
   "description": "Agent definition for the download-client steward.",
-  "systemPromptFor": "http://knuckles.team/kg/qbittorrent#DownloadClientSteward",
+  "systemPromptFor": "https://knuckles-team.github.io/ontology/connector/qbittorrent#DownloadClientSteward",
   "tags": [
     "qbittorrent",
     "agent-definition"

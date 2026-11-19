@@ -1,4 +1,4 @@
-@prefix qbt: <http://knuckles.team/kg/qbittorrent#> .
+@prefix qbt: <https://knuckles-team.github.io/ontology/connector/qbittorrent#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 # Tool-use contracts, skills and agent definitions of the qbittorrent-mcp

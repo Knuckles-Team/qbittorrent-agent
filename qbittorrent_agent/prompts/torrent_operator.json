@@ -6,7 +6,7 @@
   "prompt_version": "1.0.0",
   "source": "qbittorrent-mcp",
   "description": "Operator agent for the qBittorrent connector: runs every workflow.",
-  "systemPromptFor": "http://knuckles.team/kg/qbittorrent#TorrentOperator",
+  "systemPromptFor": "https://knuckles-team.github.io/ontology/connector/qbittorrent#TorrentOperator",
   "tags": [
     "qbittorrent",
     "agent-definition"
