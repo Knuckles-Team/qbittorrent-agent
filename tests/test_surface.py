@@ -230,16 +230,16 @@ def test_contract_and_skill_tools_are_served(graph, served):
 
 @pytest.mark.spec(f"{ID}-R004")
 def test_contract_steps_are_ordered_and_bound(graph):
-    has_step = rdflib.URIRef(QBT + "hasStep")
+    has_step = rdflib.URIRef("https://knuckles-team.github.io/ontology/core#hasStep")
     contracts = list(graph.subjects(RDF.type, rdflib.URIRef(QBT + "ToolUseContract")))
     assert len(contracts) >= 9
     for contract in contracts:
         steps = list(graph.objects(contract, has_step))
-        positions = sorted(int(graph.value(s, rdflib.URIRef(QBT + "stepIndex"))) for s in steps)
+        positions = sorted(int(graph.value(s, rdflib.URIRef("https://knuckles-team.github.io/ontology/core#stepIndex"))) for s in steps)
         assert positions == list(range(1, len(steps) + 1)), contract
         for step in steps:
             assert graph.value(step, rdflib.URIRef(QBT + "callsTool")) is not None
-        skill = graph.value(contract, rdflib.URIRef(QBT + "contractOf"))
+        skill = graph.value(contract, rdflib.URIRef("https://knuckles-team.github.io/ontology/connector-pack#contractOf"))
         name = str(graph.value(skill, rdflib.URIRef(QBT + "skillName")))
         assert (PKG / "skills" / name / "SKILL.md").is_file()
 
@@ -267,7 +267,7 @@ def test_prompt_is_a_complete_agent_definition(name, served, graph):
     node = rdflib.URIRef(QBT + f"prompt-{name}")
     linked = {
         str(graph.value(t, rdflib.URIRef(QBT + "toolName")))
-        for t in graph.objects(node, rdflib.URIRef(QBT + "usesTool"))
+        for t in graph.objects(node, rdflib.URIRef("https://knuckles-team.github.io/ontology/core#usesTool"))
     }
     assert linked == set(doc["tools"])
     assert str(graph.value(node, rdflib.URIRef(QBT + "systemPromptForRole"))) == doc["systemPromptFor"]

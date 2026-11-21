@@ -1,3 +1,5 @@
+@prefix cp: <https://knuckles-team.github.io/ontology/connector-pack#> .
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix qbt: <https://knuckles-team.github.io/ontology/connector/qbittorrent#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -111,25 +113,25 @@ qbt:skill-qbittorrent-agent-operations a qbt:ConnectorSkill ;
 qbt:contract-qbittorrent-check-transfer-health a qbt:ToolUseContract ;
     rdfs:label "Check transfer health" ;
     rdfs:comment "Read the connection status, speeds and limits, and list stalled and errored torrents with the log reasons." ;
-    qbt:contractOf qbt:skill-qbittorrent-transfer-tuning ;
-    qbt:hasStep qbt:step-qbittorrent-check-transfer-health-1, qbt:step-qbittorrent-check-transfer-health-2, qbt:step-qbittorrent-check-transfer-health-3, qbt:step-qbittorrent-check-transfer-health-4, qbt:step-qbittorrent-check-transfer-health-5 .
+    cp:contractOf qbt:skill-qbittorrent-transfer-tuning ;
+    core:hasStep qbt:step-qbittorrent-check-transfer-health-1, qbt:step-qbittorrent-check-transfer-health-2, qbt:step-qbittorrent-check-transfer-health-3, qbt:step-qbittorrent-check-transfer-health-4, qbt:step-qbittorrent-check-transfer-health-5 .
 
 qbt:step-qbittorrent-check-transfer-health-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "`connection_status` must be `connected`; speeds, totals and DHT nodes." ;
     qbt:precedesStep qbt:step-qbittorrent-check-transfer-health-2 .
 
 qbt:step-qbittorrent-check-transfer-health-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_speed_limits_mode ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "`1` means the alternative (slower) limits are on." ;
     qbt:precedesStep qbt:step-qbittorrent-check-transfer-health-3 .
 
 qbt:step-qbittorrent-check-transfer-health-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Stalled torrents (no peers or no progress)." ;
@@ -141,7 +143,7 @@ qbt:param-qbittorrent-check-transfer-health-3-filter a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"stalled\"" .
 
 qbt:step-qbittorrent-check-transfer-health-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Errored torrents (missing files, disk errors)." ;
@@ -153,7 +155,7 @@ qbt:param-qbittorrent-check-transfer-health-4-filter a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"errored\"" .
 
 qbt:step-qbittorrent-check-transfer-health-5 a qbt:ContractStep ; ;
-    qbt:stepIndex 5 ; ;
+    core:stepIndex 5 ; ;
     qbt:callsTool qbt:tool-qbittorrent_log_main ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Warnings and critical messages: failed logins, IP bans, disk and tracker errors." ;
@@ -181,11 +183,11 @@ qbt:param-qbittorrent-check-transfer-health-5-critical a qbt:ParameterBinding ;
 qbt:contract-qbittorrent-recover-stalled-torrent a qbt:ToolUseContract ;
     rdfs:label "Recover a stalled torrent" ;
     rdfs:comment "For one stalled torrent, read its trackers, reannounce, and recheck it if its data may be damaged." ;
-    qbt:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
-    qbt:hasStep qbt:step-qbittorrent-recover-stalled-torrent-1, qbt:step-qbittorrent-recover-stalled-torrent-2, qbt:step-qbittorrent-recover-stalled-torrent-3, qbt:step-qbittorrent-recover-stalled-torrent-4, qbt:step-qbittorrent-recover-stalled-torrent-5 .
+    cp:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
+    core:hasStep qbt:step-qbittorrent-recover-stalled-torrent-1, qbt:step-qbittorrent-recover-stalled-torrent-2, qbt:step-qbittorrent-recover-stalled-torrent-3, qbt:step-qbittorrent-recover-stalled-torrent-4, qbt:step-qbittorrent-recover-stalled-torrent-5 .
 
 qbt:step-qbittorrent-recover-stalled-torrent-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Pick the stalled torrent by `hash`." ;
@@ -197,7 +199,7 @@ qbt:param-qbittorrent-recover-stalled-torrent-1-filter a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"stalled\"" .
 
 qbt:step-qbittorrent-recover-stalled-torrent-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_trackers ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Tracker status 4 (not working) or a message names the cause." ;
@@ -209,7 +211,7 @@ qbt:param-qbittorrent-recover-stalled-torrent-2-hash a qbt:ParameterBinding ;
     qbt:parameterSource "step1.result[].hash" .
 
 qbt:step-qbittorrent-recover-stalled-torrent-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_reannounce ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Ask the trackers for peers again." ;
@@ -221,7 +223,7 @@ qbt:param-qbittorrent-recover-stalled-torrent-3-hashes a qbt:ParameterBinding ;
     qbt:parameterSource "step1.result[].hash" .
 
 qbt:step-qbittorrent-recover-stalled-torrent-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_recheck ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required: rehashes the data on disk (slow on large torrents)." ;
@@ -233,7 +235,7 @@ qbt:param-qbittorrent-recover-stalled-torrent-4-hashes a qbt:ParameterBinding ;
     qbt:parameterSource "step1.result[].hash" .
 
 qbt:step-qbittorrent-recover-stalled-torrent-5 a qbt:ContractStep ; ;
-    qbt:stepIndex 5 ; ;
+    core:stepIndex 5 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_properties ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Confirm peers, seeds and progress after the reannounce." ;
@@ -246,18 +248,18 @@ qbt:param-qbittorrent-recover-stalled-torrent-5-hash a qbt:ParameterBinding ;
 qbt:contract-qbittorrent-category-roundtrip a qbt:ToolUseContract ;
     rdfs:label "Prove category writes with a test category" ;
     rdfs:comment "Create a `zz-validation-<date>` category, confirm it lists, remove it, and confirm it is gone." ;
-    qbt:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
-    qbt:hasStep qbt:step-qbittorrent-category-roundtrip-1, qbt:step-qbittorrent-category-roundtrip-2, qbt:step-qbittorrent-category-roundtrip-3, qbt:step-qbittorrent-category-roundtrip-4, qbt:step-qbittorrent-category-roundtrip-5 .
+    cp:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
+    core:hasStep qbt:step-qbittorrent-category-roundtrip-1, qbt:step-qbittorrent-category-roundtrip-2, qbt:step-qbittorrent-category-roundtrip-3, qbt:step-qbittorrent-category-roundtrip-4, qbt:step-qbittorrent-category-roundtrip-5 .
 
 qbt:step-qbittorrent-category-roundtrip-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "The categories before the test." ;
     qbt:precedesStep qbt:step-qbittorrent-category-roundtrip-2 .
 
 qbt:step-qbittorrent-category-roundtrip-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_create_category ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Creates the test category." ;
@@ -269,14 +271,14 @@ qbt:param-qbittorrent-category-roundtrip-2-category a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"zz-validation-2026-11-06\"" .
 
 qbt:step-qbittorrent-category-roundtrip-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "The test category lists." ;
     qbt:precedesStep qbt:step-qbittorrent-category-roundtrip-4 .
 
 qbt:step-qbittorrent-category-roundtrip-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_remove_categories ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Removes only the test category (destructive; `confirm=true`)." ;
@@ -288,7 +290,7 @@ qbt:param-qbittorrent-category-roundtrip-4-categories a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"zz-validation-2026-11-06\"" .
 
 qbt:step-qbittorrent-category-roundtrip-5 a qbt:ContractStep ; ;
-    qbt:stepIndex 5 ; ;
+    core:stepIndex 5 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "The test category is gone." .
@@ -296,18 +298,18 @@ qbt:step-qbittorrent-category-roundtrip-5 a qbt:ContractStep ; ;
 qbt:contract-qbittorrent-add-torrent a qbt:ToolUseContract ;
     rdfs:label "Add a torrent to a category" ;
     rdfs:comment "Add a magnet link or URL the operator asked for into the consuming app's category, and confirm it is listed." ;
-    qbt:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
-    qbt:hasStep qbt:step-qbittorrent-add-torrent-1, qbt:step-qbittorrent-add-torrent-2, qbt:step-qbittorrent-add-torrent-3 .
+    cp:contractOf qbt:skill-qbittorrent-torrent-lifecycle ;
+    core:hasStep qbt:step-qbittorrent-add-torrent-1, qbt:step-qbittorrent-add-torrent-2, qbt:step-qbittorrent-add-torrent-3 .
 
 qbt:step-qbittorrent-add-torrent-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "The category must exist (one per consuming app)." ;
     qbt:precedesStep qbt:step-qbittorrent-add-torrent-2 .
 
 qbt:step-qbittorrent-add-torrent-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_add ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required: adds the torrent." ;
@@ -324,7 +326,7 @@ qbt:param-qbittorrent-add-torrent-2-category a qbt:ParameterBinding ;
     qbt:parameterSource "operator input" .
 
 qbt:step-qbittorrent-add-torrent-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "The torrent lists in the category." ;
@@ -337,11 +339,11 @@ qbt:param-qbittorrent-add-torrent-3-category a qbt:ParameterBinding ;
 qbt:contract-qbittorrent-set-share-limits a qbt:ToolUseContract ;
     rdfs:label "Set seeding limits for completed torrents" ;
     rdfs:comment "Read completed torrents' ratio and seeding time, and set their share limits with approval." ;
-    qbt:contractOf qbt:skill-qbittorrent-transfer-tuning ;
-    qbt:hasStep qbt:step-qbittorrent-set-share-limits-1, qbt:step-qbittorrent-set-share-limits-2, qbt:step-qbittorrent-set-share-limits-3, qbt:step-qbittorrent-set-share-limits-4 .
+    cp:contractOf qbt:skill-qbittorrent-transfer-tuning ;
+    core:hasStep qbt:step-qbittorrent-set-share-limits-1, qbt:step-qbittorrent-set-share-limits-2, qbt:step-qbittorrent-set-share-limits-3, qbt:step-qbittorrent-set-share-limits-4 .
 
 qbt:step-qbittorrent-set-share-limits-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Completed torrents with `ratio` and `seeding_time`." ;
@@ -353,7 +355,7 @@ qbt:param-qbittorrent-set-share-limits-1-filter a qbt:ParameterBinding ;
     qbt:parameterSource "const:\"completed\"" .
 
 qbt:step-qbittorrent-set-share-limits-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_properties ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "One torrent's current share limits." ;
@@ -365,7 +367,7 @@ qbt:param-qbittorrent-set-share-limits-2-hash a qbt:ParameterBinding ;
     qbt:parameterSource "step1.result[].hash" .
 
 qbt:step-qbittorrent-set-share-limits-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_set_share_limits ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required: `ratioLimit`, `seedingTimeLimit`, `inactiveSeedingTimeLimit` (-2 global, -1 none) and `shareLimitAction`." ;
@@ -397,7 +399,7 @@ qbt:param-qbittorrent-set-share-limits-3-share_limit_action a qbt:ParameterBindi
     qbt:parameterSource "const:\"Default\"" .
 
 qbt:step-qbittorrent-set-share-limits-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_properties ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Confirm the new limits." ;
@@ -410,25 +412,25 @@ qbt:param-qbittorrent-set-share-limits-4-hash a qbt:ParameterBinding ;
 qbt:contract-qbittorrent-set-speed-limits a qbt:ToolUseContract ;
     rdfs:label "Set global speed limits" ;
     rdfs:comment "Read and set the global download and upload limits with approval." ;
-    qbt:contractOf qbt:skill-qbittorrent-transfer-tuning ;
-    qbt:hasStep qbt:step-qbittorrent-set-speed-limits-1, qbt:step-qbittorrent-set-speed-limits-2, qbt:step-qbittorrent-set-speed-limits-3, qbt:step-qbittorrent-set-speed-limits-4, qbt:step-qbittorrent-set-speed-limits-5 .
+    cp:contractOf qbt:skill-qbittorrent-transfer-tuning ;
+    core:hasStep qbt:step-qbittorrent-set-speed-limits-1, qbt:step-qbittorrent-set-speed-limits-2, qbt:step-qbittorrent-set-speed-limits-3, qbt:step-qbittorrent-set-speed-limits-4, qbt:step-qbittorrent-set-speed-limits-5 .
 
 qbt:step-qbittorrent-set-speed-limits-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_download_limit ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Bytes per second; 0 is unlimited." ;
     qbt:precedesStep qbt:step-qbittorrent-set-speed-limits-2 .
 
 qbt:step-qbittorrent-set-speed-limits-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_upload_limit ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Bytes per second; 0 is unlimited." ;
     qbt:precedesStep qbt:step-qbittorrent-set-speed-limits-3 .
 
 qbt:step-qbittorrent-set-speed-limits-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_set_download_limit ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required." ;
@@ -440,7 +442,7 @@ qbt:param-qbittorrent-set-speed-limits-3-limit a qbt:ParameterBinding ;
     qbt:parameterSource "operator input" .
 
 qbt:step-qbittorrent-set-speed-limits-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_set_upload_limit ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required." ;
@@ -452,7 +454,7 @@ qbt:param-qbittorrent-set-speed-limits-4-limit a qbt:ParameterBinding ;
     qbt:parameterSource "operator input" .
 
 qbt:step-qbittorrent-set-speed-limits-5 a qbt:ContractStep ; ;
-    qbt:stepIndex 5 ; ;
+    core:stepIndex 5 ; ;
     qbt:callsTool qbt:tool-qbittorrent_transfer_info ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Confirm `dl_rate_limit` and `up_rate_limit`." .
@@ -460,11 +462,11 @@ qbt:step-qbittorrent-set-speed-limits-5 a qbt:ContractStep ; ;
 qbt:contract-qbittorrent-diagnose-app-connection a qbt:ToolUseContract ;
     rdfs:label "Diagnose an app that cannot reach qBittorrent" ;
     rdfs:comment "When an arr app reports its qBittorrent client unavailable, read the login failures and bans in the log and the WebUI auth settings, then hand the fix to the arr-mcp `arr-repair-download-client` workflow." ;
-    qbt:contractOf qbt:skill-qbittorrent-download-client ;
-    qbt:hasStep qbt:step-qbittorrent-diagnose-app-connection-1, qbt:step-qbittorrent-diagnose-app-connection-2, qbt:step-qbittorrent-diagnose-app-connection-3 .
+    cp:contractOf qbt:skill-qbittorrent-download-client ;
+    core:hasStep qbt:step-qbittorrent-diagnose-app-connection-1, qbt:step-qbittorrent-diagnose-app-connection-2, qbt:step-qbittorrent-diagnose-app-connection-3 .
 
 qbt:step-qbittorrent-diagnose-app-connection-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_log_main ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "`WebAPI login failure ... invalid credentials` names the caller IP and user; `IP has been banned` means five failures locked it out for `web_ui_ban_duration` seconds." ;
@@ -491,14 +493,14 @@ qbt:param-qbittorrent-diagnose-app-connection-1-critical a qbt:ParameterBinding 
     qbt:parameterSource "const:false" .
 
 qbt:step-qbittorrent-diagnose-app-connection-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_app_preferences ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "`web_ui_max_auth_fail_count`, `web_ui_ban_duration`, `bypass_local_auth`, `bypass_auth_subnet_whitelist_enabled`." ;
     qbt:precedesStep qbt:step-qbittorrent-diagnose-app-connection-3 .
 
 qbt:step-qbittorrent-diagnose-app-connection-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Each consuming app's category exists." .
@@ -506,25 +508,25 @@ qbt:step-qbittorrent-diagnose-app-connection-3 a qbt:ContractStep ; ;
 qbt:contract-qbittorrent-provision-app-category a qbt:ToolUseContract ;
     rdfs:label "Provision a category for a consuming app" ;
     rdfs:comment "Create the category an arr app sends its downloads to, so they land in the app's import folder." ;
-    qbt:contractOf qbt:skill-qbittorrent-download-client ;
-    qbt:hasStep qbt:step-qbittorrent-provision-app-category-1, qbt:step-qbittorrent-provision-app-category-2, qbt:step-qbittorrent-provision-app-category-3, qbt:step-qbittorrent-provision-app-category-4 .
+    cp:contractOf qbt:skill-qbittorrent-download-client ;
+    core:hasStep qbt:step-qbittorrent-provision-app-category-1, qbt:step-qbittorrent-provision-app-category-2, qbt:step-qbittorrent-provision-app-category-3, qbt:step-qbittorrent-provision-app-category-4 .
 
 qbt:step-qbittorrent-provision-app-category-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Skip if the app's category exists." ;
     qbt:precedesStep qbt:step-qbittorrent-provision-app-category-2 .
 
 qbt:step-qbittorrent-provision-app-category-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_app_default_save_path ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Category folders sit under the default save path." ;
     qbt:precedesStep qbt:step-qbittorrent-provision-app-category-3 .
 
 qbt:step-qbittorrent-provision-app-category-3 a qbt:ContractStep ; ;
-    qbt:stepIndex 3 ; ;
+    core:stepIndex 3 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_create_category ; ;
     qbt:needsApproval true ; ;
     rdfs:comment "Approval required: creates the category (`savePath` empty = default path plus the category name)." ;
@@ -536,7 +538,7 @@ qbt:param-qbittorrent-provision-app-category-3-category a qbt:ParameterBinding ;
     qbt:parameterSource "the app name (radarr, sonarr, lidarr, chaptarr)" .
 
 qbt:step-qbittorrent-provision-app-category-4 a qbt:ContractStep ; ;
-    qbt:stepIndex 4 ; ;
+    core:stepIndex 4 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_categories ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Confirm it lists." .
@@ -544,18 +546,18 @@ qbt:step-qbittorrent-provision-app-category-4 a qbt:ContractStep ; ;
 qbt:contract-qbittorrent-ingest-torrents a qbt:ToolUseContract ;
     rdfs:label "Ingest torrents into the knowledge graph" ;
     rdfs:comment "Count the torrents and push them, with trackers and categories, into the knowledge graph." ;
-    qbt:contractOf qbt:skill-qbittorrent-kg-ingestion ;
-    qbt:hasStep qbt:step-qbittorrent-ingest-torrents-1, qbt:step-qbittorrent-ingest-torrents-2 .
+    cp:contractOf qbt:skill-qbittorrent-kg-ingestion ;
+    core:hasStep qbt:step-qbittorrent-ingest-torrents-1, qbt:step-qbittorrent-ingest-torrents-2 .
 
 qbt:step-qbittorrent-ingest-torrents-1 a qbt:ContractStep ; ;
-    qbt:stepIndex 1 ; ;
+    core:stepIndex 1 ; ;
     qbt:callsTool qbt:tool-qbittorrent_torrents_count ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "How many torrents the ingest will list." ;
     qbt:precedesStep qbt:step-qbittorrent-ingest-torrents-2 .
 
 qbt:step-qbittorrent-ingest-torrents-2 a qbt:ContractStep ; ;
-    qbt:stepIndex 2 ; ;
+    core:stepIndex 2 ; ;
     qbt:callsTool qbt:tool-qbittorrent_ingest_torrents ; ;
     qbt:needsApproval false ; ;
     rdfs:comment "Lists torrents through `qbittorrent_torrents_info` and writes typed nodes; returns `listed` and `ingested`." ;
@@ -571,7 +573,7 @@ qbt:prompt-torrent_operator a qbt:ConnectorPrompt ;
     qbt:systemPromptForRole qbt:TorrentOperator ;
     qbt:usesSkill qbt:skill-qbittorrent-agent-operations, qbt:skill-qbittorrent-torrent-lifecycle, qbt:skill-qbittorrent-transfer-tuning, qbt:skill-qbittorrent-download-client, qbt:skill-qbittorrent-kg-ingestion ;
     qbt:runsContract qbt:contract-qbittorrent-check-transfer-health, qbt:contract-qbittorrent-recover-stalled-torrent, qbt:contract-qbittorrent-category-roundtrip, qbt:contract-qbittorrent-add-torrent, qbt:contract-qbittorrent-set-share-limits, qbt:contract-qbittorrent-set-speed-limits, qbt:contract-qbittorrent-diagnose-app-connection, qbt:contract-qbittorrent-provision-app-category, qbt:contract-qbittorrent-ingest-torrents ;
-    qbt:usesTool qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_torrents_trackers, qbt:tool-qbittorrent_torrents_reannounce, qbt:tool-qbittorrent_torrents_recheck, qbt:tool-qbittorrent_torrents_properties, qbt:tool-qbittorrent_torrents_categories, qbt:tool-qbittorrent_torrents_create_category, qbt:tool-qbittorrent_torrents_remove_categories, qbt:tool-qbittorrent_torrents_add, qbt:tool-qbittorrent_torrents_set_share_limits, qbt:tool-qbittorrent_transfer_download_limit, qbt:tool-qbittorrent_transfer_upload_limit, qbt:tool-qbittorrent_transfer_set_download_limit, qbt:tool-qbittorrent_transfer_set_upload_limit, qbt:tool-qbittorrent_app_preferences, qbt:tool-qbittorrent_app_default_save_path, qbt:tool-qbittorrent_torrents_count, qbt:tool-qbittorrent_ingest_torrents .
+    core:usesTool qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_torrents_trackers, qbt:tool-qbittorrent_torrents_reannounce, qbt:tool-qbittorrent_torrents_recheck, qbt:tool-qbittorrent_torrents_properties, qbt:tool-qbittorrent_torrents_categories, qbt:tool-qbittorrent_torrents_create_category, qbt:tool-qbittorrent_torrents_remove_categories, qbt:tool-qbittorrent_torrents_add, qbt:tool-qbittorrent_torrents_set_share_limits, qbt:tool-qbittorrent_transfer_download_limit, qbt:tool-qbittorrent_transfer_upload_limit, qbt:tool-qbittorrent_transfer_set_download_limit, qbt:tool-qbittorrent_transfer_set_upload_limit, qbt:tool-qbittorrent_app_preferences, qbt:tool-qbittorrent_app_default_save_path, qbt:tool-qbittorrent_torrents_count, qbt:tool-qbittorrent_ingest_torrents .
 
 qbt:prompt-torrent_download_monitor a qbt:ConnectorPrompt ;
     rdfs:label "Torrent Download Monitor" ;
@@ -579,7 +581,7 @@ qbt:prompt-torrent_download_monitor a qbt:ConnectorPrompt ;
     qbt:systemPromptForRole qbt:TorrentDownloadMonitor ;
     qbt:usesSkill qbt:skill-qbittorrent-transfer-tuning, qbt:skill-qbittorrent-torrent-lifecycle ;
     qbt:runsContract qbt:contract-qbittorrent-check-transfer-health, qbt:contract-qbittorrent-recover-stalled-torrent ;
-    qbt:usesTool qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_torrents_trackers, qbt:tool-qbittorrent_torrents_reannounce, qbt:tool-qbittorrent_torrents_recheck, qbt:tool-qbittorrent_torrents_properties .
+    core:usesTool qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_torrents_trackers, qbt:tool-qbittorrent_torrents_reannounce, qbt:tool-qbittorrent_torrents_recheck, qbt:tool-qbittorrent_torrents_properties .
 
 qbt:prompt-seeding_manager a qbt:ConnectorPrompt ;
     rdfs:label "Seeding Manager" ;
@@ -587,7 +589,7 @@ qbt:prompt-seeding_manager a qbt:ConnectorPrompt ;
     qbt:systemPromptForRole qbt:SeedingManager ;
     qbt:usesSkill qbt:skill-qbittorrent-transfer-tuning ;
     qbt:runsContract qbt:contract-qbittorrent-set-share-limits, qbt:contract-qbittorrent-set-speed-limits, qbt:contract-qbittorrent-check-transfer-health ;
-    qbt:usesTool qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_torrents_properties, qbt:tool-qbittorrent_torrents_set_share_limits, qbt:tool-qbittorrent_transfer_download_limit, qbt:tool-qbittorrent_transfer_upload_limit, qbt:tool-qbittorrent_transfer_set_download_limit, qbt:tool-qbittorrent_transfer_set_upload_limit, qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_log_main .
+    core:usesTool qbt:tool-qbittorrent_torrents_info, qbt:tool-qbittorrent_torrents_properties, qbt:tool-qbittorrent_torrents_set_share_limits, qbt:tool-qbittorrent_transfer_download_limit, qbt:tool-qbittorrent_transfer_upload_limit, qbt:tool-qbittorrent_transfer_set_download_limit, qbt:tool-qbittorrent_transfer_set_upload_limit, qbt:tool-qbittorrent_transfer_info, qbt:tool-qbittorrent_transfer_speed_limits_mode, qbt:tool-qbittorrent_log_main .
 
 qbt:prompt-download_client_steward a qbt:ConnectorPrompt ;
     rdfs:label "Download Client Steward" ;
@@ -595,4 +597,4 @@ qbt:prompt-download_client_steward a qbt:ConnectorPrompt ;
     qbt:systemPromptForRole qbt:DownloadClientSteward ;
     qbt:usesSkill qbt:skill-qbittorrent-download-client, qbt:skill-qbittorrent-torrent-lifecycle ;
     qbt:runsContract qbt:contract-qbittorrent-diagnose-app-connection, qbt:contract-qbittorrent-provision-app-category, qbt:contract-qbittorrent-category-roundtrip ;
-    qbt:usesTool qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_app_preferences, qbt:tool-qbittorrent_torrents_categories, qbt:tool-qbittorrent_app_default_save_path, qbt:tool-qbittorrent_torrents_create_category, qbt:tool-qbittorrent_torrents_remove_categories .
+    core:usesTool qbt:tool-qbittorrent_log_main, qbt:tool-qbittorrent_app_preferences, qbt:tool-qbittorrent_torrents_categories, qbt:tool-qbittorrent_app_default_save_path, qbt:tool-qbittorrent_torrents_create_category, qbt:tool-qbittorrent_torrents_remove_categories .
