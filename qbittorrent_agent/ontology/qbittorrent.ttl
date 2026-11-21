@@ -119,10 +119,6 @@ qbt:DownloadClientSteward a owl:Class ;
     rdfs:label "Download Client Steward" ;
     rdfs:comment "The Download Client Steward role over qBittorrent." .
 
-qbt:instanceOf a owl:ObjectProperty ;
-    rdfs:domain qbt:ClientInstance ;
-    rdfs:range qbt:TorrentClientApp .
-
 qbt:storesIn a owl:ObjectProperty ;
     rdfs:domain qbt:ClientInstance ;
     rdfs:range qbt:SavePath .
@@ -149,10 +145,6 @@ qbt:toolOf a owl:ObjectProperty ;
     rdfs:domain qbt:ConnectorTool ;
     rdfs:range qbt:TorrentClientApp .
 
-qbt:hasStep a owl:ObjectProperty ;
-    rdfs:domain qbt:ToolUseContract ;
-    rdfs:range qbt:ContractStep .
-
 qbt:precedesStep a owl:ObjectProperty ;
     rdfs:domain qbt:ContractStep ;
     rdfs:range qbt:ContractStep .
@@ -165,10 +157,6 @@ qbt:bindsParameter a owl:ObjectProperty ;
     rdfs:domain qbt:ContractStep ;
     rdfs:range qbt:ParameterBinding .
 
-qbt:contractOf a owl:ObjectProperty ;
-    rdfs:domain qbt:ToolUseContract ;
-    rdfs:range qbt:ConnectorSkill .
-
 qbt:usesSkill a owl:ObjectProperty ;
     rdfs:domain qbt:ConnectorPrompt ;
     rdfs:range qbt:ConnectorSkill .
@@ -176,10 +164,6 @@ qbt:usesSkill a owl:ObjectProperty ;
 qbt:runsContract a owl:ObjectProperty ;
     rdfs:domain qbt:ConnectorPrompt ;
     rdfs:range qbt:ToolUseContract .
-
-qbt:usesTool a owl:ObjectProperty ;
-    rdfs:domain qbt:ConnectorPrompt ;
-    rdfs:range qbt:ConnectorTool .
 
 qbt:systemPromptForRole a owl:ObjectProperty ;
     rdfs:domain qbt:ConnectorPrompt ;
@@ -212,9 +196,6 @@ qbt:federationKind a owl:DatatypeProperty ;
 qbt:toolName a owl:DatatypeProperty ;
     rdfs:domain qbt:ConnectorTool .
 
-qbt:stepIndex a owl:DatatypeProperty ;
-    rdfs:domain qbt:ContractStep .
-
 qbt:needsApproval a owl:DatatypeProperty ;
     rdfs:domain qbt:ContractStep .
 
@@ -230,18 +211,14 @@ qbt:skillName a owl:DatatypeProperty ;
 qbt:promptName a owl:DatatypeProperty ;
     rdfs:domain qbt:ConnectorPrompt .
 
-qbt:infoHash a owl:DatatypeProperty .
-
 qbt:torrentState a owl:DatatypeProperty .
-
-qbt:trackerUrl a owl:DatatypeProperty .
 
 qbt:app-qbittorrent a qbt:TorrentClientApp ;
     rdfs:label "qBittorrent" .
 
 qbt:instance-qbittorrent a qbt:ClientInstance ;
     rdfs:label "qBittorrent instance" ;
-    qbt:instanceOf qbt:app-qbittorrent ;
+    core:instanceOf qbt:app-qbittorrent ;
     qbt:urlSetting "QBITTORRENT_URL" ;
     qbt:usernameSetting "QBITTORRENT_USERNAME" ;
     qbt:passwordSetting "QBITTORRENT_PASSWORD" ;
