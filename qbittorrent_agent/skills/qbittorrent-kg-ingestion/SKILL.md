@@ -14,6 +14,23 @@ metadata:
 
 Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
 
+## Steps
+
+1. Count the torrents with `qbittorrent_torrents_count`.
+   Verify the number is plausible for the ingest.
+2. Ingest with `qbittorrent_ingest_torrents` (`filter` from operator input or none).
+   Verify the result returns `listed` and `ingested`.
+3. Compare `listed` with the count from `qbittorrent_torrents_count`.
+   Verify they agree, and report the difference if not.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| `ingested` is null | No knowledge graph engine is reachable | Report that nothing was written, and rerun `qbittorrent_ingest_torrents` once the engine is reachable |
+| `listed` is zero | The filter matches nothing, or qBittorrent is unreachable | Call `qbittorrent_torrents_count` without a filter, and loosen the `filter` value |
+| HTTP error from qBittorrent | `QBITTORRENT_URL` or credentials are wrong | Report the error text, and ask the operator to correct the connector configuration |
+
 ## Where the data lives
 
 - **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.

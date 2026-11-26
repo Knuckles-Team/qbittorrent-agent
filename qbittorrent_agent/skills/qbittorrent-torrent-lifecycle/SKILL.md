@@ -2,7 +2,7 @@
 name: qbittorrent-torrent-lifecycle
 skill_type: skill
 description: >-
-  Manage the qBittorrent torrent lifecycle through the qbittorrent-mcp connector: list and filter torrents, add a torrent to a category, recover a stalled torrent, and prove category writes with a test category. Use when the agent must add, inspect, reannounce, recheck or organize torrents. Do NOT use for speed or ratio limits (qbittorrent-transfer-tuning) or knowledge-graph ingest (qbittorrent-kg-ingestion).
+  Manage the qBittorrent torrent lifecycle through the qbittorrent-mcp connector: list and filter torrents, add a torrent to a category, recover a stalled torrent, and prove category writes with a test category. Use when the agent must add, inspect, reannounce, recheck or organize torrents. Not for limits or KG ingest.
 license: MIT
 tags: [qbittorrent, torrent, media-automation, mcp]
 metadata:
@@ -12,7 +12,30 @@ metadata:
 
 # qBittorrent Torrent Lifecycle
 
+Scope: Manage the qBittorrent torrent lifecycle through the qbittorrent-mcp connector: list and filter torrents, add a torrent to a category, recover a stalled torrent, and prove category writes with a test category. Use when the agent must add, inspect, reannounce, recheck or organize torrents. Do NOT use for speed or ratio limits (qbittorrent-transfer-tuning) or knowledge-graph ingest (qbittorrent-kg-ingestion).
+
 Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
+
+## Steps
+
+1. List the current torrents with `qbittorrent_torrents_info` (`filter`, `category`).
+   Verify the target torrent is identified by its `hash`, never by list position.
+2. Check categories with `qbittorrent_torrents_categories`.
+   Verify the consuming app's category exists before adding anything.
+3. Add a requested torrent with `qbittorrent_torrents_add` (`urls`, `category`) after operator approval.
+   Verify it lists in the category through `qbittorrent_torrents_info`.
+4. Recover a stalled torrent with `qbittorrent_torrents_trackers` and `qbittorrent_torrents_reannounce` (`hashes`).
+   Verify progress or peers with `qbittorrent_torrents_properties`.
+5. Recheck with `qbittorrent_torrents_recheck` only after approval when data may be damaged.
+   Verify progress is rising again via `qbittorrent_torrents_properties`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Add refused or torrent missing | The category does not exist, or approval was not given | List `qbittorrent_torrents_categories`, create the app's category through qbittorrent-download-client, and repeat the add with operator approval |
+| Tool raises an HTTP 403 | The WebUI login failed or the caller IP is banned | Read `qbittorrent_log_main` for the ban reason, and ask the operator to fix credentials or wait out `web_ui_ban_duration` |
+| Stalled torrent still has no peers | The trackers report an error or the data is damaged | Read the tracker message from `qbittorrent_torrents_trackers`, and request approval for `qbittorrent_torrents_recheck` |
 
 ## Where the data lives
 

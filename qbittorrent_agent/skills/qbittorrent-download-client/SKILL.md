@@ -14,6 +14,27 @@ metadata:
 
 Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
 
+## Steps
+
+1. Read login failures and bans with `qbittorrent_log_main` (`warning` true).
+   Verify whether `WebAPI login failure` or `IP has been banned` lines name the app's IP.
+2. Read the auth settings with `qbittorrent_app_preferences`.
+   Verify `web_ui_max_auth_fail_count`, `web_ui_ban_duration` and the bypass settings are recorded.
+3. Check categories with `qbittorrent_torrents_categories`.
+   Verify each consuming app has its category.
+4. Create a missing category with `qbittorrent_torrents_create_category` (`category`) after approval.
+   Verify it lists in `qbittorrent_torrents_categories`.
+5. Hand app-side fixes to the arr-mcp `arr-repair-download-client` workflow.
+   Verify the app reports the client as available.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| App still reports the client unavailable | The app credentials are wrong or its IP is banned | Report the log lines, and hand the fix to arr-mcp `arr-repair-download-client` with the banned IP and `web_ui_ban_duration` |
+| Create category refused | Approval was not given | Ask the operator for approval, and repeat `qbittorrent_torrents_create_category` |
+| Category already exists | It was created earlier | Skip creation, and confirm the folder with `qbittorrent_app_default_save_path` |
+
 ## Where the data lives
 
 - **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.

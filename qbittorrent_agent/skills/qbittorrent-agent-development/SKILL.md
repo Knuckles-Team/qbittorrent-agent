@@ -24,3 +24,24 @@ For the central consumer criteria `PIPE-CONNSPEC-R156.3` and
 `PIPE-CONNSPEC-R156.4`, use the established receipt:
 
 `Spec: none (PIPE-CONNSPEC-R156.3/.4 are pipelines-owned; consumer specs do not define those central rows)`
+
+## Steps
+
+1. Find the owning requirement with `git grep -n "<term>" -- specs`.
+   Verify a row matches before editing behavior.
+2. Make the change within this connector's boundary under `qbittorrent_agent/`.
+   Verify skills stay under `qbittorrent_agent/skills/`.
+3. Run `uv run pytest -q` for the touched area.
+   Verify the tests pass.
+4. Run `pre-commit run --all-files`.
+   Verify every hook reports Passed.
+5. Stage reviewed paths with `git add -- <path>` and check `git diff --cached --name-status`.
+   Verify only intended files are listed and the `Spec:` trailer names a declared id.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Spec-trailer hook rejects the id | The id is not declared in this repository's `specs/` | Cite a row found with `git grep -n "<term>" -- specs`, or use the established receipt shown above for central rows |
+| A hook fails | Formatting, spelling or a gate was violated | Read the hook output, fix the named file, and rerun `pre-commit run --all-files` |
+| Skill file missing from the wheel | It sits outside `qbittorrent_agent/skills/` | Move it under `qbittorrent_agent/skills/`, which the `skills/**` package-data rule includes |

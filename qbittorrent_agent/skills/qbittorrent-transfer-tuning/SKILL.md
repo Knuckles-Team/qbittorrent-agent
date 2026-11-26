@@ -14,6 +14,25 @@ metadata:
 
 Use the typed tools of the `qbittorrent-mcp` connector: one tool per qBittorrent WebUI API operation, named `qbittorrent_<scope>_<action>` (for example `qbittorrent_torrents_info`). Each tool takes typed parameters; there is no `action` or `params_json` routing. A failed call raises with qBittorrent's own reason.
 
+## Steps
+
+1. Read connection state with `qbittorrent_transfer_info`.
+   Verify `connection_status` is `connected` and note the speeds.
+2. List problem torrents with `qbittorrent_torrents_info` (`filter` stalled or errored).
+   Verify the counts and the hashes involved.
+3. Read warnings with `qbittorrent_log_main` (`warning` and `critical` true).
+   Verify whether failed logins, IP bans or disk errors explain the stalls.
+4. Set limits after operator approval with `qbittorrent_transfer_set_download_limit`, `qbittorrent_transfer_set_upload_limit` or `qbittorrent_torrents_set_share_limits`.
+   Verify `qbittorrent_transfer_info` shows the new `dl_rate_limit` and `up_rate_limit`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| `connection_status` is not connected | qBittorrent has no network or is firewalled | Report it with the log lines from `qbittorrent_log_main`, and ask the operator to fix the network |
+| Limit change refused | Operator approval was not given | Ask for approval, and repeat the set call only after it |
+| Speeds stay low after setting limits | Alternative speed limits are enabled | Read `qbittorrent_transfer_speed_limits_mode`; a value of 1 means the slower alternative limits apply, so report it to the operator |
+
 ## Where the data lives
 
 - **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.
