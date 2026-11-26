@@ -20,57 +20,15 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/qbittorrent-agent)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/qbittorrent-agent)
 
-> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> interfaces, and guidance for provisioning the qBittorrent backing service are
-> maintained in the [official documentation](https://knuckles-team.github.io/qbittorrent-agent/).
-
----
-
-## Table of Contents
-
-- [Documentation](#documentation)
-
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [CLI or API](#cli-or-api)
-- [MCP](#mcp)
-  - [Available MCP Tools](#available-mcp-tools)
-  - [MCP Configuration Examples](#mcp-configuration-examples)
-  - [Dynamic Tool Selection & Visibility](#dynamic-tool-selection--visibility)
-- [Agent](#agent)
-  - [Running the Agent CLI](#running-the-agent-cli)
-  - [Docker Compose Orchestration](#docker-compose-orchestration)
-- [Environment Variables](#environment-variables)
-- [Security & Governance](#security--governance)
-  - [Access Control & Policy Enforcement](#access-control--policy-enforcement)
-  - [Runtime Security Grid](#runtime-security-grid)
-- [Installation](#installation)
-- [Repository Owners](#repository-owners)
-- [Contribute](#contribute)
+> **Documentation** — Installation, deployment, and usage across the API, CLI, MCP,
+> and A2A agent interfaces are maintained in the
+> [official documentation](https://knuckles-team.github.io/qbittorrent-agent/).
 
 ---
 
 ## Overview
 
 **Qbittorrent Agent** is a production-grade Agent and Model Context Protocol (MCP) server designed to interface directly with AI agent for qBittorrent management, RSS automation, and search..
-
----
-
-## Documentation
-
-The complete documentation is published as the
-[official documentation site](https://knuckles-team.github.io/qbittorrent-agent/) and is
-the recommended reference for installation, deployment, and day-to-day operation.
-
-| Page | Contents |
-|---|---|
-| [Installation](https://knuckles-team.github.io/qbittorrent-agent/installation/) | pip, source, extras, prebuilt Docker image |
-| [Deployment](https://knuckles-team.github.io/qbittorrent-agent/deployment/) | run the MCP server and A2A agent, Compose, Caddy + Technitium, env config |
-| [Usage](https://knuckles-team.github.io/qbittorrent-agent/usage/) | the MCP tools, the `QbittorrentApi` client, the CLI |
-| [Backing Platform](https://knuckles-team.github.io/qbittorrent-agent/platform/) | deploy qBittorrent with Docker |
-| [Overview](https://knuckles-team.github.io/qbittorrent-agent/overview/) | concept overview and enterprise readiness |
-| [Architecture](https://knuckles-team.github.io/qbittorrent-agent/architecture/) | agent, MCP server, layered client |
-| [Concepts](https://knuckles-team.github.io/qbittorrent-agent/concepts/) | concept registry (`CONCEPT:QBT-*`) |
 
 ---
 
@@ -224,6 +182,8 @@ Every qBittorrent WebUI API operation (121, qBittorrent 5.2.4) is one typed tool
 | `qbittorrent_transfer_ban_peers` | `POST /api/v2/transfer/banPeers` | Ban peers. |
 | `qbittorrent_ingest_torrents` | (connector) | Ingest torrents into the knowledge graph as typed Torrent, Tracker and Category nodes. |
 
+---
+
 ## Agent
 
 This repository features a fully integrated Pydantic AI Graph Agent. It communicates over the **Agent Control Protocol (ACP)** and interacts smoothly with the **Agent Web UI (AG-UI)** and Terminal interface.
@@ -337,6 +297,24 @@ Detailed graph node architecture explanations, custom skill configurations, and 
 
 ---
 
+## Security & Governance
+
+Built directly upon the enterprise-ready [`scion-sdk`](https://github.com/Knuckles-Team/scion-sdk) core, standard security parameters are fully supported:
+
+### Access Control & Policy Enforcement
+- **Eunomia Policies:** Fine-grained, policy-driven tool authorization. Supports `none`, local `embedded` (`mcp_policies.json`), or centralized `remote` modes.
+- **OIDC Token Delegation:** Compliant with RFC 8693 token exchange for flowing authenticating user credentials from Web UI / ACP → Agent → MCP.
+- **Scoped Credentials:** Execution context runs restricted to the specific caller identity.
+
+### Runtime Security Grid
+| Feature | Feature | Enablement |
+|---------|---------------|------------|
+| **Tool Guard** | Sensitivity inspection with human-in-the-loop validation | Enabled by default |
+| **Prompt Injection Defense** | Input scanning, repetition monitoring, and recursive loop blocks | Enabled by default |
+| **Context Safety Guard** | Stuck-loop detectors and contextual overflow preemptive alerts | Enabled by default |
+
+---
+
 ## Environment Variables
 
 <!-- ENV-VARS-TABLE:START -->
@@ -433,24 +411,6 @@ The agent and MCP server can be fully configured using the following environment
 
 ---
 
-## Security & Governance
-
-Built directly upon the enterprise-ready [`scion-sdk`](https://github.com/Knuckles-Team/scion-sdk) core, standard security parameters are fully supported:
-
-### Access Control & Policy Enforcement
-- **Eunomia Policies:** Fine-grained, policy-driven tool authorization. Supports `none`, local `embedded` (`mcp_policies.json`), or centralized `remote` modes.
-- **OIDC Token Delegation:** Compliant with RFC 8693 token exchange for flowing authenticating user credentials from Web UI / ACP → Agent → MCP.
-- **Scoped Credentials:** Execution context runs restricted to the specific caller identity.
-
-### Runtime Security Grid
-| Feature | Feature | Enablement |
-|---------|---------------|------------|
-| **Tool Guard** | Sensitivity inspection with human-in-the-loop validation | Enabled by default |
-| **Prompt Injection Defense** | Input scanning, repetition monitoring, and recursive loop blocks | Enabled by default |
-| **Context Safety Guard** | Stuck-loop detectors and contextual overflow preemptive alerts | Enabled by default |
-
----
-
 ## Installation
 
 Pick the extra that matches what the operator want to run:
@@ -502,6 +462,24 @@ diagrams are documented in the
 
 ---
 
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/qbittorrent-agent/) and is
+the recommended reference for installation, deployment, and day-to-day operation.
+
+| Page | Contents |
+|---|---|
+| [Installation](https://knuckles-team.github.io/qbittorrent-agent/installation/) | pip, source, extras, prebuilt Docker image |
+| [Deployment](https://knuckles-team.github.io/qbittorrent-agent/deployment/) | run the MCP server and A2A agent, Compose, Caddy + Technitium, env config |
+| [Usage](https://knuckles-team.github.io/qbittorrent-agent/usage/) | the MCP tools, the `QbittorrentApi` client, the CLI |
+| [Backing Platform](https://knuckles-team.github.io/qbittorrent-agent/platform/) | deploy qBittorrent with Docker |
+| [Overview](https://knuckles-team.github.io/qbittorrent-agent/overview/) | concept overview and enterprise readiness |
+| [Architecture](https://knuckles-team.github.io/qbittorrent-agent/architecture/) | agent, MCP server, layered client |
+| [Concepts](https://knuckles-team.github.io/qbittorrent-agent/concepts/) | concept registry (`CONCEPT:QBT-*`) |
+
+---
+
 ## Repository Owners
 
 <img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
@@ -518,7 +496,6 @@ Contributions are welcome! Please ensure code quality by running local checks be
 - Lint code using `ruff check .`
 - Validate type-safety with `mypy .`
 - Run test suites using `pytest`
-
 
 <!-- BEGIN agent-os-genesis-deploy (generated; do not edit between markers) -->
 
