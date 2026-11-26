@@ -14,6 +14,25 @@ metadata:
 
 The connector serves one typed tool per WebUI API operation (`qbittorrent_<scope>_<action>`; scopes `app`, `clientdata`, `log`, `rss`, `search`, `sync`, `torrentcreator`, `torrents`, `transfer`) plus `qbittorrent_ingest_torrents`.
 
+## Steps
+
+1. Choose the skill from the Which skill list, for example `qbittorrent-transfer-tuning`.
+   Verify the request matches exactly one skill and name it.
+2. Run a read first, such as `qbittorrent_torrents_info` or `qbittorrent_transfer_info`.
+   Verify the result reflects the real state before any write.
+3. Run the named workflow's tools in order, such as `qbittorrent_torrents_add`, asking for approval before deletes, limits or adds.
+   Verify each tool returned without error.
+4. Confirm the outcome with a read such as `qbittorrent_torrents_info`.
+   Verify the change is present and report it with the info hash.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| No skill fits the request | The task is outside torrents, transfers, download client or ingest | Say so, and do not improvise writes with `qbittorrent_*` tools |
+| Tool refusal or HTTP error | qBittorrent rejected the call | Report the error text as returned, and do not retry past the refusal |
+| Write needs approval | The operator has not approved it | Ask the operator, and pass `confirm=true` only after approval |
+
 ## Where the data lives
 
 - **qBittorrent** (`qbittorrent_*` tools, `QBITTORRENT_URL`): the torrent client: completed downloads in the default save path `/downloads/complete`, incomplete ones in `/downloads/incomplete`; one category per consuming app (`radarr`, `sonarr`, `lidarr`, `chaptarr`, `prowlarr`), each a sub-folder the app imports from.
